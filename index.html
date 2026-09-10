@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ADRIANA v22.5 — Assistant Daily Reporting & Analytics</title>
+<title>ADRIANA v22.5.2 — Assistant Daily Reporting & Analytics</title>
 <style>
 :root{--bg:#f3f6f2;--panel:#fff;--ink:#17211b;--muted:#68746c;--line:#dce4dd;--green:#155c3b;--green2:#e7f1eb;--amber:#a36a12;--red:#a94332}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
@@ -84,6 +84,10 @@ body{background:radial-gradient(circle at 92% 8%,rgba(213,236,221,.72),transpare
 @media(max-width:760px){.astraHead{height:76px;padding:7px 12px}.brandPair{gap:9px}.adrianaMainLogo{width:178px;max-width:55vw;height:52px}.astra50Logo{width:155px;max-width:34vw;height:48px}.brandDivider{height:40px}.astraRight{display:none}.side{top:76px;height:calc(100vh - 76px);width:155px;padding:16px 8px}.main{margin-left:155px;width:calc(100% - 155px);padding:92px 10px 20px}.brand{font-size:21px}.sub{font-size:8px;margin-bottom:22px}.nav button{padding:10px 9px;font-size:10px}.dashWelcome{align-items:flex-start;flex-direction:column;gap:10px}.dashWelcome .title{font-size:24px;line-height:1.05}.dashControls{width:100%;gap:8px}.dateBox{min-width:0;flex:1;padding:8px 9px}.dashWelcome .lock{font-size:9px;padding:8px 9px}.kpiGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.kpi{min-height:150px;padding:12px 10px}.kpiIcon{left:9px;top:10px}.kpi .kpiIcon img{width:38px;height:38px}.kpi .label{margin-left:43px;font-size:9px}.kpi .value{margin-left:43px;font-size:22px}.kpi .delta,.kpi .small,.spark{margin-left:43px}.kpi .delta{font-size:9px}.kpi .small{font-size:9px}.spark{gap:3px}.spark i{width:8px}.two{grid-template-columns:1fr}.dashTopGrid{grid-template-columns:1fr}.signalsPanel,.decisionHero{min-height:auto}.dashLower{grid-template-columns:1fr}.dashRight{grid-template-columns:1fr}.productionPanel{overflow-x:auto}.productionPanel table{min-width:560px}.sustainBanner{min-height:120px}.sustainBanner .bannerLogo{transform:scale(.9);transform-origin:right center}}
 
 .afdFilter{display:inline-flex;align-items:center;gap:8px;margin-top:12px}.afdFilter label{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.08em}.afdFilter select{border:1px solid #d6e1da;border-radius:10px;background:#fff;padding:9px 30px 9px 11px;color:#164a32;font-weight:700;box-shadow:0 4px 12px rgba(16,61,41,.05)}
+
+/* V22.5.2 Harvest Density / AKP */
+.harvestDensityPanel{margin-top:14px}.densitySummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}.densityMetric{background:#f7fbf8;border:1px solid #dce9e1;border-radius:12px;padding:12px}.densityMetric small{display:block;color:#718277;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}.densityMetric strong{display:block;color:#164a32;font-size:22px;margin-top:4px}.densityMetric span{display:block;color:#7a877f;font-size:9px;margin-top:2px}.densityTable{overflow-x:auto}.densityTable table{min-width:900px}.densityNote{font-size:10px;color:#718077;background:#f8fbf9;border-radius:10px;padding:9px;margin-top:10px}
+@media(max-width:760px){.densitySummary{grid-template-columns:repeat(2,minmax(0,1fr))}.densityMetric strong{font-size:18px}}
 </style>
 </head>
 <body>
@@ -118,13 +122,14 @@ body{background:radial-gradient(circle at 92% 8%,rgba(213,236,221,.72),transpare
 <div class="panel decision decisionHero"><div class="decisionGlow"></div><div class="decisionHead"><h2>Assistant Decision</h2><span>AI RECOMMENDATION</span></div><div class="decisionLabel">Recommended focus</div><div id="dashboardDecision">—</div><div id="dashboardDecisionText" class="muted">No active dataset.</div><button class="btn" onclick="show('pdca')">CREATE ACTION PLAN&nbsp; →</button><div class="decisionLeaf">◌</div></div>
 </div>
 <div class="dashLower">
-<div class="panel productionPanel"><div class="panelHead"><h2>▥ &nbsp;Production by Block</h2><span>See Detail →</span></div><table><thead><tr><th>Block</th><th>JJG</th><th>% Total</th><th>Trend</th><th>Review</th></tr></thead><tbody><tr><td><b>OC023</b></td><td>768</td><td>41.2%</td><td><span class="trend upTrend">↗</span></td><td>Monitor</td></tr><tr><td>OC015</td><td>511</td><td>27.4%</td><td><span class="trend upTrend">↗</span></td><td>Monitor</td></tr><tr><td>OC019</td><td>297</td><td>15.9%</td><td><span class="trend downTrend">↘</span></td><td>Monitor</td></tr><tr><td>OC027</td><td>220</td><td>11.8%</td><td><span class="trend downTrend">↘</span></td><td>Monitor</td></tr><tr><td>OC011</td><td>67</td><td>3.6%</td><td><span class="trend downTrend">↘</span></td><td>Investigate</td></tr></tbody></table></div>
+<div class="panel productionPanel"><div class="panelHead"><h2>▥ &nbsp;Production by Block</h2><span>JJG · Pokok · AKP</span></div><table><thead><tr><th>Block</th><th>JJG</th><th>Pokok Master</th><th>JJG/Pokok</th><th>AKP</th><th>% Total</th><th>Review</th></tr></thead><tbody id="dashboardProductionBody"><tr><td colspan="7" class="small">Upload and lock AMANTA.</td></tr></tbody></table><div class="densityNote">Pokok Master berasal dari Hesti per blok. AKP/JJG-Pokok hanya dihitung jika Pokok Panen aktual tersedia; sistem tidak menganggap seluruh pokok blok sebagai pokok panen.</div></div>
+<div class="panel harvestDensityPanel"><div class="panelHead"><h2>🌴 &nbsp;Harvest Density &amp; AKP</h2><span>Actual daily</span></div><div class="densitySummary"><div class="densityMetric"><small>Total JJG</small><strong id="akpTotalJjg">—</strong><span>AMANTA actual</span></div><div class="densityMetric"><small>Total Pokok Panen</small><strong id="akpTotalPokok">—</strong><span>requires actual harvest area/palm count</span></div><div class="densityMetric"><small>JJG/Pokok</small><strong id="akpGlobalJjgPokok">—</strong><span>total JJG ÷ total pokok panen</span></div><div class="densityMetric"><small>AKP Global</small><strong id="akpGlobal">—</strong><span>JJG ÷ pokok × 100%</span></div></div><div class="densityNote"><b>Data rule:</b> Hesti supplies master pokok. Ha Panen must come from the actual daily source; if unavailable, AKP remains <b>UNAVAILABLE</b>.</div></div>
 <div class="dashRight">
 <div class="panel contributionPanel"><div class="panelHead"><h2>◉ &nbsp;JJG Contribution</h2></div><div class="donutWrap"><div class="donut"><div><small>Total</small><strong id="donutTotal">1,863</strong></div></div><div class="legend"><div><i></i>OC023 <b>41.2%</b></div><div><i></i>OC015 <b>27.4%</b></div><div><i></i>OC019 <b>15.9%</b></div><div><i></i>OC027 <b>11.8%</b></div><div><i></i>OC011 <b>3.6%</b></div></div></div></div>
 <div class="panel quickPanel"><div class="panelHead"><h2>⚡ &nbsp;Quick Actions</h2></div><div class="quickGrid"><button onclick="show('rotation')">⟳ &nbsp; View Rotation</button><button onclick="show('transport')">▰ &nbsp; Check Transport</button><button onclick="show('ai')">♧ &nbsp; Open AI Analysis</button><button onclick="show('pdca')">▤ &nbsp; Create PDCA</button></div></div>
 </div></div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
-<div class="footer">ADRIANA v22.5 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
+<div class="footer">ADRIANA v22.5.2 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
 </section>
 <section id="closing" class="section"><div class="top"><div><div class="eyebrow">CONTROL</div><div class="title">Daily Closing</div><div class="meta">AMANTA as source of truth · one dashboard for all SYM afdeling.</div></div></div>
 <div class="panel"><h2>AMANTA Upload — 1 Daily Dataset</h2><div class="upload">Pilih AMANTA sesuai afdeling · OCYM maksimal 2 file · OEYM maksimal 3 file<br><input id="amantaFiles" type="file" accept=".csv" multiple><div id="uploadMsg" class="small">Belum ada file.</div></div><div id="reconBox" class="notice">Menunggu upload. Sistem akan mendeteksi tanggal, site, versi, overlap dan melakukan reconciliation tanpa double-count.</div><button class="btn" id="processBtn" onclick="processAMANTA()" disabled>UPLOAD & PROCESS</button><button class="btn" id="lockBtn" onclick="closeDataset()" disabled>SAVE DAILY DATA</button>
@@ -232,7 +237,9 @@ body{background:radial-gradient(circle at 92% 8%,rgba(213,236,221,.72),transpare
 <div class="footer">ADRIANA v22 · AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
 </main></div>
 <script>
-const ADRIANA_BUILD='v22.5';
+const ADRIANA_BUILD='v22.5.2';
+const HESTI_MASTER={"OC001":{"pokok":2584,"luasTanam":20.47497497},"OC002":{"pokok":1410,"luasTanam":10.8253085},"OC003":{"pokok":2204,"luasTanam":17.62431598},"OC004":{"pokok":3661,"luasTanam":28.25422515},"OC005":{"pokok":1854,"luasTanam":14.82759822},"OC006":{"pokok":2836,"luasTanam":23.10242366},"OC007":{"pokok":3981,"luasTanam":31.50547782},"OC008":{"pokok":1879,"luasTanam":17.0306481},"OC009":{"pokok":3287,"luasTanam":25.37608088},"OC010":{"pokok":2137,"luasTanam":16.97904717},"OC011":{"pokok":3539,"luasTanam":27.33788509},"OC012":{"pokok":2778,"luasTanam":23.36623628},"OC013":{"pokok":3504,"luasTanam":27.51786459},"OC014":{"pokok":2338,"luasTanam":18.90177491},"OC015":{"pokok":3332,"luasTanam":25.82564332},"OC016":{"pokok":3649,"luasTanam":30.42393538},"OC017":{"pokok":2962,"luasTanam":24.24650447},"OC018":{"pokok":2090,"luasTanam":15.9536477},"OC019":{"pokok":3250,"luasTanam":24.52063412},"OC01A":{"pokok":1153,"luasTanam":91.1615659},"OC020":{"pokok":3645,"luasTanam":28.92360449},"OC021":{"pokok":3007,"luasTanam":24.71175678},"OC022":{"pokok":1132,"luasTanam":88.4578401},"OC023":{"pokok":3819,"luasTanam":29.11726513},"OC024":{"pokok":3762,"luasTanam":29.4182184},"OC025":{"pokok":3338,"luasTanam":27.20928095},"OC026":{"pokok":2570,"luasTanam":20.27915272},"OC027":{"pokok":4216,"luasTanam":33.56746583},"OC028":{"pokok":3923,"luasTanam":32.18303737},"OC029":{"pokok":3338,"luasTanam":26.39474437},"OC030":{"pokok":2506,"luasTanam":19.3703675},"OC10A":{"pokok":1954,"luasTanam":14.74141087}};
+
 const html={escape:(x)=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))};
 let ACTIVE=null, STAGED=null;
 function show(id){document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.target===id));}
@@ -251,7 +258,49 @@ function closeDataset(){if(!STAGED)return;const existing=JSON.parse(localStorage
 function buildData(snap){const sections=snap.sections,prod=sections.PRODUKSIBLOK;let jjg=0;const npks=new Set(),mand=new Set(),blocks={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{jjg+=num(r[ji]);if(r[ni])npks.add(r[ni]);if(r[mi])mand.add(r[mi]);const b=r[bi]||'—';blocks[b]=(blocks[b]||0)+num(r[ji])})}let net=0,trips=0;const tr=sections.TR_TBS_TRANSPORT;if(tr){const wi=tr.header.indexOf('WEIGHTIN'),wo=tr.header.indexOf('WEIGHTOUT');tr.rows.forEach(r=>{const x=num(r[wi])-num(r[wo]);if(x>0){net+=x;trips++}})}const harvesters={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),namei=h.indexOf('NAMA'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{const npk=cleanCell(r[ni]);if(npk==='—')return;const name=cleanCell(r[namei]);const key=npk;harvesters[key]??={npk,name,j:0,blocks:new Set(),mandorans:new Set()};harvesters[key].j+=num(r[ji]);const b=cleanCell(r[bi]),m=cleanCell(r[mi]);if(b!=='—')harvesters[key].blocks.add(b);if(m!=='—')harvesters[key].mandorans.add(m)});}const bjrKgPerJjg=jjg>0&&net>0?net/jjg:null;return {...snap,jjg,producingHK:npks.size,mandorans:[...mand],blocks,netTransportKg:net,trips,bjrKgPerJjg,harvesters:Object.values(harvesters).map(x=>({...x,blocks:[...x.blocks],mandorans:[...x.mandorans],jjgPerHK:x.j}))}}
 function renderStagedPreview(s){const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent='—';vals[1].textContent='—';vals[2].textContent='—';}
 function renderAll(snap){const d=buildData(snap);ACTIVE=snap;window.ADRIANA_DATA=d;document.getElementById('activeDate').textContent=fmtDate(snap.date);document.getElementById('activeMeta').textContent=`${snap.site} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent=d.jjg.toLocaleString();vals[1].textContent=d.producingHK.toLocaleString();vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';const bjrNotice=document.getElementById('bjrNotice');if(bjrNotice)bjrNotice.innerHTML=d.bjrKgPerJjg?`<b>BJR:</b> ${d.bjrKgPerJjg.toFixed(2)} kg/JJG · ${d.netTransportKg.toLocaleString()} kg net ÷ ${d.jjg.toLocaleString()} JJG`:'<b>BJR:</b> unavailable because net transport or JJG is unavailable.';const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();renderProduction(d);renderQuality(d);renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d)}
-function renderProduction(d){const p=d.sections.PRODUKSIBLOK;if(!p)return;const h=p.header,mi=h.indexOf('KEMANDORAN'),ni=h.indexOf('NPK'),ji=h.indexOf('JJG'),by={};p.rows.forEach(r=>{const m=r[mi]||'—';by[m]??={j:0,n:new Set()};by[m].j+=num(r[ji]);if(r[ni])by[m].n.add(r[ni])});document.getElementById('productionBody').innerHTML=Object.entries(by).map(([m,v])=>`<tr><td>${html.escape(m)}</td><td>${v.n.size}</td><td>${v.j.toLocaleString()}</td><td>${v.n.size?(v.j/v.n.size).toFixed(2):'—'}</td></tr>`).join('')||'<tr><td colspan="4">No production data.</td></tr>';const hs=[...(d.harvesters||[])].sort((a,b)=>b.j-a.j);const top=hs[0],bottom=hs[hs.length-1];const topEl=document.getElementById('topHarvester'),topSub=document.getElementById('topHarvesterSub'),botEl=document.getElementById('bottomHarvester'),botSub=document.getElementById('bottomHarvesterSub');if(top){topEl.textContent=top.name!=='—'?top.name:top.npk;topSub.textContent=`${top.j.toLocaleString()} JJG · ${top.npk} · ${top.blocks.join(', ')||'—'}`}else{topEl.textContent='—';topSub.textContent='—'}if(bottom){botEl.textContent=bottom.name!=='—'?bottom.name:bottom.npk;botSub.textContent=`${bottom.j.toLocaleString()} JJG · ${bottom.npk} · ${bottom.blocks.join(', ')||'—'}`}else{botEl.textContent='—';botSub.textContent='—'}document.getElementById('harvesterBody').innerHTML=hs.map((x,i)=>`<tr><td><span class="rankBadge ${i===hs.length-1?'low':''}">#${i+1}</span></td><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${html.escape(x.npk)}</td><td>${x.j.toLocaleString()}</td><td>${x.j.toFixed(2)}</td><td>${html.escape(x.blocks.join(', ')||'—')}</td><td>${html.escape(x.mandorans.join(', ')||'—')}</td></tr>`).join('')||'<tr><td colspan="7">No harvester data.</td></tr>'}
+function getActualHarvestAreaByBlock(d){
+ const out={};
+ const candidates=['HA_PANEN','HAPANEN','LUASPANEN','LUAS_PANEN','HA','HECTARE','HECTARES'];
+ for(const sec of Object.values(d.sections||{})){
+  const h=(sec.header||[]).map(x=>String(x||'').trim().toUpperCase());
+  const bi=h.indexOf('BLOK'); if(bi<0) continue;
+  let ai=-1; for(const c of candidates){ai=h.indexOf(c); if(ai>=0) break;}
+  if(ai<0) continue;
+  for(const r of sec.rows||[]){const b=normalizeRotationBlock(r[bi]); const a=num(r[ai]); if(b&&a>0) out[b]=(out[b]||0)+a;}
+ }
+ return out;
+}
+function buildHarvestDensity(d){
+ const ha=getActualHarvestAreaByBlock(d), rows=[]; let totalJ=0,totalP=0,totalHa=0;
+ for(const [b,j] of Object.entries(d.blocks||{})){
+  const m=HESTI_MASTER[String(b).toUpperCase()]; const area=ha[String(b).toUpperCase()];
+  const density=m&&m.luasTanam>0?m.pokok/m.luasTanam:null;
+  const pokok=area&&density?area*density:null;
+  const jjgpokok=pokok?j/pokok:null;
+  const akp=jjgpokok!=null?jjgpokok*100:null;
+  if(pokok){totalP+=pokok; totalHa+=area;}
+  totalJ+=j;
+  rows.push({b,j,m,area,density,pokok,jjgpokok,akp});
+ }
+ const globalJjgPokok=totalP?totalJ/totalP:null, globalAkp=globalJjgPokok!=null?globalJjgPokok*100:null;
+ return {rows,totalJ,totalP,totalHa,globalJjgPokok,globalAkp,hasActualHa:Object.keys(ha).length>0};
+}
+function renderProduction(d){
+ const p=d.sections.PRODUKSIBLOK;if(!p)return;
+ const h=p.header,mi=h.indexOf('KEMANDORAN'),ni=h.indexOf('NPK'),ji=h.indexOf('JJG'),by={};
+ p.rows.forEach(r=>{const m=r[mi]||'—';by[m]??={j:0,n:new Set()};by[m].j+=num(r[ji]);if(r[ni])by[m].n.add(r[ni])});
+ document.getElementById('productionBody').innerHTML=Object.entries(by).map(([m,v])=>`<tr><td>${html.escape(m)}</td><td>${v.n.size}</td><td>${v.j.toLocaleString()}</td><td>${v.n.size?(v.j/v.n.size).toFixed(2):'—'}</td></tr>`).join('')||'<tr><td colspan="4">No production data.</td></tr>';
+ const hd=buildHarvestDensity(d);
+ const body=document.getElementById('dashboardProductionBody');
+ if(body) body.innerHTML=hd.rows.sort((a,b)=>b.j-a.j).map(x=>{const m=x.m;return `<tr><td><b>${html.escape(x.b)}</b></td><td>${x.j.toLocaleString()}</td><td>${m?m.pokok.toLocaleString():'—'}</td><td>${x.jjgpokok!=null?x.jjgpokok.toFixed(3):'—'}</td><td>${x.akp!=null?x.akp.toFixed(1)+'%':'—'}</td><td>${d.jjg?((x.j/d.jjg)*100).toFixed(1):'0.0'}%</td><td>${x.jjgpokok!=null?(x.akp>30?'Review':'Monitor'):'Data gap'}</td></tr>`}).join('')||'<tr><td colspan="7">No production data.</td></tr>';
+ const hs=[...(d.harvesters||[])].sort((a,b)=>b.j-a.j);const top=hs[0],bottom=hs[hs.length-1];const topEl=document.getElementById('topHarvester'),topSub=document.getElementById('topHarvesterSub'),botEl=document.getElementById('bottomHarvester'),botSub=document.getElementById('bottomHarvesterSub');if(top){topEl.textContent=top.name!=='—'?top.name:top.npk;topSub.textContent=`${top.j.toLocaleString()} JJG · ${top.npk} · ${top.blocks.join(', ')||'—'}`}else{topEl.textContent='—';topSub.textContent='—'}if(bottom){botEl.textContent=bottom.name!=='—'?bottom.name:bottom.npk;botSub.textContent=`${bottom.j.toLocaleString()} JJG · ${bottom.npk} · ${bottom.blocks.join(', ')||'—'}`}else{botEl.textContent='—';botSub.textContent='—'}document.getElementById('harvesterBody').innerHTML=hs.map((x,i)=>`<tr><td><span class="rankBadge ${i===hs.length-1?'low':''}">#${i+1}</span></td><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${html.escape(x.npk)}</td><td>${x.j.toLocaleString()}</td><td>${x.j.toFixed(2)}</td><td>${html.escape(x.blocks.join(', ')||'—')}</td><td>${html.escape(x.mandorans.join(', ')||'—')}</td></tr>`).join('')||'<tr><td colspan="7">No harvester data.</td></tr>';
+ const totalJ=document.getElementById('akpTotalJjg'),totalP=document.getElementById('akpTotalPokok'),gp=document.getElementById('akpGlobalJjgPokok'),ga=document.getElementById('akpGlobal');
+ if(totalJ) totalJ.textContent=hd.totalJ.toLocaleString();
+ if(totalP) totalP.textContent=hd.totalP?Math.round(hd.totalP).toLocaleString():'—';
+ if(gp) gp.textContent=hd.globalJjgPokok!=null?hd.globalJjgPokok.toFixed(3):'—';
+ if(ga) ga.textContent=hd.globalAkp!=null?hd.globalAkp.toFixed(1)+'%':'—';
+ window.ADRIANA_HARVEST_DENSITY=hd;
+}
 function renderQuality(d){const q=d.sections.SAMPLING_KUALITAS_PANEN;if(!q){document.getElementById('qualityBody').innerHTML='<tr><td colspan="5">Quality data unavailable.</td></tr>';return}const h=q.header,bi=h.indexOf('BLOK'),mi=h.indexOf('MANDORAN'),si=h.indexOf('SAMPLEPOKOK'),pi=h.indexOf('PIRINGANTDKSTDR'),fi=h.indexOf('BUAHTINGGAL');document.getElementById('qualityBody').innerHTML=q.rows.map(r=>`<tr><td>${html.escape(r[bi]||'—')}</td><td>${html.escape(r[mi]||'—')}</td><td>${r[si]||0}</td><td>${r[pi]||0}</td><td>${r[fi]||0}</td></tr>`).join('')||'<tr><td colspan="5">No quality sample.</td></tr>'}
 function parseAmantaDateTime(value){const x=String(value??'').trim();if(!x||/^null$/i.test(x)||/^undefined$/i.test(x))return null;let m=x.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})[ T]+(\d{1,2}):(\d{2})(?::(\d{2}))?/);if(m){const dt=new Date(Number(m[3]),Number(m[2])-1,Number(m[1]),Number(m[4]),Number(m[5]),Number(m[6]||0));return isNaN(dt)?null:dt}return null}
 function cleanCell(v){const x=String(v??'').trim();return (!x||/^null$/i.test(x)||/^undefined$/i.test(x))?'—':x}
@@ -370,7 +419,41 @@ async function processAMANTA(){const files=[...document.getElementById('amantaFi
 function closeDataset(){if(STAGED){const afd=detectAFD(STAGED.sections,STAGED.files?.[0]||'')||ACTIVE_AFD;STAGED.afd=afd;saveAfdSnap(STAGED);ACTIVE_AFD=afd;localStorage.setItem('adriana_active_afd',afd);renderAll(STAGED)}}
 function renderHistory(){const host=document.getElementById('evalHistory');if(!host)return;const idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');const rows=idx.map(x=>{const s=JSON.parse(localStorage.getItem(afdKey(x.date,x.afd))||'null');return s?`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)} · ${html.escape(s.afdLabel||s.afd)}</b><br>${s.jjg?Number(s.jjg).toLocaleString():'—'} JJG · ${s.producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadAfdDate('${s.date}','${s.afd}')">LOAD THIS DATE</button></div>`:''}).join('');host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>')}
 function loadAfdDate(date,afd){const s=JSON.parse(localStorage.getItem(afdKey(date,afd))||'null');if(!s)return;ACTIVE_AFD=afd;localStorage.setItem('adriana_active_afd',afd);renderAfdSelector();renderAll(s)}
-document.addEventListener('DOMContentLoaded',()=>{renderAfdSelector();document.querySelectorAll('#lockBtn').forEach(x=>x.style.display='none');});
+function migrateLegacyHistory(){
+  let idx=[]; try{idx=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){idx=[]}
+  if(!Array.isArray(idx))idx=[];
+  let afdIdx=[]; try{afdIdx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){afdIdx=[]}
+  if(!Array.isArray(afdIdx))afdIdx=[];
+  for(const date of idx){
+    let snap=null; try{snap=JSON.parse(localStorage.getItem('adriana_daily_'+date)||'null')}catch(e){snap=null}
+    if(!snap)continue;
+    // Legacy V22 snapshots were the OCYM baseline. Confirm from source when possible;
+    // never invent OEYM history.
+    const afd=detectAFD(snap.sections||{},snap.files?.[0]||'')||'OC';
+    const key=afdKey(snap.date||date,afd);
+    if(!localStorage.getItem(key)){
+      const migrated={...snap,afd,afdLabel:AFD_LABEL[afd]||afd,status:snap.status||'LEGACY_MIGRATED',migratedFrom:'adriana_daily_'+date,migratedAt:new Date().toISOString()};
+      localStorage.setItem(key,JSON.stringify(migrated));
+    }
+    const d=snap.date||date;
+    if(!afdIdx.some(x=>x.date===d&&x.afd===afd))afdIdx.push({date:d,afd});
+  }
+  afdIdx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  localStorage.setItem('adriana_afd_index',JSON.stringify(afdIdx));
+}
+function getAfdSnapshots(afd){
+  migrateLegacyHistory();
+  const idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');
+  return idx.map(x=>JSON.parse(localStorage.getItem(afdKey(x.date,x.afd))||'null')).filter(x=>x&&(!afd||afd==='ALL'||x.afd===afd)).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+}
+function renderHistory(){
+  const host=document.getElementById('evalHistory'); if(!host)return;
+  migrateLegacyHistory();
+  const idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');
+  const rows=idx.map(x=>{const s=JSON.parse(localStorage.getItem(afdKey(x.date,x.afd))||'null');return s?`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)} · ${html.escape(s.afdLabel||s.afd)}</b><br>${s.jjg?Number(s.jjg).toLocaleString():'—'} JJG · ${s.producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadAfdDate('${s.date}','${s.afd}')">LOAD THIS DATE</button></div>`:''}).join('');
+  host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>');
+}
+document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistory();renderAfdSelector();document.querySelectorAll('#lockBtn').forEach(x=>x.style.display='none');renderHistory();});
 
 </script>
 </body></html>
