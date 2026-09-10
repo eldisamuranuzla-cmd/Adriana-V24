@@ -122,8 +122,8 @@ body{background:radial-gradient(circle at 92% 8%,rgba(213,236,221,.72),transpare
 <div class="panel decision decisionHero"><div class="decisionGlow"></div><div class="decisionHead"><h2>Assistant Decision</h2><span>AI RECOMMENDATION</span></div><div class="decisionLabel">Recommended focus</div><div id="dashboardDecision">—</div><div id="dashboardDecisionText" class="muted">No active dataset.</div><button class="btn" onclick="show('pdca')">CREATE ACTION PLAN&nbsp; →</button><div class="decisionLeaf">◌</div></div>
 </div>
 <div class="dashLower">
-<div class="panel productionPanel"><div class="panelHead"><h2>▥ &nbsp;Production by Block</h2><span>JJG · Pokok · AKP</span></div><table><thead><tr><th>Block</th><th>JJG</th><th>Pokok Master</th><th>JJG/Pokok</th><th>AKP</th><th>% Total</th><th>Review</th></tr></thead><tbody id="dashboardProductionBody"><tr><td colspan="7" class="small">Upload and lock AMANTA.</td></tr></tbody></table><div class="densityNote">Pokok Master berasal dari Hesti per blok. AKP/JJG-Pokok hanya dihitung jika Pokok Panen aktual tersedia; sistem tidak menganggap seluruh pokok blok sebagai pokok panen.</div></div>
-<div class="panel harvestDensityPanel"><div class="panelHead"><h2>🌴 &nbsp;Harvest Density &amp; AKP</h2><span>Actual daily</span></div><div class="densitySummary"><div class="densityMetric"><small>Total JJG</small><strong id="akpTotalJjg">—</strong><span>AMANTA actual</span></div><div class="densityMetric"><small>Total Pokok Panen</small><strong id="akpTotalPokok">—</strong><span>requires actual harvest area/palm count</span></div><div class="densityMetric"><small>JJG/Pokok</small><strong id="akpGlobalJjgPokok">—</strong><span>total JJG ÷ total pokok panen</span></div><div class="densityMetric"><small>AKP Global</small><strong id="akpGlobal">—</strong><span>JJG ÷ pokok × 100%</span></div></div><div class="densityNote"><b>Data rule:</b> Hesti supplies master pokok. Ha Panen must come from the actual daily source; if unavailable, AKP remains <b>UNAVAILABLE</b>.</div></div>
+<div class="panel productionPanel"><div class="panelHead"><h2>▥ &nbsp;Production by Block</h2><span>JJG · Pokok · AKP</span></div><table><thead><tr><th>Block</th><th>JJG</th><th>Ha Rotasi</th><th>Populasi Pokok Rotasi</th><th>JJG/Pokok</th><th>AKP</th><th>% Total</th><th>Review</th></tr></thead><tbody id="dashboardProductionBody"><tr><td colspan="8" class="small">Upload and lock AMANTA.</td></tr></tbody></table><div class="densityNote">Pokok berasal dari Hesti per blok; populasi rotasi dihitung berdasarkan kepadatan pokok Hesti dan Ha rotasi panen. AKP = JJG terpanen ÷ populasi pokok rotasi × 100%.</div></div>
+<div class="panel harvestDensityPanel"><div class="panelHead"><h2>🌴 &nbsp;Harvest Density &amp; AKP</h2><span>Actual daily</span></div><div class="densitySummary"><div class="densityMetric"><small>Total JJG</small><strong id="akpTotalJjg">—</strong><span>AMANTA actual</span></div><div class="densityMetric"><small>Total Pokok Panen</small><strong id="akpTotalPokok">—</strong><span>Populasi Pokok Rotasi</span></div><div class="densityMetric"><small>JJG/Pokok</small><strong id="akpGlobalJjgPokok">—</strong><span>total JJG ÷ total populasi pokok rotasi</span></div><div class="densityMetric"><small>AKP Total</small><strong id="akpGlobal">—</strong><span>Σ JJG ÷ Σ populasi pokok rotasi × 100%</span></div></div><div class="densityNote"><b>Data rule:</b> Hesti supplies Jumlah Pokok Master per blok. AKP di ADRIANA dihitung sebagai JJG terpanen ÷ Populasi Pokok Rotasi × 100%.</div></div>
 <div class="dashRight">
 <div class="panel contributionPanel"><div class="panelHead"><h2>◉ &nbsp;JJG Contribution</h2></div><div class="donutWrap"><div class="donut"><div><small>Total</small><strong id="donutTotal">1,863</strong></div></div><div class="legend"><div><i></i>OC023 <b>41.2%</b></div><div><i></i>OC015 <b>27.4%</b></div><div><i></i>OC019 <b>15.9%</b></div><div><i></i>OC027 <b>11.8%</b></div><div><i></i>OC011 <b>3.6%</b></div></div></div></div>
 <div class="panel quickPanel"><div class="panelHead"><h2>⚡ &nbsp;Quick Actions</h2></div><div class="quickGrid"><button onclick="show('rotation')">⟳ &nbsp; View Rotation</button><button onclick="show('transport')">▰ &nbsp; Check Transport</button><button onclick="show('ai')">♧ &nbsp; Open AI Analysis</button><button onclick="show('pdca')">▤ &nbsp; Create PDCA</button></div></div>
@@ -238,6 +238,15 @@ body{background:radial-gradient(circle at 92% 8%,rgba(213,236,221,.72),transpare
 </main></div>
 <script>
 const ADRIANA_BUILD='v22.5.2';
+const BLOCK_ALIAS_ROTATION={"OC01A":"1A","OC10A":"10A","OC1A":"1A","OC10a":"10A"};
+const ROTATION_MASTER={
+"27":{ha:30.10},"23":{ha:30.90},"19":{ha:28.40},"15":{ha:30.40},"11":{ha:28.70},
+"7":{ha:30.60},"4":{ha:28.10},"2":{ha:28.18},"5":{ha:12.81},"8":{ha:15.00},"12":{ha:24.20},
+"13":{ha:25.00},"9":{ha:25.00},"6":{ha:20.03},"3":{ha:29.03},"1":{ha:25.81},"1A":{ha:13.01},
+"10A":{ha:25.88},"10":{ha:23.11},"14":{ha:26.19},"18":{ha:24.94},"22":{ha:21.36},"26":{ha:18.70},
+"30":{ha:22.55},"29":{ha:25.30},"25":{ha:20.70},"21":{ha:24.60},
+"17":{ha:21.80},"16":{ha:25.50},"20":{ha:27.90},"24":{ha:29.10},"28":{ha:29.40}
+};
 const HESTI_MASTER={"OC001":{"pokok":2584,"luasTanam":20.47497497},"OC002":{"pokok":1410,"luasTanam":10.8253085},"OC003":{"pokok":2204,"luasTanam":17.62431598},"OC004":{"pokok":3661,"luasTanam":28.25422515},"OC005":{"pokok":1854,"luasTanam":14.82759822},"OC006":{"pokok":2836,"luasTanam":23.10242366},"OC007":{"pokok":3981,"luasTanam":31.50547782},"OC008":{"pokok":1879,"luasTanam":17.0306481},"OC009":{"pokok":3287,"luasTanam":25.37608088},"OC010":{"pokok":2137,"luasTanam":16.97904717},"OC011":{"pokok":3539,"luasTanam":27.33788509},"OC012":{"pokok":2778,"luasTanam":23.36623628},"OC013":{"pokok":3504,"luasTanam":27.51786459},"OC014":{"pokok":2338,"luasTanam":18.90177491},"OC015":{"pokok":3332,"luasTanam":25.82564332},"OC016":{"pokok":3649,"luasTanam":30.42393538},"OC017":{"pokok":2962,"luasTanam":24.24650447},"OC018":{"pokok":2090,"luasTanam":15.9536477},"OC019":{"pokok":3250,"luasTanam":24.52063412},"OC01A":{"pokok":1153,"luasTanam":91.1615659},"OC020":{"pokok":3645,"luasTanam":28.92360449},"OC021":{"pokok":3007,"luasTanam":24.71175678},"OC022":{"pokok":1132,"luasTanam":88.4578401},"OC023":{"pokok":3819,"luasTanam":29.11726513},"OC024":{"pokok":3762,"luasTanam":29.4182184},"OC025":{"pokok":3338,"luasTanam":27.20928095},"OC026":{"pokok":2570,"luasTanam":20.27915272},"OC027":{"pokok":4216,"luasTanam":33.56746583},"OC028":{"pokok":3923,"luasTanam":32.18303737},"OC029":{"pokok":3338,"luasTanam":26.39474437},"OC030":{"pokok":2506,"luasTanam":19.3703675},"OC10A":{"pokok":1954,"luasTanam":14.74141087}};
 
 const html={escape:(x)=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))};
@@ -271,19 +280,27 @@ function getActualHarvestAreaByBlock(d){
  return out;
 }
 function buildHarvestDensity(d){
- const ha=getActualHarvestAreaByBlock(d), rows=[]; let totalJ=0,totalP=0,totalHa=0;
- for(const [b,j] of Object.entries(d.blocks||{})){
-  const m=HESTI_MASTER[String(b).toUpperCase()]; const area=ha[String(b).toUpperCase()];
-  const density=m&&m.luasTanam>0?m.pokok/m.luasTanam:null;
-  const pokok=area&&density?area*density:null;
-  const jjgpokok=pokok?j/pokok:null;
-  const akp=jjgpokok!=null?jjgpokok*100:null;
-  if(pokok){totalP+=pokok; totalHa+=area;}
+ const rows=[]; let totalJ=0,totalPopRotasi=0;
+ const rot=ROTATION_MASTER||{};
+ for(const [rawB,j] of Object.entries(d.blocks||{})){
+  const b=normalizeRotationBlock(rawB)||String(rawB).toUpperCase();
+  const key=String(b).toUpperCase();
+  const m=HESTI_MASTER[key];
+  const r=rot[key]||null;
+  const pokokMaster=m?.pokok||null;
+  const hestiHa=m?.luasTanam||m?.luasArea||null;
+  const haRotasi=r?.ha||null;
+  const pokokPerHa=(pokokMaster&&hestiHa)?pokokMaster/hestiHa:null;
+  const populasiRotasi=(pokokPerHa!=null&&haRotasi!=null)?pokokPerHa*haRotasi:null;
+  const akp=(populasiRotasi>0)?(j/populasiRotasi)*100:null;
+  const jjgpokok=(populasiRotasi>0)?j/populasiRotasi:null;
+  if(populasiRotasi!=null) totalPopRotasi+=populasiRotasi;
   totalJ+=j;
-  rows.push({b,j,m,area,density,pokok,jjgpokok,akp});
+  rows.push({b,j,m,r,pokokMaster,hestiHa,haRotasi,pokokPerHa,populasiRotasi,jjgpokok,akp});
  }
- const globalJjgPokok=totalP?totalJ/totalP:null, globalAkp=globalJjgPokok!=null?globalJjgPokok*100:null;
- return {rows,totalJ,totalP,totalHa,globalJjgPokok,globalAkp,hasActualHa:Object.keys(ha).length>0};
+ const globalJjgPokok=totalPopRotasi?totalJ/totalPopRotasi:null;
+ const globalAkp=globalJjgPokok!=null?globalJjgPokok*100:null;
+ return {rows,totalJ,totalPopRotasi,globalJjgPokok,globalAkp,hasMasterPokok:totalPopRotasi>0};
 }
 function renderProduction(d){
  const p=d.sections.PRODUKSIBLOK;if(!p)return;
@@ -292,11 +309,11 @@ function renderProduction(d){
  document.getElementById('productionBody').innerHTML=Object.entries(by).map(([m,v])=>`<tr><td>${html.escape(m)}</td><td>${v.n.size}</td><td>${v.j.toLocaleString()}</td><td>${v.n.size?(v.j/v.n.size).toFixed(2):'—'}</td></tr>`).join('')||'<tr><td colspan="4">No production data.</td></tr>';
  const hd=buildHarvestDensity(d);
  const body=document.getElementById('dashboardProductionBody');
- if(body) body.innerHTML=hd.rows.sort((a,b)=>b.j-a.j).map(x=>{const m=x.m;return `<tr><td><b>${html.escape(x.b)}</b></td><td>${x.j.toLocaleString()}</td><td>${m?m.pokok.toLocaleString():'—'}</td><td>${x.jjgpokok!=null?x.jjgpokok.toFixed(3):'—'}</td><td>${x.akp!=null?x.akp.toFixed(1)+'%':'—'}</td><td>${d.jjg?((x.j/d.jjg)*100).toFixed(1):'0.0'}%</td><td>${x.jjgpokok!=null?(x.akp>30?'Review':'Monitor'):'Data gap'}</td></tr>`}).join('')||'<tr><td colspan="7">No production data.</td></tr>';
+ if(body) body.innerHTML=hd.rows.sort((a,b)=>b.j-a.j).map(x=>{return `<tr><td><b>${html.escape(x.b)}</b></td><td>${x.j.toLocaleString()}</td><td>${x.haRotasi!=null?Number(x.haRotasi).toFixed(2):'—'}</td><td>${x.populasiRotasi!=null?Math.round(x.populasiRotasi).toLocaleString():'—'}</td><td>${x.jjgpokok!=null?x.jjgpokok.toFixed(3):'—'}</td><td>${x.akp!=null?x.akp.toFixed(1)+'%':'—'}</td><td>${d.jjg?((x.j/d.jjg)*100).toFixed(1):'0.0'}%</td><td>${x.akp!=null?(x.akp>30?'Review':'Monitor'):'Data gap'}</td></tr>`}).join('')||'<tr><td colspan="8">No production data.</td></tr>';
  const hs=[...(d.harvesters||[])].sort((a,b)=>b.j-a.j);const top=hs[0],bottom=hs[hs.length-1];const topEl=document.getElementById('topHarvester'),topSub=document.getElementById('topHarvesterSub'),botEl=document.getElementById('bottomHarvester'),botSub=document.getElementById('bottomHarvesterSub');if(top){topEl.textContent=top.name!=='—'?top.name:top.npk;topSub.textContent=`${top.j.toLocaleString()} JJG · ${top.npk} · ${top.blocks.join(', ')||'—'}`}else{topEl.textContent='—';topSub.textContent='—'}if(bottom){botEl.textContent=bottom.name!=='—'?bottom.name:bottom.npk;botSub.textContent=`${bottom.j.toLocaleString()} JJG · ${bottom.npk} · ${bottom.blocks.join(', ')||'—'}`}else{botEl.textContent='—';botSub.textContent='—'}document.getElementById('harvesterBody').innerHTML=hs.map((x,i)=>`<tr><td><span class="rankBadge ${i===hs.length-1?'low':''}">#${i+1}</span></td><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${html.escape(x.npk)}</td><td>${x.j.toLocaleString()}</td><td>${x.j.toFixed(2)}</td><td>${html.escape(x.blocks.join(', ')||'—')}</td><td>${html.escape(x.mandorans.join(', ')||'—')}</td></tr>`).join('')||'<tr><td colspan="7">No harvester data.</td></tr>';
  const totalJ=document.getElementById('akpTotalJjg'),totalP=document.getElementById('akpTotalPokok'),gp=document.getElementById('akpGlobalJjgPokok'),ga=document.getElementById('akpGlobal');
  if(totalJ) totalJ.textContent=hd.totalJ.toLocaleString();
- if(totalP) totalP.textContent=hd.totalP?Math.round(hd.totalP).toLocaleString():'—';
+ if(totalP) totalP.textContent=hd.totalPopRotasi?Math.round(hd.totalPopRotasi).toLocaleString():'—';
  if(gp) gp.textContent=hd.globalJjgPokok!=null?hd.globalJjgPokok.toFixed(3):'—';
  if(ga) ga.textContent=hd.globalAkp!=null?hd.globalAkp.toFixed(1)+'%':'—';
  window.ADRIANA_HARVEST_DENSITY=hd;
@@ -309,7 +326,7 @@ function harvestHistoryFromSnapshots(){const snaps=getLockedSnapshots();const ma
 function rotationStatus(days){if(days<=7)return {label:'Hijau',cls:'green'};if(days<=10)return {label:'Kuning',cls:'yellow'};if(days<=15)return {label:'Merah',cls:'red'};return {label:'Hitam',cls:'black'};}
 function daysBetween(a,b){const x=new Date(a+'T00:00:00'),y=new Date(b+'T00:00:00');return Math.round((y-x)/86400000);}
 const OC_ROTATION_SECTIONS={A:['27','23','19','15','11'],B:['7','4','2','5','8','12'],C:['13','9','6','3','1','1A'],D:['10A','10','14','18','22','26'],E:['30','29','25','21'],F:['17','16','20','24','28']};
-function normalizeRotationBlock(v){let x=String(v??'').trim().toUpperCase().replace(/\s+/g,'');if(x==='—'||x==='NULL'||!x)return null;let m=x.match(/(?:OC)?0*([0-9]+A?)/i);return m?'OC'+m[1].toUpperCase():x;}
+function normalizeRotationBlock(v){const raw=String(v??'').trim().toUpperCase();if(BLOCK_ALIAS_ROTATION[raw])return BLOCK_ALIAS_ROTATION[raw];let x=String(v??'').trim().toUpperCase().replace(/\s+/g,'');if(x==='—'||x==='NULL'||!x)return null;let m=x.match(/(?:OC)?0*([0-9]+A?)/i);return m?'OC'+m[1].toUpperCase():x;}
 function rotationSection(block){const b=normalizeRotationBlock(block);if(!b)return null;const key=b.replace(/^OC/,'');for(const [sec,blocks] of Object.entries(OC_ROTATION_SECTIONS)){if(blocks.includes(key))return sec;}return null;}
 function harvestHistoryFromSnapshots(){const snaps=getLockedSnapshots();const map={};for(const snap of snaps){const p=snap.sections?.PRODUKSIBLOK;if(!p)continue;const h=p.header||[],bi=h.indexOf('BLOK'),hi=h.indexOf('HARVDATE');if(bi<0||hi<0)continue;for(const r of p.rows||[]){const block=normalizeRotationBlock(r[bi]);const date=normalizeAmantaDate(r[hi]);if(!block||!date)continue;(map[block]??=new Set()).add(date);}}return Object.fromEntries(Object.entries(map).map(([b,set])=>[b,[...set].sort()]));}
 function rotationStatus(days){if(days<=7)return {label:'Hijau',cls:'green'};if(days<=10)return {label:'Kuning',cls:'yellow'};if(days<=15)return {label:'Merah',cls:'red'};return {label:'Hitam',cls:'black'};}
@@ -415,8 +432,44 @@ function getAfdSnapshots(afd){const idx=JSON.parse(localStorage.getItem('adriana
 function saveAfdSnap(s){localStorage.setItem(afdKey(s.date,s.afd),JSON.stringify(s));let idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');idx=idx.filter(x=>!(x.date===s.date&&x.afd===s.afd));idx.push({date:s.date,afd:s.afd});idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));localStorage.setItem('adriana_afd_index',JSON.stringify(idx));}
 function getLockedSnapshots(){return getAfdSnapshots(ACTIVE_AFD==='ALL'?'':ACTIVE_AFD)}
 function renderAfdSelector(){const el=document.getElementById('afdFilter');if(!el)return;el.value=ACTIVE_AFD;el.onchange=()=>{ACTIVE_AFD=el.value;localStorage.setItem('adriana_active_afd',ACTIVE_AFD);const dates=getAfdSnapshots(ACTIVE_AFD==='ALL'?'':ACTIVE_AFD);if(dates.length){renderAll(dates[dates.length-1])}else{document.getElementById('activeDate').textContent='No dataset';document.getElementById('activeMeta').textContent=(AFD_LABEL[ACTIVE_AFD]||'Semua Afdeling')+' · Belum ada dataset';document.getElementById('dashboardSignals').innerHTML='<div class="notice">Belum ada dataset untuk afdeling ini.</div>';document.getElementById('dashboardDecision').textContent='—';document.getElementById('dashboardDecisionText').textContent='Upload AMANTA untuk afdeling yang dipilih.';}};}
-async function processAMANTA(){const files=[...document.getElementById('amantaFiles').files];if(!files.length)return;const max=files.some(f=>f.name.toUpperCase().includes('-OE-'))?3:2;if(files.length>max){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> jumlah file melebihi batas afdeling.';return}const parsed=[];for(const f of files.slice(0,max))parsed.push({name:f.name,sections:parseCSV(await f.text()),size:f.size});const groups={};for(const x of parsed){const afd=detectAFD(x.sections,x.name);if(!afd){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> afdeling tidak terdeteksi dari AMANTA.';return}(groups[afd]??=[]).push(x)}const datesAll=[];for(const [afd,arr] of Object.entries(groups)){const metas=arr.map(x=>detectMeta(x.sections));const dates=[...new Set(metas.map(x=>x.date).filter(Boolean))];if(dates.length!==1){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> tanggal file dalam satu afdeling tidak sama.';return}let merged=arr[0].sections,report=[];for(const x of arr.slice(1)){const m=mergeSections(merged,x.sections);merged=m.sections;report.push(...m.report)}const snap={date:dates[0],afd,afdLabel:AFD_LABEL[afd],site:afd==='OC'?'SYM1-OC':'SYM1-OE',version:'3.2.8.9',files:arr.map(x=>x.name),sections:merged,recon:report,processedAt:new Date().toISOString(),status:'SAVED'};saveAfdSnap(snap);datesAll.push(snap)}const preferred=ACTIVE_AFD!=='ALL'?datesAll.find(x=>x.afd===ACTIVE_AFD):datesAll[0];const snap=preferred||datesAll[0];ACTIVE_AFD=snap.afd;localStorage.setItem('adriana_active_afd',ACTIVE_AFD);renderAfdSelector();renderAll(snap);document.getElementById('uploadMsg').innerHTML='<b>Saved:</b> '+datesAll.map(x=>x.afdLabel+' · '+x.files.length+' file(s)').join(' · ');document.getElementById('reconBox').innerHTML='<b>UPLOAD BERHASIL</b><br>'+datesAll.map(x=>x.afdLabel+' · '+fmtDate(x.date)+' · '+x.files.length+' file(s)').join('<br>')+'<br><span class="small">Data langsung tersedia di Dashboard melalui filter Afdeling.</span>';}
-function closeDataset(){if(STAGED){const afd=detectAFD(STAGED.sections,STAGED.files?.[0]||'')||ACTIVE_AFD;STAGED.afd=afd;saveAfdSnap(STAGED);ACTIVE_AFD=afd;localStorage.setItem('adriana_active_afd',afd);renderAll(STAGED)}}
+async function processAMANTA(){
+ const files=[...document.getElementById('amantaFiles').files]; if(!files.length)return;
+ const max=files.some(f=>f.name.toUpperCase().includes('-OE-'))?3:2;
+ if(files.length>max){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> jumlah file melebihi batas afdeling.';return;}
+ const parsed=[]; for(const f of files.slice(0,max)) parsed.push({name:f.name,sections:parseCSV(await f.text()),size:f.size});
+ const groups={}; for(const x of parsed){const afd=detectAFD(x.sections,x.name); if(!afd){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> afdeling tidak terdeteksi dari AMANTA.';return;} (groups[afd]??=[]).push(x);}
+ if(Object.keys(groups).length!==1){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> upload hanya boleh untuk satu afdeling dalam satu proses closing.';return;}
+ const afd=Object.keys(groups)[0], arr=groups[afd];
+ const metas=arr.map(x=>detectMeta(x.sections)); const dates=[...new Set(metas.map(x=>x.date).filter(Boolean))];
+ if(metas.some(m=>!m.date)||dates.length!==1||metas.some(m=>m.dates.length>1)){
+  const detail=metas.map((m,i)=>`File ${i+1}: ${m.dates.length?m.dates.join(', '):'UNAVAILABLE'}`).join(' · ');
+  document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> tanggal antar file tidak sama/tidak terdeteksi. '+html.escape(detail); return;
+ }
+ let merged=arr[0].sections, report=[];
+ if(arr.length>1){for(const x of arr.slice(1)){const m=mergeSections(merged,x.sections); merged=m.sections; report.push(...m.report);}}
+ else report=Object.entries(merged).map(([k,v])=>({section:k,file1:v.rows.length,file2:0,duplicates:0,final:v.rows.length}));
+ const sites=[...new Set(secGet(merged,'PRODUKSIBLOK','SITECODE').filter(Boolean))];
+ STAGED={date:dates[0],afd,afdLabel:AFD_LABEL[afd],site:sites[0]||('SYM1-'+afd),version:'3.2.8.9',files:arr.map(x=>x.name),sections:merged,recon:report,processedAt:new Date().toISOString(),status:'READY_TO_CLOSE'};
+ const raw=parsed.reduce((a,x)=>a+Object.values(x.sections).reduce((n,s)=>n+s.rows.length,0),0);
+ const dup=report.reduce((a,x)=>a+x.duplicates,0), fin=Object.values(merged).reduce((n,s)=>n+s.rows.length,0);
+ document.getElementById('uploadMsg').innerHTML='<b>Parsed:</b> '+arr.length+' file(s) · '+html.escape(arr.map(x=>x.name).join(' + '));
+ document.getElementById('reconBox').innerHTML=`<b>RECONCILIATION COMPLETE · READY TO CLOSE</b><br>Tanggal: <b>${fmtDate(STAGED.date)}</b> · ${html.escape(STAGED.afdLabel)} · ${arr.length} file<br>Raw rows: ${raw.toLocaleString()} · Duplicate rows removed: ${dup.toLocaleString()} · Final reconciled rows: ${fin.toLocaleString()}<br><span class="small">Identical rows are deduplicated; records are not blindly summed across files. Review the reconciliation result before Close & Lock.</span>`;
+ document.getElementById('lockBtn').disabled=false; document.getElementById('lockBtn').style.display='inline-block'; document.getElementById('lockBtn').textContent='CLOSE & LOCK DATASET';
+ renderStagedPreview(STAGED);
+}
+function closeDataset(){
+ if(!STAGED){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> tidak ada dataset READY TO CLOSE.';return;}
+ const existing=JSON.parse(localStorage.getItem(afdKey(STAGED.date,STAGED.afd))||'null');
+ const closingId=existing?.closingId||('CLOSE-'+STAGED.afd+'-'+STAGED.date);
+ const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};
+ saveAfdSnap(snap); ACTIVE_AFD=snap.afd; localStorage.setItem('adriana_active_afd',ACTIVE_AFD); ACTIVE=snap;
+ renderAfdSelector(); renderAll(snap);
+ document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';
+ document.getElementById('uploadMsg').innerHTML+='<br><b>CLOSED & LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;
+ document.getElementById('reconBox').innerHTML=`<b>DATASET CLOSED & LOCKED</b><br>${fmtDate(snap.date)} · ${html.escape(snap.afdLabel)} · ${html.escape(snap.closingId)}<br><span class="small">Source data is now immutable for AI/Analytics. Corrections must use a new dataset version.</span>`;
+ document.getElementById('lockBtn').disabled=true; document.getElementById('lockBtn').textContent='DATASET LOCKED';
+ STAGED=null; renderHistory(); alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');
+}
 function renderHistory(){const host=document.getElementById('evalHistory');if(!host)return;const idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');const rows=idx.map(x=>{const s=JSON.parse(localStorage.getItem(afdKey(x.date,x.afd))||'null');return s?`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)} · ${html.escape(s.afdLabel||s.afd)}</b><br>${s.jjg?Number(s.jjg).toLocaleString():'—'} JJG · ${s.producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadAfdDate('${s.date}','${s.afd}')">LOAD THIS DATE</button></div>`:''}).join('');host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>')}
 function loadAfdDate(date,afd){const s=JSON.parse(localStorage.getItem(afdKey(date,afd))||'null');if(!s)return;ACTIVE_AFD=afd;localStorage.setItem('adriana_active_afd',afd);renderAfdSelector();renderAll(s)}
 function migrateLegacyHistory(){
@@ -453,7 +506,7 @@ function renderHistory(){
   const rows=idx.map(x=>{const s=JSON.parse(localStorage.getItem(afdKey(x.date,x.afd))||'null');return s?`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)} · ${html.escape(s.afdLabel||s.afd)}</b><br>${s.jjg?Number(s.jjg).toLocaleString():'—'} JJG · ${s.producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadAfdDate('${s.date}','${s.afd}')">LOAD THIS DATE</button></div>`:''}).join('');
   host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>');
 }
-document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistory();renderAfdSelector();document.querySelectorAll('#lockBtn').forEach(x=>x.style.display='none');renderHistory();});
+document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistory();renderAfdSelector();const b=document.getElementById('lockBtn');if(b){b.style.display='inline-block';b.disabled=true;}renderHistory();});
 
 </script>
 </body></html>
