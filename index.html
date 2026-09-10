@@ -101,7 +101,7 @@ body{background:#f4f7f3}
 <div class="panel quickPanel"><div class="panelHead"><h2>⚡ &nbsp;Quick Actions</h2></div><div class="quickGrid"><button onclick="show('rotation')">⟳ &nbsp; View Rotation</button><button onclick="show('transport')">▰ &nbsp; Check Transport</button><button onclick="show('ai')">♧ &nbsp; Open AI Analysis</button><button onclick="show('pdca')">▤ &nbsp; Create PDCA</button></div></div>
 </div></div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
-<div class="footer">ADRIANA v22.10 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
+<div class="footer">ADRIANA v22.13 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
 </section>
 <section id="closing" class="section"><div class="top"><div><div class="eyebrow">CONTROL</div><div class="title">Daily Closing</div><div class="meta">AMANTA as source of truth · one dashboard for all SYM afdeling.</div></div></div>
 <div class="panel"><h2>AMANTA Upload — 1 Daily Dataset</h2><div class="upload">Pilih AMANTA sesuai afdeling · OCYM maksimal 2 file · OEYM maksimal 3 file<br><input id="amantaFiles" type="file" accept=".csv" multiple><div id="uploadMsg" class="small">Belum ada file.</div></div><div id="reconBox" class="notice">Menunggu upload. Sistem akan mendeteksi tanggal, site, versi, overlap dan melakukan reconciliation tanpa double-count.</div><button class="btn" id="processBtn" onclick="processAMANTA()" disabled>UPLOAD &amp; PROCESS</button><button class="btn" id="lockBtn" onclick="closeDataset()" disabled>CLOSE & LOCK DATASET</button>
@@ -111,10 +111,7 @@ body{background:#f4f7f3}
 <section id="rotation" class="section">
 <div class="top"><div><div class="eyebrow">ENGINE 01</div><div class="title">Harvest Rotation</div><div class="meta">Rotation Matrix berbasis Seksi &amp; Block · Actual dari histori AMANTA.</div></div></div>
 <div class="panel">
-  <div style="display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-    <button class="btn" type="button" onclick="downloadRotationCSV()">Download Rotation CSV</button>
-  </div>
-  <div class="notice">
+    <div class="notice">
     <b>Rotation Source: AMANTA history</b><br>
     Rotation is calculated automatically from <b>BLOK + HARVDATE</b> recorded in locked AMANTA daily datasets. No separate rotation CSV is required.
   </div>
@@ -361,7 +358,7 @@ function renderRotation(d){
  host.innerHTML=`<div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION — ${afd}YM</b><br><span class="small">${locked.length} locked date(s) · Active date ${fmtDate(activeDate)} · Source: AMANTA BLOK + HARVDATE</span></div><div class="small">Today-first view</div></div>
  <div class="rotationMetaCompact"><span class="tag green">≤7 · ${summary.Hijau}</span><span class="tag yellow">8–10 · ${summary.Kuning}</span><span class="tag red">11–15 · ${summary.Merah}</span><span class="tag black">≥16 · ${summary.Hitam}</span>${summary.Unavailable?`<span class="tag">Unavailable · ${summary.Unavailable}</span>`:''}</div>
  <div class="rotationToday"><div class="rotationTodayHead"><b>ROTATION TODAY</b><span class="small">Last harvest → current age</span></div><div style="overflow:auto"><table class="rotationTodayTable"><thead><tr><th>BLOCK</th><th>LAST HARVEST</th><th>AGE</th><th>STATUS</th></tr></thead><tbody>${todayBody}</tbody></table></div></div>
- <details class="rotationMatrixDetails"><summary>View full ${html.escape(afd)}YM rotation calendar</summary><div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION MATRIX — ${afd}YM</b></div><div class="small">Harvest date = 0 · Age increases daily</div></div><div class="rotationLegend"><span class="tag green">≤7 Hijau</span><span class="tag yellow">8–10 Kuning</span><span class="tag red">11–15 Merah</span><span class="tag black">≥16 Hitam</span></div><div style="overflow:auto;margin-top:10px"><table class="rotationMatrix"><thead><tr><th>BLOCK</th><th>AFD</th>${headers}</tr></thead><tbody>${matrixBody}</tbody></table></div></div></details>
+ <details class="rotationMatrixDetails"><summary>View full ${html.escape(afd)}YM rotation calendar</summary><div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION MATRIX — ${afd}YM</b></div><div class="small">Harvest date = 0 · Age increases daily</div></div><div class="rotationLegend"><span class="tag green">≤7 Hijau</span><span class="tag yellow">8–10 Kuning</span><span class="tag red">11–15 Merah</span><span class="tag black">≥16 Hitam</span></div><div style="display:flex;justify-content:flex-end;margin:10px 0 6px"><button class="btn" type="button" onclick="downloadRotationCalendarCSV()">Download Rotation Calendar CSV</button></div><div style="overflow:auto;margin-top:10px"><table class="rotationMatrix"><thead><tr><th>BLOCK</th><th>AFD</th>${headers}</tr></thead><tbody>${matrixBody}</tbody></table></div></div></details>
  <div class="small" style="margin-top:10px">Urutan Seksi/Block mengikuti master Rotation SYM. Nilai dihitung dari histori panen AMANTA yang sudah di-CLOSE &amp; LOCK; jika histori belum tersedia, ditampilkan sebagai —.</div></div>`;
 }
 function csvEscape(v){const x=String(v??'');return /[",\n\r]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x;}
@@ -373,22 +370,43 @@ function downloadCSV(filename,rows){
 }
 function downloadProductionCSV(){
  if(!ACTIVE||!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
- const d=window.ADRIANA_DATA,hd=buildHarvestDensity(d),rows=[['AFD','Tanggal','Block','JJG','Ha Rotasi','Populasi Pokok Rotasi','JJG/Pokok','AKP','% Total JJG']];
- hd.rows.sort((a,b)=>String(a.b).localeCompare(String(b.b),undefined,{numeric:true})).forEach(x=>rows.push([ACTIVE.afd||ACTIVE_AFD,ACTIVE.date,x.b,x.j,x.haRotasi!=null?x.haRotasi.toFixed(2):'',x.populasiRotasi!=null?Math.round(x.populasiRotasi):'',x.jjgpokok!=null?x.jjgpokok.toFixed(3):'',x.akp!=null?x.akp.toFixed(1):'',d.jjg?((x.j/d.jjg)*100).toFixed(1):'']));
- rows.push([]);rows.push(['GLOBAL','Tanggal','Total JJG','','Total Populasi Pokok Rotasi','','JJG/Pokok','AKP','']);
- rows.push([ACTIVE.afd||ACTIVE_AFD,ACTIVE.date,hd.totalJ,'',Math.round(hd.totalPopRotasi),'',hd.globalJjgPokok!=null?hd.globalJjgPokok.toFixed(3):'',hd.globalAkp!=null?hd.globalAkp.toFixed(1):'','']);
- downloadCSV(`ADRIANA_Production_${ACTIVE.afd||ACTIVE_AFD}_${ACTIVE.date}.csv`,rows);
+ const d=window.ADRIANA_DATA,afd=ACTIVE_AFD==='ALL'?(d?.afd||'OC'):ACTIVE_AFD,date=d?.date||ACTIVE.date;
+ const hd=buildHarvestDensity(d),rows=[];
+ rows.push(['ADRIANA PRODUCTION EXPORT']);
+ rows.push(['AFD',afd,'Tanggal',date]);
+ rows.push([]);
+ rows.push(['SECTION','PEMANEN']);
+ rows.push(['Type','NPK','Nama Pemanen','JJG','Block','Mandoran']);
+ (d.harvesters||[]).slice().sort((a,b)=>b.j-a.j).forEach(x=>rows.push(['PEMANEN',x.npk,x.name,x.j,(x.blocks||[]).join(' | '),(x.mandorans||[]).join(' | ')]));
+ rows.push([]);
+ rows.push(['SECTION','MANDORAN']);
+ rows.push(['Type','Mandoran','HK / NPK','JJG','JJG/HK']);
+ const mand={}; const p=d.sections?.PRODUKSIBLOK;
+ if(p){const h=p.header,mi=h.indexOf('KEMANDORAN'),ni=h.indexOf('NPK'),ji=h.indexOf('JJG');p.rows.forEach(r=>{const m=cleanCell(r[mi]);mand[m]??={jjg:0,npk:new Set()};mand[m].jjg+=num(r[ji]);if(cleanCell(r[ni])!=='—')mand[m].npk.add(r[ni]);});}
+ Object.entries(mand).sort((a,b)=>b[1].jjg-a[1].jjg).forEach(([m,v])=>rows.push(['MANDORAN',m,v.npk.size,v.jjg,v.npk.size?(v.jjg/v.npk.size).toFixed(2):'']));
+ rows.push([]);
+ rows.push(['SECTION','PRODUCTION BY BLOCK + AKP']);
+ rows.push(['Type','Block','JJG','Ha Rotasi','Populasi Pokok Rotasi','JJG/Pokok','AKP','% Total JJG']);
+ hd.rows.slice().sort((a,b)=>String(a.b).localeCompare(String(b.b),undefined,{numeric:true})).forEach(x=>rows.push(['BLOCK',x.b,x.j,x.haRotasi!=null?x.haRotasi.toFixed(2):'',x.populasiRotasi!=null?Math.round(x.populasiRotasi):'',x.jjgpokok!=null?x.jjgpokok.toFixed(3):'',x.akp!=null?x.akp.toFixed(1):'',d.jjg?((x.j/d.jjg)*100).toFixed(1):'']));
+ rows.push([]);
+ rows.push(['SECTION','GLOBAL']);
+ rows.push(['Type','Total JJG','Total Populasi Pokok Rotasi','JJG/Pokok Global','AKP Global']);
+ rows.push(['GLOBAL',hd.totalJ,Math.round(hd.totalPopRotasi),hd.globalJjgPokok!=null?hd.globalJjgPokok.toFixed(3):'',hd.globalAkp!=null?hd.globalAkp.toFixed(1):'']);
+ downloadCSV(`ADRIANA_Production_${afd}_${date}.csv`,rows);
 }
-function downloadRotationCSV(){
+function downloadRotationCalendarCSV(){
  if(!ACTIVE||!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
  const d=window.ADRIANA_DATA,afd=ACTIVE_AFD==='ALL'?(d?.afd||'OC'):ACTIVE_AFD,activeDate=d?.date||ACTIVE.date;
  if(!activeDate){alert('Tanggal aktif belum tersedia.');return;}
- const hist=harvestHistoryFromSnapshots(afd),sections=rotationSectionsForAfd(afd),prefix=afd==='OE'?'OE':'OC',allBlocks=new Set(Object.keys(hist)),rows=[];
- for(const [sec,blocks] of Object.entries(sections)) for(const key of blocks){const block=prefix+key;allBlocks.add(block);rows.push({sec,block,dates:hist[block]||[]});}
- [...allBlocks].filter(b=>!rotationSection(b,afd)).sort().forEach(block=>rows.push({sec:'Other',block,dates:hist[block]||[]}));
- const out=[['AFD','Tanggal Aktif','Seksi','Block','Last Harvest','Age (days)','Status']];
- rows.forEach(r=>{const prior=r.dates.filter(x=>x<=activeDate);const last=prior.length?prior[prior.length-1]:null;const age=last==null?'':Math.max(0,daysBetween(last,activeDate));const st=last?rotationStatus(age).label:'';out.push([afd,activeDate,r.sec,r.block,last||'',age,st]);});
- downloadCSV(`ADRIANA_Rotation_${afd}_${activeDate}.csv`,out);
+ const hist=harvestHistoryFromSnapshots(afd),sections=rotationSectionsForAfd(afd),prefix=afd==='OE'?'OE':'OC';
+ const date0=new Date(activeDate+'T00:00:00'),y=date0.getFullYear(),m=date0.getMonth();
+ const daysInMonth=new Date(y,m+1,0).getDate(),dates=Array.from({length:daysInMonth},(_,i)=>`${y}-${String(m+1).padStart(2,'0')}-${String(i+1).padStart(2,'0')}`);
+ const rows=[];
+ for(const [sec,blocks] of Object.entries(sections)) for(const key of blocks) rows.push({sec,block:prefix+key,dates:hist[prefix+key]||[]});
+ const all=new Set(Object.keys(hist));[...all].filter(b=>!rotationSection(b,afd)).sort().forEach(block=>rows.push({sec:'Other',block,dates:hist[block]||[]}));
+ const out=[['AFD',afd,'Month',`${y}-${String(m+1).padStart(2,'0')}`],[],['Seksi','Block','AFD',...dates]];
+ rows.forEach(r=>{out.push([r.sec,r.block,afd,...dates.map(dt=>{const prior=r.dates.filter(x=>x<=dt);if(!prior.length)return '';return Math.max(0,daysBetween(prior[prior.length-1],dt));})]);});
+ downloadCSV(`ADRIANA_Rotation_Calendar_${afd}_${y}-${String(m+1).padStart(2,'0')}.csv`,out);
 }
 function renderTransport(d){const tr=d.sections.TR_TBS_TRANSPORT;if(!tr){document.getElementById('transportBody').innerHTML='<tr><td colspan="7">Transport data unavailable.</td></tr>';return}const h=tr.header,ri=h.indexOf('RITNUMBER'),wi=h.indexOf('WEIGHTIN'),wo=h.indexOf('WEIGHTOUT'),ready=h.indexOf('TBSREADY'),go=h.indexOf('DT_GO'),kb=h.indexOf('KABNUMBER');const groups={};tr.rows.forEach((r,i)=>{const kab=kb>=0?cleanCell(r[kb]):'—';(groups[kab]??=[]).push({r,i})});let rows=[];Object.entries(groups).forEach(([kab,items])=>items.forEach(({r,i})=>{const rawIn=cleanCell(r[wi]),rawOut=cleanCell(r[wo]);const a=parseFloat(rawIn.replace(/,/g,'')),b=parseFloat(rawOut.replace(/,/g,''));const net=Number.isFinite(a)&&Number.isFinite(b)?a-b:null;const av=parseAmantaDateTime(r[ready]),bv=parseAmantaDateTime(r[go]);let duration='—',readyTime='—',goTime='—';if(av)readyTime=av.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});if(bv)goTime=bv.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});if(av&&bv&&bv>=av)duration=Math.round((bv-av)/60000)+' min';const rit=cleanCell(r[ri]);rows.push(`<tr><td><b>${html.escape(kab)}</b></td><td><b>Rit ${html.escape(rit==='—'?String(i+1):rit)}</b></td><td class="small">${readyTime} → ${goTime}</td><td>${html.escape(rawIn)}</td><td>${html.escape(rawOut)}</td><td>${net!==null&&net>0?net.toLocaleString():'—'}</td><td><b>${duration}</b></td></tr>`)}));document.getElementById('transportBody').innerHTML=rows.join('')||'<tr><td colspan="7">No transport data.</td></tr>';document.getElementById('restanNotice').innerHTML='<b>Restan:</b> unavailable unless an explicit confirmed field exists in the active AMANTA dataset. <b>BJR:</b> calculated automatically from net TBS weight (kg) ÷ JJG.'}
 function renderDashboard(d){const blocks=Object.entries(d.blocks).sort((a,b)=>b[1]-a[1]);const ranked=attentionRank(d),focus=ranked[0]?.b||null,focusSet=new Set(ranked.slice(0,2).map(x=>x.b));document.querySelector('#dashboard table tbody').innerHTML=blocks.map(([b,j])=>{const review=b===focus?'<span class="tag">INVESTIGATE</span>':(focusSet.has(b)?'Watch':'Monitor');return `<tr><td><b>${html.escape(b)}</b></td><td>${j.toLocaleString()}</td><td>${d.jjg?((j/d.jjg)*100).toFixed(1):0}%</td><td>${review}</td></tr>`}).join('')||'<tr><td colspan="4">No production data.</td></tr>';const sig=[];if(blocks[0]&&d.jjg&&blocks[0][1]/d.jjg>=.35)sig.push(`Dominant block: <b>${html.escape(blocks[0][0])}</b> · ${blocks[0][1].toLocaleString()} JJG · ${(blocks[0][1]/d.jjg*100).toFixed(1)}%`);if(d.byMandoran?.OCPN1&&d.byMandoran?.OCPN2){const a=d.byMandoran.OCPN1.j/d.byMandoran.OCPN1.n.size,b=d.byMandoran.OCPN2.j/d.byMandoran.OCPN2.n.size;if(Math.abs(a-b)/Math.min(a,b)>=.3)sig.push(`Mandoran gap: OCPN1 ${a.toFixed(2)} vs OCPN2 ${b.toFixed(2)} JJG/HK — investigate context.`)}const q=d.sections.SAMPLING_KUALITAS_PANEN;if(q){const h=q.header,pi=h.indexOf('PIRINGANTDKSTDR');const n=q.rows.reduce((a,r)=>a+num(r[pi]),0);if(n)sig.push(`Quality evidence: ${n} non-standard circle(s) recorded in sampling.`)}const sic=d.sections.TR_SIC_MP;if(sic){const h=sic.header,si=h.indexOf('STATUS'),ys=sic.rows.filter(r=>String(r[si]).toUpperCase()==='Y').length,ns=sic.rows.length-ys;sig.push(`SIC recorded: ${ys} Y / ${ns} N — denominator definition still pending.`)}document.getElementById('dashboardSignals').innerHTML=sig.map((x,i)=>`<div class="signal"><div class="num">0${i+1}</div><div><b>${x}</b></div></div>`).join('')||'<div class="notice">No operational signal available.</div>';document.getElementById('dashboardDecision').textContent='Investigate '+(focus||'Review dataset');document.getElementById('dashboardDecisionText').textContent='Validate low production against harvest quality and field evidence.'} 
