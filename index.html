@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ADRIANA v22.4 — Assistant Daily Reporting & Analytics</title>
+<title>ADRIANA v22.5 — Assistant Daily Reporting & Analytics</title>
 <style>
 :root{--bg:#f3f6f2;--panel:#fff;--ink:#17211b;--muted:#68746c;--line:#dce4dd;--green:#155c3b;--green2:#e7f1eb;--amber:#a36a12;--red:#a94332}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
@@ -74,27 +74,16 @@ body{background:radial-gradient(circle at 92% 8%,rgba(213,236,221,.72),transpare
 @media(max-width:760px){.astraHead{height:78px;padding:7px 14px}.astraRight{display:none}.brandPair{width:100%;justify-content:flex-start}.adrianaMainLogo{width:190px;max-width:55vw;max-height:52px}.astra50Logo{width:175px;max-width:38vw;height:48px}.brandDivider{height:38px}.dashWelcome .title{font-size:24px}.kpiGrid{grid-template-columns:1fr 1fr;gap:10px}.kpi{min-height:154px;padding:14px 12px}.kpi .label{margin-left:48px;font-size:10px}.kpi .value{margin-left:48px;font-size:25px}.kpi .delta,.kpi .small,.spark{margin-left:48px}.kpiIcon{left:10px;top:12px}.kpi .kpiIcon img{width:42px;height:42px}}
 @media(max-width:480px){.kpiGrid{grid-template-columns:1fr 1fr}.kpi{min-height:145px}.kpi .value{font-size:23px}.kpi .small{font-size:10px}.adrianaMainLogo{width:175px}.astra50Logo{width:150px}}
 
-/* V22.4 exact-reference dashboard skin */
-.v224Head{height:96px;margin:0 -26px 22px;padding:10px 26px;background:linear-gradient(90deg,#ffffff 0%,#fbfdfb 47%,#e8f3eb 100%);border-bottom:1px solid #dce7df;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden}
-.v224Head:after{content:"";position:absolute;right:-40px;top:-90px;width:420px;height:220px;background:radial-gradient(ellipse at center,rgba(28,120,78,.13),transparent 67%);pointer-events:none}
-.headerBrand{display:flex;align-items:center;height:100%;gap:14px;position:relative;z-index:2;min-width:0}
-.headerAdriana{width:235px;height:68px;object-fit:contain;object-position:left center}
-.headerDivider{height:54px;width:1px;background:#cbd6cf;flex:none}
-.header50{width:190px;height:60px;object-fit:contain}
-.headerMessage{font-size:11px;line-height:1.15;letter-spacing:.08em;color:#1d2822;white-space:nowrap}
-.headerSustain{display:flex;align-items:center;gap:9px;position:relative;z-index:2;color:#155c3b;margin-left:14px;white-space:nowrap}
-.headerSustain .leafMark{font-size:27px;line-height:1;color:#19794f}.headerSustain b{font-size:13px}.headerSustain small{display:block;font-size:9px;color:#68746c;margin-top:3px}
-.side{width:222px;padding:20px 12px;background:linear-gradient(180deg,#0a4b32 0%,#073d2b 72%,#063c2a 100%)}
-.brandRow{padding:4px 8px 0;margin-bottom:3px}.brand{font-size:28px;letter-spacing:.01em}.sub{font-size:9px;margin:0 6px 25px;color:#c4d8cc}
-.nav button{font-size:13px;padding:13px 12px}.nav button.active{background:linear-gradient(90deg,#218f5d,#19774e);box-shadow:0 7px 16px rgba(0,0,0,.12)}
-.main{margin-left:222px;width:calc(100% - 222px);padding:0 22px 30px;max-width:1500px}
-.dashWelcome{margin-bottom:16px;align-items:center}.dashWelcome .title{font-size:31px;line-height:1.02;margin:3px 0 7px}.welcomeLeaf{color:#278d5a;font-size:18px;margin-left:3px}.dashControls{align-items:flex-end}.dateBox{min-width:205px;padding:10px 12px}.dateBox strong{font-size:14px}.dashWelcome .lock{font-size:11px;padding:10px 12px}
-.kpiGrid{gap:12px}.kpi{min-height:188px;padding:17px 15px;border-radius:14px}.kpiIcon{left:14px;top:15px}.kpiIcon img{width:54px;height:54px}.kpi .label{margin-left:49px;font-size:10px;white-space:nowrap}.kpi .value{margin-left:49px;font-size:31px;line-height:1.05}.delta{margin-left:49px;font-size:11px}.kpi .small{margin-left:49px;font-size:10px;line-height:1.25}.spark{margin-left:49px;margin-top:12px}
-.dashTopGrid{grid-template-columns:1.45fr 1fr;gap:12px;margin-top:12px}.signalsPanel,.decisionHero{min-height:206px}.signalsPanel .panelHead h2,.decisionHead h2{font-size:16px}.signalsPanel .signal{grid-template-columns:34px 1fr;align-items:center;padding:13px 0}.signalsPanel .signal b{font-size:12px}.signalsPanel .signal p{font-size:11px}.signalsPanel .num{width:32px;height:32px}.decisionHero{padding:18px}.decisionHero #dashboardDecision{font-size:24px;font-weight:900}.decisionHero .btn{margin-top:12px}
-.dashLower{gap:12px;margin-top:12px}.productionPanel{padding:17px}.productionPanel table{font-size:11px}.productionPanel th{font-size:9px}.productionPanel td{padding:10px 7px}.dashRight{gap:12px}.contributionPanel,.quickPanel{padding:17px}.donut{width:150px;height:150px}.quickGrid button{padding:13px 12px;font-size:11px}
-.sustainBanner{margin-top:12px;min-height:112px;border-radius:14px;overflow:hidden}.footer{font-size:9px}
-@media(max-width:950px){.v224Head{margin:0 -20px 18px;height:76px;padding:7px 14px}.headerAdriana{width:170px;height:54px}.header50{width:125px;height:48px}.headerMessage,.headerDivider:nth-of-type(2){display:none}.headerSustain{display:none}.main{padding:0 18px 24px}.dashWelcome .title{font-size:27px}.dashControls{flex-wrap:wrap;justify-content:flex-end}.dateBox{min-width:190px}.kpi{min-height:165px}.kpiIcon img{width:46px;height:46px}.kpi .label,.kpi .value,.kpi .small,.delta,.spark{margin-left:42px}.kpi .value{font-size:27px}}
-@media(max-width:680px){.headerAdriana{width:145px}.header50{width:105px}.headerBrand{gap:8px}.dashWelcome{display:block}.dashControls{margin-top:12px;justify-content:flex-start}.kpiGrid{grid-template-columns:repeat(2,1fr)}.dashTopGrid{grid-template-columns:1fr}.dashLower{grid-template-columns:1fr}.dashRight{grid-template-columns:1fr 1fr}}
+/* V22.3 visual alignment: full-width header + clean mobile dashboard */
+.astraHead{position:fixed;left:0;right:0;top:0;z-index:1000;width:100%;height:94px;margin:0;padding:10px 28px;background:linear-gradient(100deg,#ffffff 0%,#f9fcf9 45%,#e7f3ea 100%);border-bottom:1px solid #dfe8e1;box-shadow:0 2px 14px rgba(25,57,40,.05)}
+.astraHead:before{content:"";position:absolute;right:180px;top:-30px;width:520px;height:125px;background:radial-gradient(ellipse at center,rgba(26,103,67,.14),transparent 67%);transform:skewX(-24deg);pointer-events:none}
+.brandPair{display:flex;align-items:center;gap:18px;position:relative;z-index:2}.adrianaMainLogo{width:245px;height:64px;max-height:68px;object-fit:contain;object-position:left center;display:block;flex:none}.brandDivider{display:block;width:1px;height:54px;background:#cfdad2}.astra50Logo{width:250px;height:62px;object-fit:contain;display:block}.astraRight{position:relative;z-index:2;text-align:right}
+.side{top:94px;bottom:0;height:calc(100vh - 94px);padding-top:18px}.main{margin-left:222px;width:calc(100% - 222px);padding:116px 26px 28px;max-width:1500px}
+.brandRow{padding:4px 6px 0;margin-bottom:4px}.brand{font-size:26px}.sub{margin:4px 0 24px}
+@media(max-width:950px){.astraHead{height:82px;padding:8px 18px}.adrianaMainLogo{width:200px;height:56px}.astra50Logo{width:190px;height:54px}.brandDivider{height:46px}.side{top:82px;height:calc(100vh - 82px);width:190px}.main{margin-left:190px;width:calc(100% - 190px);padding:102px 18px 24px}}
+@media(max-width:760px){.astraHead{height:76px;padding:7px 12px}.brandPair{gap:9px}.adrianaMainLogo{width:178px;max-width:55vw;height:52px}.astra50Logo{width:155px;max-width:34vw;height:48px}.brandDivider{height:40px}.astraRight{display:none}.side{top:76px;height:calc(100vh - 76px);width:155px;padding:16px 8px}.main{margin-left:155px;width:calc(100% - 155px);padding:92px 10px 20px}.brand{font-size:21px}.sub{font-size:8px;margin-bottom:22px}.nav button{padding:10px 9px;font-size:10px}.dashWelcome{align-items:flex-start;flex-direction:column;gap:10px}.dashWelcome .title{font-size:24px;line-height:1.05}.dashControls{width:100%;gap:8px}.dateBox{min-width:0;flex:1;padding:8px 9px}.dashWelcome .lock{font-size:9px;padding:8px 9px}.kpiGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.kpi{min-height:150px;padding:12px 10px}.kpiIcon{left:9px;top:10px}.kpi .kpiIcon img{width:38px;height:38px}.kpi .label{margin-left:43px;font-size:9px}.kpi .value{margin-left:43px;font-size:22px}.kpi .delta,.kpi .small,.spark{margin-left:43px}.kpi .delta{font-size:9px}.kpi .small{font-size:9px}.spark{gap:3px}.spark i{width:8px}.two{grid-template-columns:1fr}.dashTopGrid{grid-template-columns:1fr}.signalsPanel,.decisionHero{min-height:auto}.dashLower{grid-template-columns:1fr}.dashRight{grid-template-columns:1fr}.productionPanel{overflow-x:auto}.productionPanel table{min-width:560px}.sustainBanner{min-height:120px}.sustainBanner .bannerLogo{transform:scale(.9);transform-origin:right center}}
+
+.afdFilter{display:inline-flex;align-items:center;gap:8px;margin-top:12px}.afdFilter label{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.08em}.afdFilter select{border:1px solid #d6e1da;border-radius:10px;background:#fff;padding:9px 30px 9px 11px;color:#164a32;font-weight:700;box-shadow:0 4px 12px rgba(16,61,41,.05)}
 </style>
 </head>
 <body>
@@ -114,18 +103,10 @@ body{background:radial-gradient(circle at 92% 8%,rgba(213,236,221,.72),transpare
     <button data-target="history">History & Effectiveness</button>
   </div>
 </aside>
+<div class="astraHead"><div class="brandPair"><img class="adrianaMainLogo" src="adriana-logo-main.png" alt="ADRIANA — Assistant Daily Reporting & Analytics"><span class="brandDivider"></span><img class="astra50Logo" src="astra-agro-50-header.png" alt="Astra Agro 50"></div><div class="astraRight"><b>Sustainable Plantation</b><span>Operational Intelligence · ADRIANA</span></div></div>
 <main class="main">
-<div class="astraHead v224Head">
-  <div class="headerBrand">
-    <img class="headerAdriana" src="adriana-logo-main.png" alt="ADRIANA">
-    <div class="headerDivider"></div>
-    <img class="header50" src="astra-agro-50-header.png" alt="ASTRA AGRO 50">
-    <div class="headerDivider"></div>
-    <div class="headerMessage"><b>LEBIH HIJAU<br>LEBIH KUAT<br>BERSAMA<br>UNTUK MASA DEPAN</b></div>
-  </div>
-  <div class="headerSustain"><span class="leafMark">◒</span><div><b>Sustainable Plantation</b><small>Operational Intelligence · ADRIANA</small></div></div>
-</div>
-<div class="dashWelcome"><div><div class="eyebrow">DAILY OPERATIONAL VIEW</div><div class="title">Welcome back,<br><span class="welcomeName">Eldi SN</span> <span class="welcomeLeaf">◆</span></div><div class="meta" id="activeMeta">Upload AMANTA files in Daily Closing</div></div><div class="dashControls"><div class="dateBox"><span>▣</span><div><small>Daily Operational View</small><strong id="activeDate">No dataset</strong></div><b>⌄</b></div><div class="lock" id="lockState">● NO DATASET</div></div></div>
+<section id="dashboard" class="section active">
+<div class="dashWelcome"><div><div class="eyebrow">DAILY OPERATIONAL VIEW</div><div class="title">Welcome, <span class="welcomeName">Afdeling Head SYM!</span></div><div class="meta" id="activeMeta">Upload AMANTA files in Daily Closing</div><div class="afdFilter"><label>AFDELING</label><select id="afdFilter"><option value="ALL">Semua Afdeling</option><option value="OC">OCYM</option><option value="OE">OEYM</option></select></div></div><div class="dashControls"><div class="dateBox"><span>▣</span><div><small>Daily Operational View</small><strong id="activeDate">No dataset</strong></div><b>⌄</b></div><div class="lock" id="lockState">● NO DATASET</div></div></div>
 <div class="grid kpiGrid">
 <div class="card kpi kpiPalm"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-tbs.png" alt="TBS Kelapa Sawit"></div><div class="label">TOTAL JJG</div><div class="value">1,863</div><div class="delta up">↑ Operational volume</div><div class="small">3-source reconciliation matched</div><div class="spark"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
 <div class="card kpi kpiPeople"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-worker.png" alt="Producing Manpower"></div><div class="label">PRODUCING HK</div><div class="value">23</div><div class="delta up">↑ Producing manpower</div><div class="small">unique producing NPK</div><div class="spark bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
@@ -143,10 +124,10 @@ body{background:radial-gradient(circle at 92% 8%,rgba(213,236,221,.72),transpare
 <div class="panel quickPanel"><div class="panelHead"><h2>⚡ &nbsp;Quick Actions</h2></div><div class="quickGrid"><button onclick="show('rotation')">⟳ &nbsp; View Rotation</button><button onclick="show('transport')">▰ &nbsp; Check Transport</button><button onclick="show('ai')">♧ &nbsp; Open AI Analysis</button><button onclick="show('pdca')">▤ &nbsp; Create PDCA</button></div></div>
 </div></div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
-<div class="footer">ADRIANA v22.4 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
+<div class="footer">ADRIANA v22.5 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
 </section>
-<section id="closing" class="section"><div class="top"><div><div class="eyebrow">CONTROL</div><div class="title">Daily Closing</div><div class="meta">One AMANTA upload → one validated dataset → one locked dashboard.</div></div></div>
-<div class="panel"><h2>AMANTA Upload — 1 Daily Dataset</h2><div class="upload">Pilih maksimal 2 file AMANTA untuk tanggal operasional yang sama<br><input id="amantaFiles" type="file" accept=".csv" multiple><div id="uploadMsg" class="small">Belum ada file.</div></div><div id="reconBox" class="notice">Menunggu upload. Sistem akan mendeteksi tanggal, site, versi, overlap dan melakukan reconciliation tanpa double-count.</div><button class="btn" id="processBtn" onclick="processAMANTA()" disabled>PROCESS & RECONCILE</button><button class="btn" id="lockBtn" onclick="closeDataset()" disabled>CLOSE & LOCK DATASET</button>
+<section id="closing" class="section"><div class="top"><div><div class="eyebrow">CONTROL</div><div class="title">Daily Closing</div><div class="meta">AMANTA as source of truth · one dashboard for all SYM afdeling.</div></div></div>
+<div class="panel"><h2>AMANTA Upload — 1 Daily Dataset</h2><div class="upload">Pilih AMANTA sesuai afdeling · OCYM maksimal 2 file · OEYM maksimal 3 file<br><input id="amantaFiles" type="file" accept=".csv" multiple><div id="uploadMsg" class="small">Belum ada file.</div></div><div id="reconBox" class="notice">Menunggu upload. Sistem akan mendeteksi tanggal, site, versi, overlap dan melakukan reconciliation tanpa double-count.</div><button class="btn" id="processBtn" onclick="processAMANTA()" disabled>UPLOAD & PROCESS</button><button class="btn" id="lockBtn" onclick="closeDataset()" disabled>SAVE DAILY DATA</button>
 <div class="notice"><b>Lock rule:</b> after closing, source values must not be silently edited. Corrections should create a new dataset version with reason, evidence, requester and approval.</div></div></section>
 
 
@@ -248,10 +229,10 @@ body{background:radial-gradient(circle at 92% 8%,rgba(213,236,221,.72),transpare
 </div>
 </section>
 
-<div class="footer">ADRIANA v22.4 · AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
+<div class="footer">ADRIANA v22 · AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
 </main></div>
 <script>
-const ADRIANA_BUILD='v22.4';
+const ADRIANA_BUILD='v22.5';
 const html={escape:(x)=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))};
 let ACTIVE=null, STAGED=null;
 function show(id){document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.target===id));}
@@ -367,5 +348,29 @@ function renderEvalHistory(){const el=document.getElementById('evalHistory');if(
 const oldBuildData=buildData;buildData=function(snap){const d=oldBuildData(snap);d.byMandoran={};const p=d.sections.PRODUKSIBLOK;if(p){const h=p.header,mi=h.indexOf('KEMANDORAN'),ni=h.indexOf('NPK'),ji=h.indexOf('JJG');p.rows.forEach(r=>{const m=r[mi]||'—';d.byMandoran[m]??={j:0,n:new Set()};d.byMandoran[m].j+=num(r[ji]);if(r[ni])d.byMandoran[m].n.add(r[ni])})}return d}
 document.getElementById('amantaFiles').addEventListener('change',()=>{const n=document.getElementById('amantaFiles').files.length;document.getElementById('processBtn').disabled=!n;document.getElementById('uploadMsg').textContent=n?`${n} file dipilih.`:'Belum ada file.'});
 renderDecisionHistory();renderEvalHistory();const bootDates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(bootDates[0]){const boot=JSON.parse(localStorage.getItem(lockKey(bootDates[0]))||'null');if(boot)renderAll(boot);}
+
+/* V22.5 multi-afdeling patch: OCYM/OEYM filter + direct daily save */
+const AFD_LABEL={OC:'OCYM',OE:'OEYM'};
+let ACTIVE_AFD=localStorage.getItem('adriana_active_afd')||'ALL';
+function detectAFD(sections,filename=''){
+  const vals=[];
+  const p=sections.PRODUKSIBLOK;
+  if(p){const i=p.header.findIndex(x=>x.trim().toUpperCase()==='AFD'); if(i>=0)p.rows.forEach(r=>{if(r[i])vals.push(String(r[i]).trim().toUpperCase())});
+    const si=p.header.findIndex(x=>x.trim().toUpperCase()==='SITECODE'); if(si>=0)p.rows.forEach(r=>{const v=String(r[si]||'').toUpperCase(); if(v.includes('-OC')||v==='OC'||v.endsWith('OC'))vals.push('OC'); if(v.includes('-OE')||v==='OE'||v.endsWith('OE'))vals.push('OE')});}
+  const tr=sections.TR_EXPORT_CHECKER; if(tr){const i=tr.header.findIndex(x=>x.trim().toUpperCase()==='AFD'); if(i>=0)tr.rows.forEach(r=>{if(r[i])vals.push(String(r[i]).trim().toUpperCase())})}
+  const f=String(filename).toUpperCase(); if(f.includes('-OC-'))vals.push('OC'); if(f.includes('-OE-'))vals.push('OE');
+  const u=[...new Set(vals.filter(v=>v==='OC'||v==='OE'))]; return u.length===1?u[0]:null;
+}
+function afdKey(date,afd){return 'adriana_daily_'+afd+'_'+date}
+function getAfdSnapshots(afd){const idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');return idx.map(x=>JSON.parse(localStorage.getItem(afdKey(x.date,x.afd))||'null')).filter(x=>x&&(!afd||afd==='ALL'||x.afd===afd)).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
+function saveAfdSnap(s){localStorage.setItem(afdKey(s.date,s.afd),JSON.stringify(s));let idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');idx=idx.filter(x=>!(x.date===s.date&&x.afd===s.afd));idx.push({date:s.date,afd:s.afd});idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));localStorage.setItem('adriana_afd_index',JSON.stringify(idx));}
+function getLockedSnapshots(){return getAfdSnapshots(ACTIVE_AFD==='ALL'?'':ACTIVE_AFD)}
+function renderAfdSelector(){const el=document.getElementById('afdFilter');if(!el)return;el.value=ACTIVE_AFD;el.onchange=()=>{ACTIVE_AFD=el.value;localStorage.setItem('adriana_active_afd',ACTIVE_AFD);const dates=getAfdSnapshots(ACTIVE_AFD==='ALL'?'':ACTIVE_AFD);if(dates.length){renderAll(dates[dates.length-1])}else{document.getElementById('activeDate').textContent='No dataset';document.getElementById('activeMeta').textContent=(AFD_LABEL[ACTIVE_AFD]||'Semua Afdeling')+' · Belum ada dataset';document.getElementById('dashboardSignals').innerHTML='<div class="notice">Belum ada dataset untuk afdeling ini.</div>';document.getElementById('dashboardDecision').textContent='—';document.getElementById('dashboardDecisionText').textContent='Upload AMANTA untuk afdeling yang dipilih.';}};}
+async function processAMANTA(){const files=[...document.getElementById('amantaFiles').files];if(!files.length)return;const max=files.some(f=>f.name.toUpperCase().includes('-OE-'))?3:2;if(files.length>max){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> jumlah file melebihi batas afdeling.';return}const parsed=[];for(const f of files.slice(0,max))parsed.push({name:f.name,sections:parseCSV(await f.text()),size:f.size});const groups={};for(const x of parsed){const afd=detectAFD(x.sections,x.name);if(!afd){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> afdeling tidak terdeteksi dari AMANTA.';return}(groups[afd]??=[]).push(x)}const datesAll=[];for(const [afd,arr] of Object.entries(groups)){const metas=arr.map(x=>detectMeta(x.sections));const dates=[...new Set(metas.map(x=>x.date).filter(Boolean))];if(dates.length!==1){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> tanggal file dalam satu afdeling tidak sama.';return}let merged=arr[0].sections,report=[];for(const x of arr.slice(1)){const m=mergeSections(merged,x.sections);merged=m.sections;report.push(...m.report)}const snap={date:dates[0],afd,afdLabel:AFD_LABEL[afd],site:afd==='OC'?'SYM1-OC':'SYM1-OE',version:'3.2.8.9',files:arr.map(x=>x.name),sections:merged,recon:report,processedAt:new Date().toISOString(),status:'SAVED'};saveAfdSnap(snap);datesAll.push(snap)}const preferred=ACTIVE_AFD!=='ALL'?datesAll.find(x=>x.afd===ACTIVE_AFD):datesAll[0];const snap=preferred||datesAll[0];ACTIVE_AFD=snap.afd;localStorage.setItem('adriana_active_afd',ACTIVE_AFD);renderAfdSelector();renderAll(snap);document.getElementById('uploadMsg').innerHTML='<b>Saved:</b> '+datesAll.map(x=>x.afdLabel+' · '+x.files.length+' file(s)').join(' · ');document.getElementById('reconBox').innerHTML='<b>UPLOAD BERHASIL</b><br>'+datesAll.map(x=>x.afdLabel+' · '+fmtDate(x.date)+' · '+x.files.length+' file(s)').join('<br>')+'<br><span class="small">Data langsung tersedia di Dashboard melalui filter Afdeling.</span>';}
+function closeDataset(){if(STAGED){const afd=detectAFD(STAGED.sections,STAGED.files?.[0]||'')||ACTIVE_AFD;STAGED.afd=afd;saveAfdSnap(STAGED);ACTIVE_AFD=afd;localStorage.setItem('adriana_active_afd',afd);renderAll(STAGED)}}
+function renderHistory(){const host=document.getElementById('evalHistory');if(!host)return;const idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');const rows=idx.map(x=>{const s=JSON.parse(localStorage.getItem(afdKey(x.date,x.afd))||'null');return s?`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)} · ${html.escape(s.afdLabel||s.afd)}</b><br>${s.jjg?Number(s.jjg).toLocaleString():'—'} JJG · ${s.producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadAfdDate('${s.date}','${s.afd}')">LOAD THIS DATE</button></div>`:''}).join('');host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>')}
+function loadAfdDate(date,afd){const s=JSON.parse(localStorage.getItem(afdKey(date,afd))||'null');if(!s)return;ACTIVE_AFD=afd;localStorage.setItem('adriana_active_afd',afd);renderAfdSelector();renderAll(s)}
+document.addEventListener('DOMContentLoaded',()=>{renderAfdSelector();document.querySelectorAll('#lockBtn').forEach(x=>x.style.display='none');});
+
 </script>
 </body></html>
