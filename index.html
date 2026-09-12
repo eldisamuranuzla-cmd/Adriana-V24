@@ -208,7 +208,7 @@ body{background:#f4f7f3}
 </section>
 
 <section id="people" class="section">
-<div class="top"><div><div class="eyebrow">PEOPLE INTELLIGENCE</div><div class="title">People Performance</div><div class="meta">Jan–Aug baseline from monthly Excel report · Sep onward from locked daily AMANTA · Monthly Basis Class A/B/C, top performer, YTD and monthly movement.</div></div></div>
+<div class="top"><div><div class="eyebrow">PEOPLE INTELLIGENCE</div><div class="title">People Performance</div><div class="meta">Jan–Aug baseline from monthly Excel report · Sep onward from locked daily AMANTA · Class A/B/C, top performer, YTD and monthly movement.</div></div></div>
 <div class="panel">
   <div style="display:flex;gap:10px;align-items:end;justify-content:space-between;flex-wrap:wrap">
     <div><label class="label">PERFORMANCE PERIOD</label><select id="peopleMonth" style="display:block;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff"></select></div>
@@ -233,10 +233,10 @@ body{background:#f4f7f3}
 <div class="panel" style="margin-top:16px"><div class="panelHead"><h2>Performance History</h2><span>Monthly class + productivity</span></div><div style="overflow:auto"><table><thead><tr><th>Pemanen</th><th>Mandor</th><th>Month-2</th><th>Month-1</th><th>Current</th><th>YTD JJG/HK</th><th>Trend</th></tr></thead><tbody id="peopleHistory"></tbody></table></div><div class="densityNote"><b>Cluster rule:</b> Achievement = (JJG/HK ÷ Basis) × 100%. Class A = ≥100%, Class B = 85%–<100%, Class C = <85%. Basis historis mengikuti bulan terkait; bukan ranking top performer. Basis Jan–Agustus berasal dari monthly Excel baseline; September dan seterusnya menggunakan basis AFD terakhir yang tersedia sampai basis bulan berjalan tersedia. Data September berasal dari daily closing AMANTA.</div></div>
 </section>
 
-<div class="footer">ADRIANA v22.21 · People Performance: Monthly Basis Cluster · Jan–Aug Excel baseline + Sep onward locked AMANTA.</div>
+<div class="footer">ADRIANA v22.22 · People Performance: Period-locked monthly Excel baseline + Sep onward locked AMANTA.</div>
 </main></div>
 <script>
-const ADRIANA_BUILD='v22.18';
+const ADRIANA_BUILD='v22.22';
 const ROTATION_MASTER={"27":{ha:30.10},"23":{ha:30.90},"19":{ha:28.40},"15":{ha:30.40},"11":{ha:28.70},"7":{ha:30.60},"4":{ha:28.10},"2":{ha:28.18},"5":{ha:12.81},"8":{ha:15.00},"12":{ha:24.20},"13":{ha:25.00},"9":{ha:25.00},"6":{ha:20.03},"3":{ha:29.03},"1":{ha:25.81},"1A":{ha:13.01},"10A":{ha:25.88},"10":{ha:23.11},"14":{ha:26.19},"18":{ha:24.94},"22":{ha:21.36},"26":{ha:18.70},"30":{ha:22.55},"29":{ha:25.30},"25":{ha:20.70},"21":{ha:24.60},"17":{ha:21.80},"16":{ha:25.50},"20":{ha:27.90},"24":{ha:29.10},"28":{ha:29.40}};
 const HESTI_MASTER_OE={"OE001":{"pokok":3589.0,"luasTanam":26.91944314},"OE002":{"pokok":2542.0,"luasTanam":19.85497456},"OE003":{"pokok":3488.0,"luasTanam":26.55820312},"OE004":{"pokok":1266.0,"luasTanam":95.1671226},"OE005":{"pokok":3558.0,"luasTanam":25.94507197},"OE006":{"pokok":3200.0,"luasTanam":24.94766771},"OE007":{"pokok":2066.0,"luasTanam":16.54120073},"OE008":{"pokok":3465.0,"luasTanam":26.58031081},"OE009":{"pokok":3333.0,"luasTanam":25.93411358},"OE010":{"pokok":4500.0,"luasTanam":35.56777532},"OE011":{"pokok":3188.0,"luasTanam":24.94363652},"OE012":{"pokok":3752.0,"luasTanam":28.71596063},"OE013":{"pokok":3263.0,"luasTanam":26.41899908},"OE014":{"pokok":3806.0,"luasTanam":28.69147332},"OE015":{"pokok":3503.0,"luasTanam":26.63941795},"OE016":{"pokok":2500.0,"luasTanam":19.75559531},"OE017":{"pokok":4470.0,"luasTanam":34.88447624},"OE018":{"pokok":4749.0,"luasTanam":35.61982953},"OE019":{"pokok":3345.0,"luasTanam":27.1428005},"OE020":{"pokok":3397.0,"luasTanam":24.91802494},"OE021":{"pokok":3759.0,"luasTanam":27.71113264},"OE022":{"pokok":4470.0,"luasTanam":33.33066711},"OE023":{"pokok":4387.0,"luasTanam":32.71381439},"OE024":{"pokok":2861.0,"luasTanam":21.90972628},"OE025":{"pokok":3200.0,"luasTanam":24.72320791},"OE026":{"pokok":4814.0,"luasTanam":36.01416106},"OE027":{"pokok":3813.0,"luasTanam":28.380691},"OE028":{"pokok":3441.0,"luasTanam":25.49371143},"OE029":{"pokok":4385.0,"luasTanam":32.26155674},"OE030":{"pokok":3685.0,"luasTanam":27.51230728},"OE031":{"pokok":3310.0,"luasTanam":24.33521674},"OE004A":{"pokok":323.0,"luasTanam":24.6541168}};
 const HESTI_MASTER={"OC001":{"pokok":2584,"luasTanam":20.47497497},"OC002":{"pokok":1410,"luasTanam":10.8253085},"OC003":{"pokok":2204,"luasTanam":17.62431598},"OC004":{"pokok":3661,"luasTanam":28.25422515},"OC005":{"pokok":1854,"luasTanam":14.82759822},"OC006":{"pokok":2836,"luasTanam":23.10242366},"OC007":{"pokok":3981,"luasTanam":31.50547782},"OC008":{"pokok":1879,"luasTanam":17.0306481},"OC009":{"pokok":3287,"luasTanam":25.37608088},"OC010":{"pokok":2137,"luasTanam":16.97904717},"OC011":{"pokok":3539,"luasTanam":27.33788509},"OC012":{"pokok":2778,"luasTanam":23.36623628},"OC013":{"pokok":3504,"luasTanam":27.51786459},"OC014":{"pokok":2338,"luasTanam":18.90177491},"OC015":{"pokok":3332,"luasTanam":25.82564332},"OC016":{"pokok":3649,"luasTanam":30.42393538},"OC017":{"pokok":2962,"luasTanam":24.24650447},"OC018":{"pokok":2090,"luasTanam":15.9536477},"OC019":{"pokok":3250,"luasTanam":24.52063412},"OC01A":{"pokok":1153,"luasTanam":91.1615659},"OC020":{"pokok":3645,"luasTanam":28.92360449},"OC021":{"pokok":3007,"luasTanam":24.71175678},"OC022":{"pokok":1132,"luasTanam":88.4578401},"OC023":{"pokok":3819,"luasTanam":29.11726513},"OC024":{"pokok":3762,"luasTanam":29.4182184},"OC025":{"pokok":3338,"luasTanam":27.20928095},"OC026":{"pokok":2570,"luasTanam":20.27915272},"OC027":{"pokok":4216,"luasTanam":33.56746583},"OC028":{"pokok":3923,"luasTanam":32.18303737},"OC029":{"pokok":3338,"luasTanam":26.39474437},"OC030":{"pokok":2506,"luasTanam":19.3703675},"OC10A":{"pokok":1954,"luasTanam":14.74141087}};
@@ -550,13 +550,43 @@ function classifyPeople(rows){
 }
 function buildPeopleMonthly(afd){
  const out={};
- PEOPLE_HIST.filter(r=>!afd||afd==='ALL'||r.a===afd).forEach(r=>{
-   (out[r.m]??=[]).push({id:r.n,name:r.n,jjg:r.j,hk:r.h,mandor:(r.d||[]).join(', ')||'—',basis:r.b||0,source:'Excel'});
+ // HISTORICAL PERIODS ARE DETERMINISTIC: Jan-Aug always come directly from the embedded
+ // monthly Excel baseline. Never read an old/localStorage cluster for these months.
+ PEOPLE_HIST.filter(r=>r.m>='2026-01'&&r.m<='2026-08'&&(!afd||afd==='ALL'||r.a===afd)).forEach(r=>{
+   const month=r.m;
+   (out[month]??=[]).push({
+     id:`${r.a}|${r.n}`,
+     name:r.n,
+     jjg:num(r.j),
+     hk:num(r.h),
+     mandor:(r.d||[]).join(', ')||'—',
+     basis:num(r.b),
+     source:'Excel'
+   });
  });
+ // CURRENT PERIODS: Sep onward only from locked AMANTA snapshots.
  const snaps=getPeopleSnapshots(afd).filter(s=>String(s.date).slice(0,7)>='2026-09');
- const by={};snaps.forEach(s=>{const month=String(s.date).slice(0,7);const rows=peopleRowsForSnap(s);(by[month]??=[]).push(...rows.map(r=>({...r,date:s.date,afd:s.afd})))});
- Object.entries(by).forEach(([month,rows])=>{const agg={};rows.forEach(r=>{const k=r.id;if(!agg[k])agg[k]={id:k,name:r.name,jjg:0,hk:0,basisHK:0,mandors:new Set()};agg[k].jjg+=r.jjg;agg[k].hk+=1;const b=latestPeopleBasis(r.afd||afd,month);agg[k].basisHK+=b;if(r.mandor&&r.mandor!=='—')r.mandor.split(', ').forEach(v=>agg[k].mandors.add(v));});out[month]=Object.values(agg).map(x=>({...x,mandor:[...x.mandors].join(', ')||'—',jph:x.hk?x.jjg/x.hk:0,basis:x.hk?x.basisHK/x.hk:0,source:'AMANTA'}));});
- Object.keys(out).forEach(m=>out[m]=classifyPeople(out[m]));
+ const by={};
+ snaps.forEach(s=>{
+   const month=String(s.date).slice(0,7);
+   const rows=peopleRowsForSnap(s);
+   (by[month]??=[]).push(...rows.map(r=>({...r,date:s.date,afd:s.afd})));
+ });
+ Object.entries(by).forEach(([month,rows])=>{
+   const agg={};
+   rows.forEach(r=>{
+     const k=`${r.afd||afd}|${r.id}`;
+     if(!agg[k])agg[k]={id:k,name:r.name,jjg:0,hk:0,basisHK:0,mandors:new Set()};
+     agg[k].jjg+=num(r.jjg);
+     agg[k].hk+=1;
+     const b=latestPeopleBasis(r.afd||afd,month);
+     agg[k].basisHK+=b;
+     if(r.mandor&&r.mandor!=='—')r.mandor.split(', ').forEach(v=>agg[k].mandors.add(v));
+   });
+   out[month]=Object.values(agg).map(x=>({...x,mandor:[...x.mandors].join(', ')||'—',jph:x.hk?x.jjg/x.hk:0,basis:x.hk?x.basisHK/x.hk:0,source:'AMANTA'}));
+ });
+ // Classify each selected month independently. No YTD values are used for monthly class.
+ Object.keys(out).forEach(m=>{out[m]=classifyPeople(out[m]);});
  return out;
 }
 let PEOPLE_ACTIVE_CLASS='A', PEOPLE_CACHE={};
