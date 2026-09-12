@@ -655,4 +655,84 @@ window.ADRIANA_H1={
  const old=window.renderAI;window.renderAI=function(d){if(old)old(d);renderH1Intelligence(d)};
 })();
 </script>
+
+<!-- ADRIANA V24.1 — H+1 Forecast / Weekly Outlook additive fix -->
+<style>
+.h1forecast{margin-top:12px;padding:12px;border:1px solid #d8e6dc;border-radius:11px;background:#f8fcf9}
+.h1forecast-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.h1forecast .metric{padding:9px;border-radius:9px;background:#fff;border:1px solid #e5eee8}
+.h1forecast small{display:block;color:#68766d;font-size:10px}.h1forecast b{display:block;font-size:16px;margin-top:3px}
+@media(max-width:800px){.h1forecast-grid{grid-template-columns:1fr 1fr}}
+</style>
+<script>
+(function(){
+ function N(v){return Number(v)||0}
+ function activeSnapshots(afd){
+   let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}
+   return idx.map(x=>JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null')).filter(Boolean)
+     .filter(x=>!afd||afd==='ALL'||x.afd===afd).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+ }
+ function dayMetrics(s){
+   const d=buildData(s), hd=buildHarvestDensity(d);
+   return {date:s.date,jjg:N(d.jjg),hk:N(d.producingHK),jph:N(d.producingHK)?N(d.jjg)/N(d.producingHK):0,
+     pop:N(hd.totalPopRotasi),akp:hd.globalAkp!=null?N(hd.globalAkp):null};
+ }
+ function basisFor2(afd){return latestPeopleBasis(afd,'9999-99') || (afd==='OE'?93.95:78.96)}
+ function previousWeek(afd,date){
+   return activeSnapshots(afd).filter(x=>String(x.date)<String(date)).slice(-7).map(dayMetrics);
+ }
+ function focusPreviousWeek(afd,date){
+   const snaps=activeSnapshots(afd).filter(x=>String(x.date)<String(date)).slice(-7);
+   const agg={};
+   snaps.forEach(s=>peopleRowsForSnap(s).forEach(r=>{
+     const k=r.id;
+     agg[k]??={id:k,name:r.name,jjg:0,hk:0,mandors:new Set()};
+     agg[k].jjg+=N(r.jjg);agg[k].hk+=N(r.hk);
+     if(r.mandor&&r.mandor!=='—')r.mandor.split(', ').forEach(v=>agg[k].mandors.add(v));
+   }));
+   const basis=basisFor2(afd);
+   return Object.values(agg).map(x=>{const jph=x.hk?x.jjg/x.hk:0;const ach=basis?jph/basis*100:null;return {...x,jph,ach,basis,cls:peopleClassFromAch(ach),mandor:[...x.mandors].join(', ')||'—'}})
+     .filter(x=>x.cls==='C'||(x.ach!=null&&x.ach<85)).sort((a,b)=>(a.ach??0)-(b.ach??0)).slice(0,8);
+ }
+ function nextOperational(date){
+   const d=new Date(date+'T00:00:00');d.setDate(d.getDate()+1);if(d.getDay()===0)d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);
+ }
+ function ensureUI(){
+   const rec=document.getElementById('h1Recommendation'); if(!rec)return null;
+   if(!document.getElementById('h1Forecast')){
+     const x=document.createElement('div');x.id='h1Forecast';x.className='h1forecast';
+     x.innerHTML='<b>AI Weekly Outlook</b><div class="h1forecast-grid"><div class="metric"><small>Predicted AKP H+1</small><b id="h1PredAKP">—</b></div><div class="metric"><small>Predicted JJG H+1</small><b id="h1PredJJG">—</b></div><div class="metric"><small>Rotation / Calendar</small><b id="h1RotationNext">—</b></div></div><div class="small" id="h1ForecastNote" style="margin-top:8px"></div>';
+     rec.after(x);
+   }
+ }
+ window.renderH1Intelligence=function(d){
+   if(!d)return;ensureUI();
+   const afd=(ACTIVE_AFD==='ALL'?(d.afd||'OC'):ACTIVE_AFD), basis=basisFor2(afd), cur=dayMetrics(ACTIVE||d), hist=previousWeek(afd,d.date);
+   const weightedPop=hist.reduce((a,x)=>a+x.pop,0), weightedJ=hist.reduce((a,x)=>a+x.jjg,0);
+   const predAkp=weightedPop?weightedJ/weightedPop*100:(hist.length?hist.reduce((a,x)=>a+(x.akp||0),0)/hist.length:null);
+   const currentPop=cur.pop;
+   const predJjg=predAkp!=null&&currentPop?predAkp/100*currentPop:(hist.length?hist.reduce((a,x)=>a+x.jjg,0)/hist.length:null);
+   const target=basis*1.00;
+   // Recommend the largest total HK that can still keep expected productivity at/above basis, capped at 20.
+   const rec=predJjg&&target?Math.min(20,Math.max(1,Math.floor(predJjg/target))):Math.min(20,Math.max(1,cur.hk||1));
+   const predJph=rec?predJjg/rec:0;
+   const predAch=target?predJph/basis*100:null;
+   const focus=focusPreviousWeek(afd,d.date);
+   document.getElementById('h1ActualHK').textContent=cur.hk||'—';
+   document.getElementById('h1AKP').textContent=cur.akp!=null?cur.akp.toFixed(1)+'%':'—';
+   document.getElementById('h1Basis').textContent=basis.toFixed(1)+' JJG/HK';
+   document.getElementById('h1RecommendedHK').textContent=rec+' HK';
+   document.getElementById('h1Recommendation').innerHTML='<strong>'+rec+' HK</strong> recommended for H+1 · predicted productivity '+predJph.toFixed(1)+' JJG/HK · predicted achievement '+(predAch==null?'—':predAch.toFixed(1)+'%')+' of basis.<br><span class="small">Total afdeling, maximum 20 HK. Recommendation uses the last 7 available locked operational days, current rotation population as the H+1 population proxy, and AFD basis. It is a forecast, not actual.</span>';
+   document.getElementById('h1PredAKP').textContent=predAkp!=null?predAkp.toFixed(1)+'%':'—';
+   document.getElementById('h1PredJJG').textContent=predJjg!=null?Math.round(predJjg).toLocaleString()+' JJG':'—';
+   const next=nextOperational(d.date);
+   document.getElementById('h1RotationNext').textContent=fmtDate(next);
+   document.getElementById('h1ForecastNote').textContent=hist.length?('Forecast basis: '+hist.length+' previous locked operational day(s). H+1 calendar: '+fmtDate(next)+'.'): 'Belum cukup histori locked untuk forecast mingguan.';
+   document.getElementById('h1FocusBody').innerHTML=focus.length?focus.map(x=>`<tr><td><b>${html.escape(x.name)}</b></td><td>${x.cls}</td><td>${x.jph.toFixed(1)}</td><td>${x.ach==null?'—':x.ach.toFixed(1)+'%'}</td><td>Coaching / monitor</td></tr>`).join(''):'<tr><td colspan="5" class="small">Tidak ada underperformer &lt;85% basis pada 7 hari operasional sebelumnya.</td></tr>';
+   window.__H1_CURRENT={afd,date:d.date,actualHK:cur.hk,akp:cur.akp,basis,recommendedHK:rec,predictedAKP:predAkp,predictedJJG:predJjg,predictedJPH:predJph,predictedAchievement:predAch,focus:focus.map(x=>x.name),nextOperational:next,source:'AMANTA locked history + People Performance + Rotation Calendar'};
+ };
+ const oldSave=window.saveH1Decision;
+ window.saveH1Decision=function(decision){if(window.__H1_CURRENT){const p=window.__H1_CURRENT;const arr=JSON.parse(localStorage.getItem('adriana_decisions')||'[]');arr.unshift({date:p.date,afd:p.afd,decision:`${decision}: H+1 ${p.recommendedHK} HK`,action:`${decision}; predictedAKP=${p.predictedAKP==null?'':p.predictedAKP.toFixed(1)}%; predictedJJG=${Math.round(p.predictedJJG||0)}; focus=${p.focus.join(', ')||'none'}`,nextCheck:p.nextOperational,source:p.source});localStorage.setItem('adriana_decisions',JSON.stringify(arr));const el=document.getElementById('h1DecisionMsg');if(el)el.textContent=`Saved: ${decision} · ${p.recommendedHK} HK · H+1 ${fmtDate(p.nextOperational)}`;if(typeof renderDecisionHistory==='function')renderDecisionHistory();return;}if(oldSave)oldSave(decision)};
+})();
+</script>
 </body></html>
