@@ -165,8 +165,9 @@ body{background:#f4f7f3}
  <div class="head"><h2>AI H+1 Harvest Plan</h2><span class="tag green">DECISION INTELLIGENCE</span></div>
  <div class="body">
   <div class="h1grid"><div class="h1metric"><small>Actual HK</small><b id="h1ActualHK">—</b></div><div class="h1metric"><small>AKP</small><b id="h1AKP">—</b></div><div class="h1metric"><small>AFD Basis</small><b id="h1Basis">—</b></div><div class="h1metric"><small>Recommended HK</small><b id="h1RecommendedHK">—</b></div></div>
-  <div class="h1rec" id="h1Recommendation">Upload &amp; lock daily AMANTA to generate H+1 recommendation.</div>
+  <div class="h1rec" id="h1Recommendation">Upload &amp; lock daily AMANTA to generate H+1 recommendation.</div><div class="h1forecast" id="h1ForecastPanel"><div style="font-weight:800">AI Forecast — H+1 &amp; Weekly Outlook</div><div class="h1forecast-grid"><div class="metric"><small>Predicted AKP H+1</small><b id="h1PredAKP">—</b></div><div class="metric"><small>Predicted JJG H+1</small><b id="h1PredJJG">—</b></div><div class="metric"><small>Rotation / Calendar</small><b id="h1RotationNext">—</b></div><div class="metric"><small>Recommended Pemanen</small><b id="h1RecommendedPeople">—</b></div></div><div class="small" id="h1ForecastNote" style="margin-top:8px">Forecast membaca histori locked AMANTA, rotasi, kalender, dan performance pemanen.</div></div>
   <div class="h1focus"><b>Mandor Focus — Underperformer minggu sebelumnya</b><div style="overflow:auto;margin-top:7px"><table><thead><tr><th>Pemanen</th><th>Class</th><th>JJG/HK</th><th>ACH</th><th>Action</th></tr></thead><tbody id="h1FocusBody"><tr><td colspan="5" class="small">Belum ada data.</td></tr></tbody></table></div></div>
+  <div class="h1focus" style="margin-top:12px"><b>AI Recommended Pemanen — target ≥100% basis</b><div style="overflow:auto;margin-top:7px"><table><thead><tr><th>#</th><th>Pemanen</th><th>JJG/HK Hist.</th><th>ACH</th><th>Class</th><th>Expected JJG</th></tr></thead><tbody id="h1RecommendedPeopleBody"><tr><td colspan="6" class="small">Belum ada rekomendasi.</td></tr></tbody></table></div></div>
   <div class="h1btns"><button class="ok" onclick="saveH1Decision('ACCEPT')">ACCEPT RECOMMENDATION</button><button onclick="saveH1Decision('ADJUST')">ADJUST</button><button onclick="saveH1Decision('OVERRIDE')">OVERRIDE</button></div>
   <div class="small" id="h1DecisionMsg" style="margin-top:8px">Decision akan masuk ke PDCA Log.</div>
  </div>
@@ -614,125 +615,35 @@ function initPeople(){const m=document.getElementById('peopleMonth'),a=document.
 
 document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();renderAfdSelectorHybrid();const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;initPeople();});
 </script>
-<!-- ADRIANA V24 H+1 Decision Intelligence -->
-<script>
-window.ADRIANA_H1={
- version:"V24",
- classFromAch:function(a){return a>=100?"A":a>=85?"B":"C";},
- recommend:function(p){
-  const basis=+p.basis||0,jjg=+p.jjg||0,hk=+p.hk||0,maxHK=+(p.maxHK||20);
-  const hist=+p.historicalJph||basis, cap=Math.max(basis,hist);
-  const theoretical=cap?Math.ceil(jjg/cap):hk;
-  const recommended=Math.min(maxHK,Math.max(1,theoretical||hk||1));
-  return {recommended:recommended,expected:recommended*cap,capacity:cap,
-    achievement:basis?(cap/basis*100):null,theoretical:theoretical};
- },
- operationalDate:function(iso){
-  const d=new Date(iso+"T00:00:00"), sunday=d.getDay()===0;
-  if(sunday)d.setDate(d.getDate()+1);
-  return {isSunday:sunday,date:d.toISOString().slice(0,10)};
- },
- saveDecision:function(x){
-  const k="ADRIANA_PDCA_LOG",a=JSON.parse(localStorage.getItem(k)||"[]");
-  a.push(Object.assign({timestamp:new Date().toISOString(),version:"V24"},x));
-  localStorage.setItem(k,JSON.stringify(a)); return a[a.length-1];
- },
- effectiveness:function(plan,actual){
-  if(!+plan||!+actual)return"UNAVAILABLE";
-  const r=+actual/+plan; return r>=.95&&r<=1.10?"EFFECTIVE":"REVIEW";
- }
-};
-</script>
-<script>
-(function(){
- function n(v){return Number(v)||0}
- function basisFor(afd){return afd==='OE'?93.95:78.96}
- function snaps(afd){const idx=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');return idx.map(d=>JSON.parse(localStorage.getItem(lockKey(d))||'null')).filter(Boolean).filter(x=>!afd||afd==='ALL'||x.afd===afd).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
- function histJph(afd){let jjg=0,hk=0;snaps(afd).slice(-7).forEach(x=>{jjg+=n(x.jjg);hk+=n(x.producingHK)});return hk?jjg/hk:0}
- function focus(afd){try{const ms=Object.keys(buildPeopleMonthly(afd)).sort();if(ms.length<2)return[];const r=buildPeopleMonthly(afd)[ms[ms.length-2]]||[];return r.filter(x=>x.cls==='C'||(x.ach!=null&&x.ach<85)).sort((a,b)=>(a.ach??0)-(b.ach??0)).slice(0,8)}catch(e){return[]}}
- window.renderH1Intelligence=function(d){if(!d)return;const afd=ACTIVE_AFD==='ALL'?(d.afd||'OC'):ACTIVE_AFD,basis=basisFor(afd),jjg=n(d.jjg),hk=n(d.producingHK),jph=hk?jjg/hk:0,akp=d.harvestDensity?.globalAkp??null,h=histJph(afd),capacity=Math.max(basis,h||basis),recommended=Math.min(20,Math.max(1,Math.ceil(jjg/capacity)));document.getElementById('h1ActualHK').textContent=hk||'—';document.getElementById('h1AKP').textContent=akp!=null?Number(akp).toFixed(1)+'%':'—';document.getElementById('h1Basis').textContent=basis.toFixed(1)+' JJG/HK';document.getElementById('h1RecommendedHK').textContent=recommended+' HK';document.getElementById('h1Recommendation').innerHTML='<strong>'+recommended+' HK</strong> recommended for H+1 · current productivity '+jph.toFixed(1)+' JJG/HK · historical capacity '+capacity.toFixed(1)+' JJG/HK.<br><span class="small">Recommendation is total afdeling, capped at 20 HK. AI combines current production, recent afdeling history and AFD basis; rotation/calendar should be checked before final decision.</span>';const rs=focus(afd);document.getElementById('h1FocusBody').innerHTML=rs.length?rs.map(x=>`<tr><td><b>${html.escape(x.name)}</b></td><td>${x.cls}</td><td>${n(x.jph).toFixed(1)}</td><td>${x.ach==null?'—':n(x.ach).toFixed(1)+'%'}</td><td>Coaching / monitor</td></tr>`).join(''):'<tr><td colspan="5" class="small">Tidak ada underperformer yang terdeteksi dari histori sebelumnya.</td></tr>';window.__H1_CURRENT={afd,date:d.date,actualHK:hk,akp,basis,recommendedHK:recommended,capacity,focus:rs.map(x=>x.name),source:'AMANTA + People Performance'};};
- window.saveH1Decision=function(decision){const p=window.__H1_CURRENT;if(!p){document.getElementById('h1DecisionMsg').textContent='Belum ada active dataset.';return}const arr=JSON.parse(localStorage.getItem('adriana_decisions')||'[]');const d=new Date(p.date+'T00:00:00');d.setDate(d.getDate()+1);while(d.getDay()===0)d.setDate(d.getDate()+1);const next=d.toISOString().slice(0,10);arr.unshift({date:p.date,afd:p.afd,decision:`H+1 HK ${p.recommendedHK}`,action:`${decision}: ${p.recommendedHK} HK; focus=${p.focus.join(', ')||'none'}`,nextCheck:next,closingId:ACTIVE?.closingId||'',source:p.source});localStorage.setItem('adriana_decisions',JSON.stringify(arr));document.getElementById('h1DecisionMsg').textContent=`Saved: ${decision} · ${p.recommendedHK} HK · H+1 ${fmtDate(next)}`;if(typeof renderDecisionHistory==='function')renderDecisionHistory();};
- const old=window.renderAI;window.renderAI=function(d){if(old)old(d);renderH1Intelligence(d)};
-})();
-</script>
-
-<!-- ADRIANA V24.1 — H+1 Forecast / Weekly Outlook additive fix -->
+<!-- ADRIANA V24.2 — Adaptive H+1 Manpower Intelligence -->
 <style>
-.h1forecast{margin-top:12px;padding:12px;border:1px solid #d8e6dc;border-radius:11px;background:#f8fcf9}
-.h1forecast-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
-.h1forecast .metric{padding:9px;border-radius:9px;background:#fff;border:1px solid #e5eee8}
-.h1forecast small{display:block;color:#68766d;font-size:10px}.h1forecast b{display:block;font-size:16px;margin-top:3px}
-@media(max-width:800px){.h1forecast-grid{grid-template-columns:1fr 1fr}}
+.h1forecast{margin-top:12px;padding:12px;border:1px solid #d8e6dc;border-radius:11px;background:#f8fcf9}.h1forecast-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}.h1forecast .metric{padding:9px;border-radius:9px;background:#fff;border:1px solid #e5eee8}.h1forecast small{display:block;color:#68766d;font-size:10px}.h1forecast b{display:block;font-size:16px;margin-top:3px}@media(max-width:800px){.h1forecast-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 <script>
 (function(){
- function N(v){return Number(v)||0}
- function activeSnapshots(afd){
-   let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}
-   return idx.map(x=>JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null')).filter(Boolean)
-     .filter(x=>!afd||afd==='ALL'||x.afd===afd).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
- }
- function dayMetrics(s){
-   const d=buildData(s), hd=buildHarvestDensity(d);
-   return {date:s.date,jjg:N(d.jjg),hk:N(d.producingHK),jph:N(d.producingHK)?N(d.jjg)/N(d.producingHK):0,
-     pop:N(hd.totalPopRotasi),akp:hd.globalAkp!=null?N(hd.globalAkp):null};
- }
- function basisFor2(afd){return latestPeopleBasis(afd,'9999-99') || (afd==='OE'?93.95:78.96)}
- function previousWeek(afd,date){
-   return activeSnapshots(afd).filter(x=>String(x.date)<String(date)).slice(-7).map(dayMetrics);
- }
- function focusPreviousWeek(afd,date){
-   const snaps=activeSnapshots(afd).filter(x=>String(x.date)<String(date)).slice(-7);
-   const agg={};
-   snaps.forEach(s=>peopleRowsForSnap(s).forEach(r=>{
-     const k=r.id;
-     agg[k]??={id:k,name:r.name,jjg:0,hk:0,mandors:new Set()};
-     agg[k].jjg+=N(r.jjg);agg[k].hk+=N(r.hk);
-     if(r.mandor&&r.mandor!=='—')r.mandor.split(', ').forEach(v=>agg[k].mandors.add(v));
-   }));
-   const basis=basisFor2(afd);
-   return Object.values(agg).map(x=>{const jph=x.hk?x.jjg/x.hk:0;const ach=basis?jph/basis*100:null;return {...x,jph,ach,basis,cls:peopleClassFromAch(ach),mandor:[...x.mandors].join(', ')||'—'}})
-     .filter(x=>x.cls==='C'||(x.ach!=null&&x.ach<85)).sort((a,b)=>(a.ach??0)-(b.ach??0)).slice(0,8);
- }
- function nextOperational(date){
-   const d=new Date(date+'T00:00:00');d.setDate(d.getDate()+1);if(d.getDay()===0)d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);
- }
- function ensureUI(){
-   const rec=document.getElementById('h1Recommendation'); if(!rec)return null;
-   if(!document.getElementById('h1Forecast')){
-     const x=document.createElement('div');x.id='h1Forecast';x.className='h1forecast';
-     x.innerHTML='<b>AI Weekly Outlook</b><div class="h1forecast-grid"><div class="metric"><small>Predicted AKP H+1</small><b id="h1PredAKP">—</b></div><div class="metric"><small>Predicted JJG H+1</small><b id="h1PredJJG">—</b></div><div class="metric"><small>Rotation / Calendar</small><b id="h1RotationNext">—</b></div></div><div class="small" id="h1ForecastNote" style="margin-top:8px"></div>';
-     rec.after(x);
-   }
- }
- window.renderH1Intelligence=function(d){
-   if(!d)return;ensureUI();
-   const afd=(ACTIVE_AFD==='ALL'?(d.afd||'OC'):ACTIVE_AFD), basis=basisFor2(afd), cur=dayMetrics(ACTIVE||d), hist=previousWeek(afd,d.date);
-   const weightedPop=hist.reduce((a,x)=>a+x.pop,0), weightedJ=hist.reduce((a,x)=>a+x.jjg,0);
-   const predAkp=weightedPop?weightedJ/weightedPop*100:(hist.length?hist.reduce((a,x)=>a+(x.akp||0),0)/hist.length:null);
-   const currentPop=cur.pop;
-   const predJjg=predAkp!=null&&currentPop?predAkp/100*currentPop:(hist.length?hist.reduce((a,x)=>a+x.jjg,0)/hist.length:null);
-   const target=basis*1.00;
-   // Recommend the largest total HK that can still keep expected productivity at/above basis, capped at 20.
-   const rec=predJjg&&target?Math.min(20,Math.max(1,Math.floor(predJjg/target))):Math.min(20,Math.max(1,cur.hk||1));
-   const predJph=rec?predJjg/rec:0;
-   const predAch=target?predJph/basis*100:null;
-   const focus=focusPreviousWeek(afd,d.date);
-   document.getElementById('h1ActualHK').textContent=cur.hk||'—';
-   document.getElementById('h1AKP').textContent=cur.akp!=null?cur.akp.toFixed(1)+'%':'—';
-   document.getElementById('h1Basis').textContent=basis.toFixed(1)+' JJG/HK';
-   document.getElementById('h1RecommendedHK').textContent=rec+' HK';
-   document.getElementById('h1Recommendation').innerHTML='<strong>'+rec+' HK</strong> recommended for H+1 · predicted productivity '+predJph.toFixed(1)+' JJG/HK · predicted achievement '+(predAch==null?'—':predAch.toFixed(1)+'%')+' of basis.<br><span class="small">Total afdeling, maximum 20 HK. Recommendation uses the last 7 available locked operational days, current rotation population as the H+1 population proxy, and AFD basis. It is a forecast, not actual.</span>';
-   document.getElementById('h1PredAKP').textContent=predAkp!=null?predAkp.toFixed(1)+'%':'—';
-   document.getElementById('h1PredJJG').textContent=predJjg!=null?Math.round(predJjg).toLocaleString()+' JJG':'—';
-   const next=nextOperational(d.date);
-   document.getElementById('h1RotationNext').textContent=fmtDate(next);
-   document.getElementById('h1ForecastNote').textContent=hist.length?('Forecast basis: '+hist.length+' previous locked operational day(s). H+1 calendar: '+fmtDate(next)+'.'): 'Belum cukup histori locked untuk forecast mingguan.';
-   document.getElementById('h1FocusBody').innerHTML=focus.length?focus.map(x=>`<tr><td><b>${html.escape(x.name)}</b></td><td>${x.cls}</td><td>${x.jph.toFixed(1)}</td><td>${x.ach==null?'—':x.ach.toFixed(1)+'%'}</td><td>Coaching / monitor</td></tr>`).join(''):'<tr><td colspan="5" class="small">Tidak ada underperformer &lt;85% basis pada 7 hari operasional sebelumnya.</td></tr>';
-   window.__H1_CURRENT={afd,date:d.date,actualHK:cur.hk,akp:cur.akp,basis,recommendedHK:rec,predictedAKP:predAkp,predictedJJG:predJjg,predictedJPH:predJph,predictedAchievement:predAch,focus:focus.map(x=>x.name),nextOperational:next,source:'AMANTA locked history + People Performance + Rotation Calendar'};
- };
- const oldSave=window.saveH1Decision;
- window.saveH1Decision=function(decision){if(window.__H1_CURRENT){const p=window.__H1_CURRENT;const arr=JSON.parse(localStorage.getItem('adriana_decisions')||'[]');arr.unshift({date:p.date,afd:p.afd,decision:`${decision}: H+1 ${p.recommendedHK} HK`,action:`${decision}; predictedAKP=${p.predictedAKP==null?'':p.predictedAKP.toFixed(1)}%; predictedJJG=${Math.round(p.predictedJJG||0)}; focus=${p.focus.join(', ')||'none'}`,nextCheck:p.nextOperational,source:p.source});localStorage.setItem('adriana_decisions',JSON.stringify(arr));const el=document.getElementById('h1DecisionMsg');if(el)el.textContent=`Saved: ${decision} · ${p.recommendedHK} HK · H+1 ${fmtDate(p.nextOperational)}`;if(typeof renderDecisionHistory==='function')renderDecisionHistory();return;}if(oldSave)oldSave(decision)};
+const MAX_HK=20,N=v=>Number(v)||0,esc=v=>{const d=document.createElement('div');d.textContent=String(v??'');return d.innerHTML};
+const afdOf=d=>ACTIVE_AFD==='ALL'?(d?.afd||'OC'):ACTIVE_AFD;
+const basisOf=afd=>latestPeopleBasis(afd,'9999-99')||(afd==='OE'?93.95:78.96);
+const nextOp=iso=>{const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+1);if(d.getDay()===0)d.setDate(d.getDate()+1);return d.toISOString().slice(0,10)};
+function snaps(afd){migrateLegacyHistoryHybrid();return getAfdSnapshotsHybrid(afd).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
+function prodBlocks(s){const p=s?.sections?.PRODUKSIBLOK;if(!p)return{};const h=p.header||[],bi=h.indexOf('BLOK'),ji=h.indexOf('JJG'),o={};for(const r of p.rows||[]){const b=normalizeRotationBlock(r[bi],s.afd);if(b)o[b]=(o[b]||0)+N(r[ji])}return o}
+function popBlock(afd,b){const master=hestiMasterForAfd(afd)||{},rot=rotationMasterForAfd(afd)||{},key=String(b).replace(/^(OC|OE)/,'');const m=master[b]||master[(afd==='OE'?'OE':'OC')+key],rr=rot[key];return m&&rr&&N(m.luasTanam)>0&&N(rr.ha)>0?N(m.pokok)/N(m.luasTanam)*N(rr.ha):null}
+function histMap(afd){const m={};for(const s of snaps(afd)){const p=s?.sections?.PRODUKSIBLOK;if(!p)continue;const h=p.header||[],bi=h.indexOf('BLOK'),hi=h.indexOf('HARVDATE');for(const r of p.rows||[]){const b=normalizeRotationBlock(r[bi],afd),dt=normalizeAmantaDate(r[hi]);if(!b||!dt)continue;(m[b]??=new Set()).add(dt)}}return Object.fromEntries(Object.entries(m).map(([b,set])=>[b,[...set].sort()]));}
+function dueBlocks(afd,date){const hist=histMap(afd),plan=nextOp(date),out=[];for(const [b,ds] of Object.entries(hist)){const prior=ds.filter(x=>x<=date);if(!prior.length)continue;const last=prior[prior.length-1],age=Math.round((new Date(plan)-new Date(last))/86400000);if(age>=7&&age<=10)out.push({block:b,last,age,pop:popBlock(afd,b)});}return{date:plan,rows:out}}
+function rotationSignals(afd){const hist=histMap(afd),out=[];for(const s of snaps(afd)){const pb=prodBlocks(s);let jj=0,pop=0,ages=[];for(const b of Object.keys(pb)){const pp=popBlock(afd,b),ds=hist[b]||[],prior=ds.filter(x=>x<String(s.date)),last=prior[prior.length-1];if(!pp||!last)continue;jj+=pb[b];pop+=pp;ages.push(Math.round((new Date(s.date)-new Date(last))/86400000))}if(pop>0&&ages.length)out.push({date:s.date,akp:jj/pop*100,age:ages.reduce((a,b)=>a+b,0)/ages.length})}return out}
+function forecastAKP(afd,date){const due=dueBlocks(afd,date),sig=rotationSignals(afd),vals=[];for(const b of due.rows){sig.map(x=>({...x,dist:Math.abs(x.age-b.age)})).sort((a,c)=>a.dist-c.dist).slice(0,5).forEach(x=>vals.push([x.akp,1/(1+x.dist)]))}if(!vals.length)sig.slice(-7).forEach(x=>vals.push([x.akp,1]));if(!vals.length)return{akp:null,due,obs:0};const sw=vals.reduce((a,x)=>a+x[1],0);return{akp:vals.reduce((a,x)=>a+x[0]*x[1],0)/sw,due,obs:vals.length}}
+function weeklyPeople(afd,date){const map={};for(const s of snaps(afd).filter(x=>String(x.date)<String(date)).slice(-7)){const p=s?.sections?.PRODUKSIBLOK;if(!p)continue;const h=p.header||[],ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),namei=h.indexOf('NAMA'),mi=h.indexOf('KEMANDORAN'),day={};for(const r of p.rows||[]){const id=cleanCell(r[ni]);if(!id||id==='—')continue;day[id]??={id,name:cleanCell(r[namei]),jjg:0,mandor:new Set()};day[id].jjg+=N(r[ji]);const mm=cleanCell(r[mi]);if(mm&&mm!=='—')day[id].mandor.add(mm)}for(const x of Object.values(day)){map[x.id]??={id:x.id,name:x.name,jjg:0,hk:0,mandor:new Set()};map[x.id].jjg+=x.jjg;map[x.id].hk++;x.mandor.forEach(v=>map[x.id].mandor.add(v))}}const basis=basisOf(afd);return Object.values(map).map(x=>{const jph=x.hk?x.jjg/x.hk:0,ach=basis?jph/basis*100:null;return{...x,jph,ach,cls:peopleClassFromAch(ach),mandor:[...x.mandor].join(', ')||'—'}}).sort((a,b)=>b.jph-a.jph)}
+function selectPeople(afd,date,target){const rows=weeklyPeople(afd,date),basis=basisOf(afd);if(!rows.length)return{selected:[],expected:0,avg:0,ach:null,shortfall:target};const pool=[...rows.filter(x=>x.cls==='A'),...rows.filter(x=>x.cls==='B'),...rows.filter(x=>x.cls==='C')],selected=[];let sum=0;for(const x of pool){if(sum>=target)break;selected.push(x);sum+=x.jph}let final=selected;if(final.length>MAX_HK)final=rows.slice().sort((a,b)=>b.jph-a.jph).slice(0,MAX_HK);sum=final.reduce((a,x)=>a+x.jph,0);const avg=final.length?sum/final.length:0;return{selected:final,expected:sum,avg,ach:basis?avg/basis*100:null,shortfall:Math.max(0,target-sum),basis}}
+function render(d){if(!d)return;const afd=afdOf(d),basis=basisOf(afd),curHK=N(d.producingHK),curJ=N(d.jjg),curAKP=d.harvestDensity?.globalAkp!=null?N(d.harvestDensity.globalAkp):null,f=forecastAKP(afd,d.date),pop=f.due.rows.reduce((a,x)=>a+N(x.pop),0)||N(d.harvestDensity?.totalPopRotasi),predJJG=f.akp!=null&&pop?f.akp/100*pop:null,sel=selectPeople(afd,d.date,N(predJJG)),rec=sel.selected.length;
+document.getElementById('h1ActualHK').textContent=curHK||'—';document.getElementById('h1AKP').textContent=curAKP!=null?curAKP.toFixed(1)+'%':'—';document.getElementById('h1Basis').textContent=basis.toFixed(1)+' JJG/HK';document.getElementById('h1RecommendedHK').textContent=rec?rec+' HK':'—';
+document.getElementById('h1PredAKP').textContent=f.akp!=null?f.akp.toFixed(1)+'%':'—';document.getElementById('h1PredJJG').textContent=predJJG!=null?Math.round(predJJG).toLocaleString()+' JJG':'—';document.getElementById('h1RotationNext').textContent=f.due.rows.length?fmtDate(f.due.date)+' · '+f.due.rows.length+' blok due':'No due block';document.getElementById('h1RecommendedPeople').textContent=rec?rec+' people':'—';
+const ach=sel.ach,status=ach!=null&&ach>=100?'OVER BASIS':'BELOW BASIS';document.getElementById('h1Recommendation').innerHTML=rec?`<strong>${rec} HK</strong> recommended for H+1 · predicted productivity <strong>${sel.avg.toFixed(1)} JJG/HK</strong> · predicted achievement <strong>${ach==null?'—':ach.toFixed(1)+'%'}</strong> of basis.<br><span class="small">Predicted crop ${predJJG==null?'—':Math.round(predJJG).toLocaleString()+' JJG'} from rotation-based AKP ${f.akp==null?'—':f.akp.toFixed(1)+'%'}; ${status}. ${rec>MAX_HK?'Required manpower exceeds operational ceiling '+MAX_HK+' HK.':'Minimum manpower selected from previous-week performance, prioritizing Class A then B.'}</span>`:'<strong>Belum ada rekomendasi</strong><br><span class="small">Histori locked/rotation belum cukup untuk menghitung kebutuhan manpower.</span>';
+document.getElementById('h1ForecastNote').textContent=`H+1 ${fmtDate(f.due.date)} · ${f.due.rows.length} blok pada window rotasi 7–10 hari · ${f.obs} historical rotation observation(s). People basis: previous 7 operational days. Sunday excluded from operational H+1.`;
+document.getElementById('h1RecommendedPeopleBody').innerHTML=rec?sel.selected.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.name)}</b></td><td>${x.jph.toFixed(1)}</td><td>${x.ach==null?'—':x.ach.toFixed(1)+'%'}</td><td>${x.cls}</td><td>${x.jph.toFixed(1)}</td></tr>`).join(''):'<tr><td colspan="6" class="small">Belum ada kandidat dari histori minggu sebelumnya.</td></tr>';
+const focus=weeklyPeople(afd,d.date).filter(x=>x.ach!=null&&x.ach<85).sort((a,b)=>a.ach-b.ach).slice(0,8);document.getElementById('h1FocusBody').innerHTML=focus.length?focus.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td>${x.cls}</td><td>${x.jph.toFixed(1)}</td><td>${x.ach.toFixed(1)}%</td><td>Coaching / monitor</td></tr>`).join(''):'<tr><td colspan="5" class="small">Tidak ada underperformer &lt;85% basis pada histori minggu sebelumnya.</td></tr>';
+window.__H1_CURRENT={version:H1_VERSION,afd,date:d.date,actualHK:curHK,actualAKP:curAKP,currentJJG:curJ,basis,predictedAKP:f.akp,predictedJJG:predJJG,recommendedHK:rec,recommendedPeople:sel.selected.map(x=>x.name),expectedJPH:sel.avg,expectedAchievement:ach,rotationDate:f.due.date,dueBlocks:f.due.rows.map(x=>x.block),focus:focus.map(x=>x.name),source:'AMANTA locked + Rotation Calendar + People Performance'};}
+const H1_VERSION='V24.2';window.renderH1Intelligence=render;window.saveH1Decision=function(decision){const p=window.__H1_CURRENT;if(!p){const e=document.getElementById('h1DecisionMsg');if(e)e.textContent='Belum ada active dataset.';return}let a=[];try{a=JSON.parse(localStorage.getItem('adriana_decisions')||'[]')}catch(e){}a.unshift({date:p.date,afd:p.afd,decision:`${decision}: H+1 ${p.recommendedHK} HK`,action:`${decision}; predictedAKP=${p.predictedAKP==null?'':p.predictedAKP.toFixed(1)}%; predictedJJG=${Math.round(p.predictedJJG||0)}; recommendedPeople=${p.recommendedPeople.join(', ')||'none'}; focus=${p.focus.join(', ')||'none'}`,nextCheck:p.rotationDate,source:p.source});localStorage.setItem('adriana_decisions',JSON.stringify(a));const e=document.getElementById('h1DecisionMsg');if(e)e.textContent=`Saved: ${decision} · ${p.recommendedHK} HK · H+1 ${fmtDate(p.rotationDate)}`;if(typeof renderDecisionHistory==='function')renderDecisionHistory()};
+const old=window.renderAI;window.renderAI=function(d){if(old)old(d);render(d)};
 })();
 </script>
 </body></html>
