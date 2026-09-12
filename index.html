@@ -233,7 +233,7 @@ body{background:#f4f7f3}
 <div class="panel" style="margin-top:16px"><div class="panelHead"><h2>Performance History</h2><span>Monthly class + productivity</span></div><div style="overflow:auto"><table><thead><tr><th>Pemanen</th><th>Mandor</th><th>Month-2</th><th>Month-1</th><th>Current</th><th>YTD JJG/HK</th><th>Trend</th></tr></thead><tbody id="peopleHistory"></tbody></table></div><div class="densityNote"><b>Cluster rule:</b> Achievement = (JJG/HK ÷ Basis) × 100%. Class A = ≥100%, Class B = 85%–<100%, Class C = <85%. Basis historis mengikuti bulan terkait; bukan ranking top performer. Basis Jan–Agustus berasal dari monthly Excel baseline; September dan seterusnya menggunakan basis AFD terakhir yang tersedia sampai basis bulan berjalan tersedia. Data September berasal dari daily closing AMANTA.</div></div>
 </section>
 
-<div class="footer">ADRIANA v22.22 · People Performance: Period-locked monthly Excel baseline + Sep onward locked AMANTA.</div>
+<div class="footer">ADRIANA v24 · People Performance: Period-locked monthly Excel baseline + Sep onward locked AMANTA.</div>
 </main></div>
 <script>
 const ADRIANA_BUILD='v22.22';
@@ -600,5 +600,34 @@ function downloadPeopleCSV(){const m=document.getElementById('peopleMonth')?.val
 function initPeople(){const m=document.getElementById('peopleMonth'),a=document.getElementById('peopleAfd');if(!m||!a)return;a.value=ACTIVE_AFD==='ALL'?'ALL':ACTIVE_AFD;a.onchange=renderPeople;m.onchange=renderPeople;const refresh=()=>{const months=Object.keys(buildPeopleMonthly(a.value)).sort();m.innerHTML=months.map(x=>`<option value="${x}">${x}</option>`).join('');if(months.length)m.value=months[months.length-1];renderPeople();};refresh();}
 
 document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();renderAfdSelectorHybrid();const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;initPeople();});
+</script>
+<!-- ADRIANA V24 H+1 Decision Intelligence -->
+<script>
+window.ADRIANA_H1={
+ version:"V24",
+ classFromAch:function(a){return a>=100?"A":a>=85?"B":"C";},
+ recommend:function(p){
+  const basis=+p.basis||0,jjg=+p.jjg||0,hk=+p.hk||0,maxHK=+(p.maxHK||20);
+  const hist=+p.historicalJph||basis, cap=Math.max(basis,hist);
+  const theoretical=cap?Math.ceil(jjg/cap):hk;
+  const recommended=Math.min(maxHK,Math.max(1,theoretical||hk||1));
+  return {recommended:recommended,expected:recommended*cap,capacity:cap,
+    achievement:basis?(cap/basis*100):null,theoretical:theoretical};
+ },
+ operationalDate:function(iso){
+  const d=new Date(iso+"T00:00:00"), sunday=d.getDay()===0;
+  if(sunday)d.setDate(d.getDate()+1);
+  return {isSunday:sunday,date:d.toISOString().slice(0,10)};
+ },
+ saveDecision:function(x){
+  const k="ADRIANA_PDCA_LOG",a=JSON.parse(localStorage.getItem(k)||"[]");
+  a.push(Object.assign({timestamp:new Date().toISOString(),version:"V24"},x));
+  localStorage.setItem(k,JSON.stringify(a)); return a[a.length-1];
+ },
+ effectiveness:function(plan,actual){
+  if(!+plan||!+actual)return"UNAVAILABLE";
+  const r=+actual/+plan; return r>=.95&&r<=1.10?"EFFECTIVE":"REVIEW";
+ }
+};
 </script>
 </body></html>
