@@ -77,6 +77,7 @@ body{background:#f4f7f3}
     <button data-target="ai">AI Analysis</button>
     <button data-target="pdca">PDCA / Decision Log</button>
     <button data-target="history">History & Effectiveness</button>
+    <button data-target="people">People Performance <span style="background:#ffb000;color:#fff;border-radius:8px;padding:2px 5px;font-size:9px;margin-left:4px">NEW</span></button>
   </div>
 </aside>
 <main class="main">
@@ -206,7 +207,33 @@ body{background:#f4f7f3}
 </div>
 </section>
 
-<div class="footer">ADRIANA v22 · AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
+<section id="people" class="section">
+<div class="top"><div><div class="eyebrow">PEOPLE INTELLIGENCE</div><div class="title">People Performance</div><div class="meta">Cluster Class A/B/C, top performer, YTD and monthly movement from locked AMANTA history.</div></div></div>
+<div class="panel">
+  <div style="display:flex;gap:10px;align-items:end;justify-content:space-between;flex-wrap:wrap">
+    <div><label class="label">PERFORMANCE PERIOD</label><select id="peopleMonth" style="display:block;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff"></select></div>
+    <div><label class="label">AFDELING</label><select id="peopleAfd" style="display:block;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff"><option value="ALL">Semua Afdeling</option><option value="OC">OCYM</option><option value="OE">OEYM</option></select></div>
+  </div>
+  <div class="grid" style="margin-top:16px">
+    <div class="card"><div class="label">PEMANEN AKTIF</div><div class="value" id="peopleTotal">—</div><div class="small">monthly active harvesters</div></div>
+    <div class="card"><div class="label">CLASS A</div><div class="value" id="peopleA">—</div><div class="small">top performance cluster</div></div>
+    <div class="card"><div class="label">CLASS B</div><div class="value" id="peopleB">—</div><div class="small">middle performance cluster</div></div>
+    <div class="card"><div class="label">CLASS C</div><div class="value" id="peopleC">—</div><div class="small">development cluster</div></div>
+    <div class="card"><div class="label">AVG JJG/HK</div><div class="value" id="peopleAvg">—</div><div class="small">monthly productivity</div></div>
+  </div>
+</div>
+<div class="two" style="margin-top:16px">
+  <div class="panel"><div class="panelHead"><h2>Top Performer — Monthly</h2><span id="peopleMonthLabel">—</span></div><div style="overflow:auto"><table><thead><tr><th>#</th><th>Pemanen</th><th>Mandor</th><th>JJG</th><th>HK</th><th>JJG/HK</th><th>Class</th></tr></thead><tbody id="peopleTopMonthly"></tbody></table></div></div>
+  <div class="panel"><div class="panelHead"><h2>Top Performer — YTD</h2><span id="peopleYtdLabel">—</span></div><div style="overflow:auto"><table><thead><tr><th>#</th><th>Pemanen</th><th>JJG</th><th>HK</th><th>JJG/HK</th><th>Class</th><th>Trend</th></tr></thead><tbody id="peopleTopYtd"></tbody></table></div></div>
+</div>
+<div class="two" style="margin-top:16px">
+  <div class="panel"><div class="panelHead"><h2>Class Movement</h2><span>3 bulan terakhir</span></div><div style="overflow:auto"><table><thead><tr><th>Pemanen</th><th>Prev</th><th>Prev-2</th><th>Current</th><th>Movement</th></tr></thead><tbody id="peopleMovement"></tbody></table></div></div>
+  <div class="panel"><div class="panelHead"><h2>Cluster Pemanen</h2><div><button class="btn" style="padding:7px 10px" onclick="downloadPeopleCSV()">Download CSV</button></div></div><div class="tabs" style="display:flex;gap:6px;margin:8px 0"><button class="btn" style="padding:7px 10px" onclick="renderPeopleClass('A')">Class A</button><button class="btn" style="padding:7px 10px" onclick="renderPeopleClass('B')">Class B</button><button class="btn" style="padding:7px 10px" onclick="renderPeopleClass('C')">Class C</button></div><div id="peopleClusterList" class="notice">Pilih periode untuk melihat cluster.</div></div>
+</div>
+<div class="panel" style="margin-top:16px"><div class="panelHead"><h2>Performance History</h2><span>Monthly class + productivity</span></div><div style="overflow:auto"><table><thead><tr><th>Pemanen</th><th>Mandor</th><th>Month-2</th><th>Month-1</th><th>Current</th><th>YTD JJG/HK</th><th>Trend</th></tr></thead><tbody id="peopleHistory"></tbody></table></div><div class="densityNote"><b>Cluster rule:</b> otomatis berdasarkan ranking produktivitas bulanan: Top 30% = Class A, middle 50% = Class B, bottom 20% = Class C. Rule ini dapat diganti saat standar klasifikasi resmi ditetapkan. Data hanya berasal dari daily closing yang tersimpan di ADRIANA.</div></div>
+</section>
+
+<div class="footer">ADRIANA v22.16 · AMANTA as source of truth · People Performance reads locked daily history.</div>
 </main></div>
 <script>
 const ADRIANA_BUILD='v21';
@@ -217,7 +244,7 @@ const AFD_LABEL={ALL:'Semua Afdeling',OC:'OCYM',OE:'OEYM'};
 let ACTIVE_AFD=localStorage.getItem('adriana_active_afd')||'ALL';
 const html={escape:(x)=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))};
 let ACTIVE=null, STAGED=null;
-function show(id){document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.target===id));}
+function show(id){document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.target===id));if(id==='people')initPeople();}
 document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>show(b.dataset.target));
 function parseCSVLine(line){const out=[];let cur='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q}else if(c===','&&!q){out.push(cur);cur=''}else cur+=c}out.push(cur);return out}
 function parseCSV(text){text=text.replace(/^\uFEFF/,'');const lines=text.split(/\r?\n/),sections={};let current=null,header=null,rows=[];function flush(){if(current)sections[current]={header:header||[],rows};rows=[];header=null}for(const raw of lines){const line=raw.trim();if(!line)continue;const cells=parseCSVLine(line);if(cells.length===1){const marker=cells[0].trim().match(/^====\[([A-Z0-9_]+)\]$/i);const plain=cells[0].trim().match(/^([A-Z0-9_]+)$/i);if(marker||plain){flush();current=(marker?marker[1]:plain[1]).toUpperCase();continue}}if(current&&!header){header=cells.map(x=>x.trim());continue}if(current)rows.push(cells)}flush();return sections}
@@ -484,6 +511,33 @@ function loadAfdDateHybrid(date,afd){const s=JSON.parse(localStorage.getItem(afd
 function loadDate(date){const afd=ACTIVE_AFD==='ALL'?'OC':ACTIVE_AFD;loadAfdDateHybrid(date,afd)}
 function renderAll(snap){const d=buildData(snap);ACTIVE=snap;window.ADRIANA_DATA=d;document.getElementById('activeDate').textContent=fmtDate(snap.date);document.getElementById('activeMeta').textContent=`${snap.site} · ${AFD_LABEL[snap.afd]||snap.afd||'OCYM'} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';const vals=document.querySelectorAll('#dashboard .card .value');if(vals[0])vals[0].textContent=d.jjg.toLocaleString();if(vals[1])vals[1].textContent=d.producingHK.toLocaleString();if(vals[2])vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';if(vals[3])vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();renderProduction(d);renderHarvestDensitySummary(d);renderJJGContribution(d);renderQuality(d);renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d);}
 
-document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();renderAfdSelectorHybrid();const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;});
+
+function getPeopleSnapshots(afd){
+ let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}
+ return idx.map(x=>JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null')).filter(Boolean).filter(s=>!afd||afd==='ALL'||s.afd===afd).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+}
+function peopleRowsForSnap(s){
+ const p=s?.sections?.PRODUKSIBLOK;if(!p)return[];const h=p.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),namei=h.indexOf('NAMA'),mi=h.indexOf('KEMANDORAN');
+ const m={};p.rows.forEach(r=>{const npk=cleanCell(r[ni]);if(!npk||npk==='—')return;const name=cleanCell(r[namei])!=='—'?cleanCell(r[namei]):npk;const mand=cleanCell(r[mi]);if(!m[npk])m[npk]={id:npk,name,jjg:0,days:0,mandors:new Set()};m[npk].jjg+=num(r[ji]);m[npk].days+=1;if(mand!=='—')m[npk].mandors.add(mand)});
+ return Object.values(m).map(x=>({...x,mandor:[...x.mandors].join(', ')||'—',jph:x.days?x.jjg/x.days:0}));
+}
+function classifyPeople(rows){
+ const a=[...rows].sort((x,y)=>y.jph-x.jph);const n=a.length;if(!n)return[];const aCut=Math.max(1,Math.ceil(n*.30)),bCut=Math.max(aCut,Math.ceil(n*.80));return a.map((x,i)=>({...x,cls:i<aCut?'A':i<bCut?'B':'C',rank:i+1}));
+}
+function buildPeopleMonthly(afd){
+ const snaps=getPeopleSnapshots(afd), by={};snaps.forEach(s=>{const month=String(s.date).slice(0,7);const rows=peopleRowsForSnap(s);(by[month]??=[]).push(...rows.map(r=>({...r,date:s.date})));});
+ const out={};Object.entries(by).forEach(([month,rows])=>{const agg={};rows.forEach(r=>{const k=r.id;if(!agg[k])agg[k]={id:k,name:r.name,jjg:0,hk:0,mandors:new Set()};agg[k].jjg+=r.jjg;agg[k].hk+=1;if(r.mandor&&r.mandor!=='—')r.mandor.split(', ').forEach(v=>agg[k].mandors.add(v));});out[month]=classifyPeople(Object.values(agg).map(x=>({...x,mandor:[...x.mandors].join(', ')||'—',jph:x.hk?x.jjg/x.hk:0})));});return out;
+}
+let PEOPLE_ACTIVE_CLASS='A', PEOPLE_CACHE={};
+function renderPeople(){const afd=document.getElementById('peopleAfd')?.value||ACTIVE_AFD||'ALL', month=document.getElementById('peopleMonth')?.value||'';PEOPLE_CACHE=buildPeopleMonthly(afd);const months=Object.keys(PEOPLE_CACHE).sort();if(!months.length){['peopleTotal','peopleA','peopleB','peopleC','peopleAvg'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='—'});document.getElementById('peopleClusterList').textContent='Belum ada daily closing untuk periode ini.';return;}const m=month&&PEOPLE_CACHE[month]?month:months[months.length-1];const rows=PEOPLE_CACHE[m];const avg=rows.length?rows.reduce((a,x)=>a+x.jph,0)/rows.length:0;document.getElementById('peopleTotal').textContent=rows.length;document.getElementById('peopleA').textContent=rows.filter(x=>x.cls==='A').length;document.getElementById('peopleB').textContent=rows.filter(x=>x.cls==='B').length;document.getElementById('peopleC').textContent=rows.filter(x=>x.cls==='C').length;document.getElementById('peopleAvg').textContent=avg.toFixed(1);document.getElementById('peopleMonthLabel').textContent=m;document.getElementById('peopleYtdLabel').textContent='Jan–'+m.slice(5);renderPeopleTop(rows,m);renderPeopleYtd(afd,m);renderPeopleMovement(afd,m);renderPeopleHistory(afd,m);renderPeopleClass(PEOPLE_ACTIVE_CLASS);}
+function renderPeopleTop(rows,m){const top=rows.slice().sort((a,b)=>b.jph-a.jph).slice(0,10);document.getElementById('peopleTopMonthly').innerHTML=top.map((x,i)=>`<tr><td>${i+1}</td><td><b>${html.escape(x.name)}</b></td><td>${html.escape(x.mandor)}</td><td>${x.jjg.toLocaleString()}</td><td>${x.hk}</td><td>${x.jph.toFixed(1)}</td><td><span class="tag ${x.cls==='A'?'green':x.cls==='B'?'yellow':'red'}">${x.cls}</span></td></tr>`).join('')||'<tr><td colspan="7">No data.</td></tr>';}
+function renderPeopleYtd(afd,m){const all=getPeopleSnapshots(afd).filter(s=>String(s.date).slice(0,7)<=m);const agg={};all.forEach(s=>peopleRowsForSnap(s).forEach(r=>{const k=r.id;agg[k]??={id:k,name:r.name,jjg:0,hk:0,mandors:new Set()};agg[k].jjg+=r.jjg;agg[k].hk+=1;if(r.mandor&&r.mandor!=='—')r.mandor.split(', ').forEach(v=>agg[k].mandors.add(v));}));const rows=classifyPeople(Object.values(agg).map(x=>({...x,mandor:[...x.mandors].join(', '),jph:x.hk?x.jjg/x.hk:0}))).sort((a,b)=>b.jph-a.jph).slice(0,10);document.getElementById('peopleTopYtd').innerHTML=rows.map((x,i)=>`<tr><td>${i+1}</td><td><b>${html.escape(x.name)}</b></td><td>${x.jjg.toLocaleString()}</td><td>${x.hk}</td><td>${x.jph.toFixed(1)}</td><td><span class="tag ${x.cls==='A'?'green':x.cls==='B'?'yellow':'red'}">${x.cls}</span></td><td>→</td></tr>`).join('')||'<tr><td colspan="7">No data.</td></tr>';}
+function renderPeopleMovement(afd,m){const months=Object.keys(buildPeopleMonthly(afd)).sort(),i=months.indexOf(m),ms=[months[i-2],months[i-1],m].filter(Boolean),maps=ms.map(x=>Object.fromEntries((PEOPLE_CACHE[x]||[]).map(r=>[r.id,r]))),ids=[...new Set(ms.flatMap(x=>(PEOPLE_CACHE[x]||[]).map(r=>r.id)))];const rows=ids.map(id=>{const vals=maps.map(mp=>mp[id]?.cls||'—');const c=vals[vals.length-1],prev=vals[vals.length-2]||'—';const order={C:0,B:1,A:2};let mv='→ Stable';if(order[c]>order[prev])mv='↑ Naik';else if(order[c]<order[prev])mv='↓ Turun';return {name:(maps[maps.length-1][id]||maps.find(mp=>mp[id])?.[id])?.name||id,vals,mv}}).sort((a,b)=>a.name.localeCompare(b.name)).slice(0,20);document.getElementById('peopleMovement').innerHTML=rows.map(x=>`<tr><td>${html.escape(x.name)}</td><td>${x.vals[0]||'—'}</td><td>${x.vals[1]||'—'}</td><td><b>${x.vals[2]||'—'}</b></td><td>${x.mv}</td></tr>`).join('')||'<tr><td colspan="5">No data.</td></tr>';}
+function renderPeopleHistory(afd,m){const months=Object.keys(buildPeopleMonthly(afd)).sort(),i=months.indexOf(m),ms=[months[i-2],months[i-1],m].filter(Boolean),maps=ms.map(x=>Object.fromEntries((PEOPLE_CACHE[x]||[]).map(r=>[r.id,r]))),ids=[...new Set(ms.flatMap(x=>(PEOPLE_CACHE[x]||[]).map(r=>r.id)))];document.getElementById('peopleHistory').innerHTML=ids.slice(0,30).map(id=>{const cur=maps[maps.length-1]?.[id]||maps[0]?.[id];const vals=maps.map(mp=>mp[id]?.cls||'—');return `<tr><td>${html.escape(cur?.name||id)}</td><td>${html.escape(cur?.mandor||'—')}</td><td>${vals[0]}</td><td>${vals[1]||'—'}</td><td>${vals[2]||'—'}</td><td>${cur?.jph?.toFixed(1)||'—'}</td><td>${vals[vals.length-1]||'—'}</td></tr>`}).join('')||'<tr><td colspan="7">No data.</td></tr>';}
+function renderPeopleClass(cls){PEOPLE_ACTIVE_CLASS=cls;const m=document.getElementById('peopleMonth')?.value||Object.keys(PEOPLE_CACHE).sort().pop();const rows=(PEOPLE_CACHE[m]||[]).filter(x=>x.cls===cls).sort((a,b)=>b.jph-a.jph);document.getElementById('peopleClusterList').innerHTML=rows.length?`<b>Class ${cls}</b> · ${rows.length} pemanen<br><div style="margin-top:8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:6px">${rows.map((x,i)=>`<div class="notice"><b>${i+1}. ${html.escape(x.name)}</b><br><span class="small">${x.jph.toFixed(1)} JJG/HK · ${x.jjg.toLocaleString()} JJG</span></div>`).join('')}</div>`:'Tidak ada pemanen pada class ini.';}
+function downloadPeopleCSV(){const m=document.getElementById('peopleMonth')?.value||Object.keys(PEOPLE_CACHE).sort().pop();const rows=PEOPLE_CACHE[m]||[];const lines=['Period,Pemanen,Mandor,JJG,HK,JJG/HK,Class',...rows.sort((a,b)=>b.jph-a.jph).map(x=>[m,x.name,x.mandor,x.jjg,x.hk,x.jph.toFixed(2),x.cls].map(v=>`"${String(v).replaceAll('"','""')}"`).join(','))];const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`ADRIANA_People_Performance_${m||'period'}.csv`;a.click();URL.revokeObjectURL(a.href);}
+function initPeople(){const m=document.getElementById('peopleMonth'),a=document.getElementById('peopleAfd');if(!m||!a)return;a.value=ACTIVE_AFD==='ALL'?'ALL':ACTIVE_AFD;a.onchange=renderPeople;m.onchange=renderPeople;const refresh=()=>{const months=Object.keys(buildPeopleMonthly(a.value)).sort();m.innerHTML=months.map(x=>`<option value="${x}">${x}</option>`).join('');if(months.length)m.value=months[months.length-1];renderPeople();};refresh();}
+
+document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();renderAfdSelectorHybrid();const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;initPeople();});
 </script>
 </body></html>
