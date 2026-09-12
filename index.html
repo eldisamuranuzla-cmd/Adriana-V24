@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ADRIANA v20 — Assistant Daily Reporting & Analytics</title>
+<title>ADRIANA v24 — Assistant Daily Reporting & Analytics</title>
 <style>
 :root{--bg:#f3f6f2;--panel:#fff;--ink:#17211b;--muted:#68746c;--line:#dce4dd;--green:#155c3b;--green2:#e7f1eb;--amber:#a36a12;--red:#a94332}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
@@ -158,6 +158,19 @@ body{background:#f4f7f3}
 
 
 
+<style>
+.h1intel{margin-top:14px;border:1px solid #dce8df;border-radius:14px;background:#fff;box-shadow:0 7px 24px rgba(25,57,40,.05);overflow:hidden}.h1intel .head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #e5ebe6}.h1intel .head h2{margin:0;font-size:16px}.h1intel .body{padding:16px}.h1grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.h1metric{background:#f5faf6;border-radius:10px;padding:11px}.h1metric small{display:block;color:#68766d;font-size:10px}.h1metric b{display:block;font-size:21px;margin-top:4px}.h1rec{margin-top:12px;padding:13px;border-radius:11px;background:#edf7f0;border:1px solid #d4e7d9}.h1rec strong{font-size:20px}.h1focus{margin-top:12px}.h1focus table{width:100%;border-collapse:collapse}.h1focus th,.h1focus td{padding:7px;border-bottom:1px solid #e7ece8;text-align:left;font-size:12px}.h1btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.h1btns button{border:1px solid #cbd8cf;border-radius:8px;background:#fff;padding:8px 12px;cursor:pointer}.h1btns .ok{background:#16753a;color:#fff;border-color:#16753a}@media(max-width:800px){.h1grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+<div class="h1intel" id="h1Intelligence">
+ <div class="head"><h2>AI H+1 Harvest Plan</h2><span class="tag green">DECISION INTELLIGENCE</span></div>
+ <div class="body">
+  <div class="h1grid"><div class="h1metric"><small>Actual HK</small><b id="h1ActualHK">—</b></div><div class="h1metric"><small>AKP</small><b id="h1AKP">—</b></div><div class="h1metric"><small>AFD Basis</small><b id="h1Basis">—</b></div><div class="h1metric"><small>Recommended HK</small><b id="h1RecommendedHK">—</b></div></div>
+  <div class="h1rec" id="h1Recommendation">Upload &amp; lock daily AMANTA to generate H+1 recommendation.</div>
+  <div class="h1focus"><b>Mandor Focus — Underperformer minggu sebelumnya</b><div style="overflow:auto;margin-top:7px"><table><thead><tr><th>Pemanen</th><th>Class</th><th>JJG/HK</th><th>ACH</th><th>Action</th></tr></thead><tbody id="h1FocusBody"><tr><td colspan="5" class="small">Belum ada data.</td></tr></tbody></table></div></div>
+  <div class="h1btns"><button class="ok" onclick="saveH1Decision('ACCEPT')">ACCEPT RECOMMENDATION</button><button onclick="saveH1Decision('ADJUST')">ADJUST</button><button onclick="saveH1Decision('OVERRIDE')">OVERRIDE</button></div>
+  <div class="small" id="h1DecisionMsg" style="margin-top:8px">Decision akan masuk ke PDCA Log.</div>
+ </div>
+</div>
 <section id="pdca" class="section">
 <div class="top"><div><div class="eyebrow">DECISION LOOP</div><div class="title">PDCA / Decision Log</div><div class="meta">Decision today → action tomorrow → actual result → effectiveness.</div></div></div>
 <div class="panel">
@@ -629,5 +642,17 @@ window.ADRIANA_H1={
   const r=+actual/+plan; return r>=.95&&r<=1.10?"EFFECTIVE":"REVIEW";
  }
 };
+</script>
+<script>
+(function(){
+ function n(v){return Number(v)||0}
+ function basisFor(afd){return afd==='OE'?93.95:78.96}
+ function snaps(afd){const idx=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');return idx.map(d=>JSON.parse(localStorage.getItem(lockKey(d))||'null')).filter(Boolean).filter(x=>!afd||afd==='ALL'||x.afd===afd).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
+ function histJph(afd){let jjg=0,hk=0;snaps(afd).slice(-7).forEach(x=>{jjg+=n(x.jjg);hk+=n(x.producingHK)});return hk?jjg/hk:0}
+ function focus(afd){try{const ms=Object.keys(buildPeopleMonthly(afd)).sort();if(ms.length<2)return[];const r=buildPeopleMonthly(afd)[ms[ms.length-2]]||[];return r.filter(x=>x.cls==='C'||(x.ach!=null&&x.ach<85)).sort((a,b)=>(a.ach??0)-(b.ach??0)).slice(0,8)}catch(e){return[]}}
+ window.renderH1Intelligence=function(d){if(!d)return;const afd=ACTIVE_AFD==='ALL'?(d.afd||'OC'):ACTIVE_AFD,basis=basisFor(afd),jjg=n(d.jjg),hk=n(d.producingHK),jph=hk?jjg/hk:0,akp=d.harvestDensity?.globalAkp??null,h=histJph(afd),capacity=Math.max(basis,h||basis),recommended=Math.min(20,Math.max(1,Math.ceil(jjg/capacity)));document.getElementById('h1ActualHK').textContent=hk||'—';document.getElementById('h1AKP').textContent=akp!=null?Number(akp).toFixed(1)+'%':'—';document.getElementById('h1Basis').textContent=basis.toFixed(1)+' JJG/HK';document.getElementById('h1RecommendedHK').textContent=recommended+' HK';document.getElementById('h1Recommendation').innerHTML='<strong>'+recommended+' HK</strong> recommended for H+1 · current productivity '+jph.toFixed(1)+' JJG/HK · historical capacity '+capacity.toFixed(1)+' JJG/HK.<br><span class="small">Recommendation is total afdeling, capped at 20 HK. AI combines current production, recent afdeling history and AFD basis; rotation/calendar should be checked before final decision.</span>';const rs=focus(afd);document.getElementById('h1FocusBody').innerHTML=rs.length?rs.map(x=>`<tr><td><b>${html.escape(x.name)}</b></td><td>${x.cls}</td><td>${n(x.jph).toFixed(1)}</td><td>${x.ach==null?'—':n(x.ach).toFixed(1)+'%'}</td><td>Coaching / monitor</td></tr>`).join(''):'<tr><td colspan="5" class="small">Tidak ada underperformer yang terdeteksi dari histori sebelumnya.</td></tr>';window.__H1_CURRENT={afd,date:d.date,actualHK:hk,akp,basis,recommendedHK:recommended,capacity,focus:rs.map(x=>x.name),source:'AMANTA + People Performance'};};
+ window.saveH1Decision=function(decision){const p=window.__H1_CURRENT;if(!p){document.getElementById('h1DecisionMsg').textContent='Belum ada active dataset.';return}const arr=JSON.parse(localStorage.getItem('adriana_decisions')||'[]');const d=new Date(p.date+'T00:00:00');d.setDate(d.getDate()+1);while(d.getDay()===0)d.setDate(d.getDate()+1);const next=d.toISOString().slice(0,10);arr.unshift({date:p.date,afd:p.afd,decision:`H+1 HK ${p.recommendedHK}`,action:`${decision}: ${p.recommendedHK} HK; focus=${p.focus.join(', ')||'none'}`,nextCheck:next,closingId:ACTIVE?.closingId||'',source:p.source});localStorage.setItem('adriana_decisions',JSON.stringify(arr));document.getElementById('h1DecisionMsg').textContent=`Saved: ${decision} · ${p.recommendedHK} HK · H+1 ${fmtDate(next)}`;if(typeof renderDecisionHistory==='function')renderDecisionHistory();};
+ const old=window.renderAI;window.renderAI=function(d){if(old)old(d);renderH1Intelligence(d)};
+})();
 </script>
 </body></html>
