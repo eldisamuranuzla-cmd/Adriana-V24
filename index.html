@@ -230,10 +230,10 @@ body{background:#f4f7f3}
   <div class="panel"><div class="panelHead"><h2>Class Movement</h2><span>3 bulan terakhir</span></div><div style="overflow:auto"><table><thead><tr><th>Pemanen</th><th>Prev</th><th>Prev-2</th><th>Current</th><th>Movement</th></tr></thead><tbody id="peopleMovement"></tbody></table></div></div>
   <div class="panel"><div class="panelHead"><h2>Cluster Pemanen</h2><div><button class="btn" style="padding:7px 10px" onclick="downloadPeopleCSV()">Download CSV</button></div></div><div class="tabs" style="display:flex;gap:6px;margin:8px 0"><button class="btn" style="padding:7px 10px" onclick="renderPeopleClass('A')">Class A</button><button class="btn" style="padding:7px 10px" onclick="renderPeopleClass('B')">Class B</button><button class="btn" style="padding:7px 10px" onclick="renderPeopleClass('C')">Class C</button></div><div id="peopleClusterList" class="notice">Pilih periode untuk melihat cluster.</div></div>
 </div>
-<div class="panel" style="margin-top:16px"><div class="panelHead"><h2>Performance History</h2><span>Monthly class + productivity</span></div><div style="overflow:auto"><table><thead><tr><th>Pemanen</th><th>Mandor</th><th>Month-2</th><th>Month-1</th><th>Current</th><th>YTD JJG/HK</th><th>Trend</th></tr></thead><tbody id="peopleHistory"></tbody></table></div><div class="densityNote"><b>Cluster rule:</b> Class A = ACH ≥100% terhadap basis, Class B = 85%–<100%, Class C <85%. Basis Jan–Agustus berasal dari monthly Excel baseline; September dan seterusnya menggunakan basis AFD terakhir yang tersedia sampai basis bulan berjalan tersedia. Data September berasal dari daily closing AMANTA.</div></div>
+<div class="panel" style="margin-top:16px"><div class="panelHead"><h2>Performance History</h2><span>Monthly class + productivity</span></div><div style="overflow:auto"><table><thead><tr><th>Pemanen</th><th>Mandor</th><th>Month-2</th><th>Month-1</th><th>Current</th><th>YTD JJG/HK</th><th>Trend</th></tr></thead><tbody id="peopleHistory"></tbody></table></div><div class="densityNote"><b>Cluster rule:</b> Achievement = (JJG/HK ÷ Basis) × 100%. Class A = ≥100%, Class B = 85%–<100%, Class C = <85%. Basis historis mengikuti bulan terkait; bukan ranking top performer. Basis Jan–Agustus berasal dari monthly Excel baseline; September dan seterusnya menggunakan basis AFD terakhir yang tersedia sampai basis bulan berjalan tersedia. Data September berasal dari daily closing AMANTA.</div></div>
 </section>
 
-<div class="footer">ADRIANA v22.18 · People Performance: Jan–Aug Excel baseline + Sep onward locked AMANTA.</div>
+<div class="footer">ADRIANA v22.19 · People Performance: Basis-driven Class A/B/C · Jan–Aug Excel baseline + Sep onward locked AMANTA.</div>
 </main></div>
 <script>
 const ADRIANA_BUILD='v22.18';
@@ -530,8 +530,23 @@ function latestPeopleBasis(afd,month){
  const vals=PEOPLE_HIST.filter(r=>r.a===afd && String(r.m)<=(month||'9999-99') && num(r.b)>0);
  if(!vals.length)return 0;const latest=vals.reduce((a,r)=>String(r.m)>String(a)?r.m:a,'');const rows=vals.filter(r=>r.m===latest);let hk=0,b=0;rows.forEach(r=>{hk+=r.h;b+=r.b*r.h});return hk?b/hk:0;
 }
+function peopleAchievement(jph,basis){
+ const v=num(jph),b=num(basis);
+ return (Number.isFinite(v)&&Number.isFinite(b)&&b>0)?(v/b*100):null;
+}
+function peopleClassFromAch(ach){
+ if(ach===null||!Number.isFinite(ach)) return 'N/A';
+ if(ach>=100) return 'A';
+ if(ach>=85) return 'B';
+ return 'C';
+}
 function classifyPeople(rows){
- return rows.map(x=>{const basis=num(x.basis||x.b);const ach=basis>0?(x.jph/basis*100):null;let cls='N/A';if(ach!==null){if(ach>=100)cls='A';else if(ach>=85)cls='B';else cls='C';}return {...x,cls,ach,basis};});
+ return rows.map(x=>{
+   const basis=num(x.basis);
+   const jph=num(x.jph);
+   const ach=peopleAchievement(jph,basis);
+   return {...x,cls:peopleClassFromAch(ach),ach,basis};
+ });
 }
 function buildPeopleMonthly(afd){
  const out={};
