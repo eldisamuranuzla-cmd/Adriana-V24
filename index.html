@@ -348,15 +348,64 @@ function mergeSections(a,b){const out=JSON.parse(JSON.stringify(a));const report
 async function processAMANTA(){const files=[...document.getElementById('amantaFiles').files];if(!files.length)return;const parsed=[];for(const f of files.slice(0,2))parsed.push({name:f.name,sections:parseCSV(await f.text()),size:f.size});const metas=parsed.map(x=>detectMeta(x.sections));const dates=[...new Set(metas.map(x=>x.date).filter(Boolean))];const unresolved=metas.map((m,i)=>m.date?null:`File ${i+1}: tanggal tidak terdeteksi`).filter(Boolean);const inconsistent=metas.some(m=>m.dates.length>1);const sites=[...new Set(parsed.map(x=>secGet(x.sections,'PRODUKSIBLOK','SITECODE').find(Boolean)).filter(Boolean))];if(unresolved.length||dates.length!==1||inconsistent){const detail=metas.map((m,i)=>`File ${i+1}: ${m.dates.length?m.dates.join(', '):'UNAVAILABLE'}`).join(' · ');document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> tanggal antar file tidak sama/tidak terdeteksi. '+html.escape(detail);return}let merged=parsed[0].sections,report=[];if(parsed[1]){const m=mergeSections(merged,parsed[1].sections);merged=m.sections;report=m.report}else{report=Object.entries(merged).map(([k,v])=>({section:k,file1:v.rows.length,file2:0,duplicates:0,final:v.rows.length}))}STAGED={date:dates[0],site:sites[0]||'—',version:'3.2.8.9',files:parsed.map(x=>x.name),sections:merged,recon:report,processedAt:new Date().toISOString()};document.getElementById('uploadMsg').innerHTML='<b>Parsed:</b> '+parsed.length+' file(s) · '+html.escape(parsed.map(x=>x.name).join(' + '));const dup=report.reduce((a,x)=>a+x.duplicates,0),raw=parsed.reduce((a,x)=>a+Object.values(x.sections).reduce((n,s)=>n+s.rows.length,0),0),fin=Object.values(merged).reduce((n,s)=>n+s.rows.length,0);document.getElementById('reconBox').innerHTML=`<b>READY TO CLOSE</b><br>Tanggal: <b>${fmtDate(STAGED.date)}</b> · Site: ${html.escape(STAGED.site)} · ${parsed.length} file<br>Raw rows: ${raw.toLocaleString()} · Duplicate rows removed: ${dup.toLocaleString()} · Final reconciled rows: ${fin.toLocaleString()}<br><span class="small">Identical rows are deduplicated; records are not blindly summed across files.</span>`;document.getElementById('lockBtn').disabled=false;renderStagedPreview(STAGED)}
 function fmtDate(iso){if(!iso)return 'No dataset';const d=new Date(iso+'T00:00:00');return isNaN(d)?iso:d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}
 function lockKey(date){return 'adriana_daily_'+date}
-function closeDataset(){if(!STAGED)return;const existing=JSON.parse(localStorage.getItem(lockKey(STAGED.date))||'null');const closingId=existing?.closingId||('CLOSE-'+STAGED.date);const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};localStorage.setItem(lockKey(STAGED.date),JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(STAGED.date))dates.push(STAGED.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));ACTIVE=snap;window.ADRIANA_DATA=buildData(snap);renderAll(ACTIVE);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');}
-function buildData(snap){const sections=snap.sections,prod=sections.PRODUKSIBLOK;let jjg=0;const npks=new Set(),mand=new Set(),blocks={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{jjg+=num(r[ji]);if(r[ni])npks.add(r[ni]);if(r[mi])mand.add(r[mi]);const b=r[bi]||'—';blocks[b]=(blocks[b]||0)+num(r[ji])})}let net=0,trips=0;const tr=sections.TR_TBS_TRANSPORT;if(tr){const wi=tr.header.indexOf('WEIGHTIN'),wo=tr.header.indexOf('WEIGHTOUT');tr.rows.forEach(r=>{const x=num(r[wi])-num(r[wo]);if(x>0){net+=x;trips++}})}const harvesters={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),namei=h.indexOf('NAMA'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{const npk=cleanCell(r[ni]);if(npk==='—')return;const name=cleanCell(r[namei]);const key=npk;harvesters[key]??={npk,name,j:0,blocks:new Set(),mandorans:new Set()};harvesters[key].j+=num(r[ji]);const b=cleanCell(r[bi]),m=cleanCell(r[mi]);if(b!=='—')harvesters[key].blocks.add(b);if(m!=='—')harvesters[key].mandorans.add(m)});}const bjrKgPerJjg=jjg>0&&net>0?net/jjg:null;return {...snap,jjg,producingHK:npks.size,mandorans:[...mand],blocks,netTransportKg:net,trips,bjrKgPerJjg,harvesters:Object.values(harvesters).map(x=>({...x,blocks:[...x.blocks],mandorans:[...x.mandorans],jjgPerHK:x.j}))}}
-function renderStagedPreview(s){const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent='—';vals[1].textContent='—';vals[2].textContent='—';}
-function renderAll(snap){const d=buildData(snap);ACTIVE=snap;window.ADRIANA_DATA=d;document.getElementById('activeDate').textContent=fmtDate(snap.date);document.getElementById('activeMeta').textContent=`${snap.site} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent=d.jjg.toLocaleString();vals[1].textContent=d.producingHK.toLocaleString();vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';const bjrNotice=document.getElementById('bjrNotice');if(bjrNotice)bjrNotice.innerHTML=d.bjrKgPerJjg?`<b>BJR:</b> ${d.bjrKgPerJjg.toFixed(2)} kg/JJG · ${d.netTransportKg.toLocaleString()} kg net ÷ ${d.jjg.toLocaleString()} JJG`:'<b>BJR:</b> unavailable because net transport or JJG is unavailable.';const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();renderProduction(d);renderQuality(d);renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d)}
-function normalizeDensityBlock(v,afd=ACTIVE_AFD){
- const raw=String(v??'').trim().toUpperCase().replace(/\s+/g,'');if(!raw||raw==='—'||raw==='NULL')return null;
- const m=raw.match(/^(?:OC|OE)?0*([0-9]+)(A)?$/);if(!m)return raw;
- const n=String(Number(m[1])).padStart(3,'0');
- return (afd==='OE'?'OE':'OC')+n+(m[2]?'A':'');
+function closeDataset(){
+ try{
+  if(!STAGED){
+   const msg=document.getElementById('reconBox');
+   if(msg)msg.innerHTML='<b>BLOCKED:</b> Tidak ada dataset yang siap di-close. Klik UPLOAD & PROCESS terlebih dahulu.';
+   return;
+  }
+  const date=String(STAGED.date||'').trim();
+  const afd=STAGED.afd||detectAFDHybrid(STAGED.sections||{},STAGED.files?.[0]||'')||ACTIVE_AFD||'OC';
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){
+   document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> Format tanggal dataset tidak valid: '+html.escape(date||'UNAVAILABLE');
+   return;
+  }
+  const key=afdKeyHybrid(date,afd);
+  let existing=null;
+  try{existing=JSON.parse(localStorage.getItem(key)||'null')}catch(e){
+   // Recover a corrupted old lock record instead of failing silently.
+   localStorage.removeItem(key);
+  }
+  const closingId=existing?.closingId||('CLOSE-'+afd+'-'+date);
+  const snap={...STAGED,afd,afdLabel:AFD_LABEL[afd]||afd,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};
+  localStorage.setItem(key,JSON.stringify(snap));
+
+  let idx=[];
+  try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){idx=[]}
+  if(!Array.isArray(idx))idx=[];
+  idx=idx.filter(x=>!(x.date===date&&x.afd===afd));
+  idx.push({date,afd});
+  idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  localStorage.setItem('adriana_afd_index',JSON.stringify(idx));
+
+  // Preserve legacy OC history for existing modules.
+  if(afd==='OC'){
+   localStorage.setItem('adriana_daily_'+date,JSON.stringify(snap));
+   let dates=[];
+   try{dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){dates=[]}
+   if(!Array.isArray(dates))dates=[];
+   if(!dates.includes(date))dates.push(date);
+   dates.sort().reverse();
+   localStorage.setItem('adriana_daily_index',JSON.stringify(dates));
+  }
+
+  ACTIVE=snap;
+  STAGED=null;
+  window.ADRIANA_DATA=buildData(snap);
+  renderAll(snap);
+  document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';
+  document.getElementById('uploadMsg').innerHTML='<b>LOCKED:</b> '+fmtDate(date)+' · '+html.escape(closingId);
+  document.getElementById('reconBox').innerHTML='<b>CLOSED & LOCKED</b><br>Afdeling: <b>'+html.escape(AFD_LABEL[afd]||afd)+'</b> · Tanggal: <b>'+fmtDate(date)+'</b> · Closing ID: <b>'+html.escape(closingId)+'</b>';
+  const lb=document.getElementById('lockBtn'); if(lb)lb.disabled=true;
+  const pb=document.getElementById('processBtn'); if(pb)pb.disabled=true;
+  renderHistory();
+  alert('Dataset '+fmtDate(date)+' berhasil di-CLOSE & LOCK.');
+ }catch(err){
+  console.error('ADRIANA closeDataset error:',err);
+  const box=document.getElementById('reconBox');
+  if(box)box.innerHTML='<b>LOCK FAILED:</b> '+html.escape(err?.message||String(err));
+ }
 }
 function hestiMasterForAfd(afd){
  if(afd==='OC')return HESTI_MASTER;
@@ -590,12 +639,63 @@ async function processAMANTA(){
  document.getElementById('lockBtn').disabled=false;renderStagedPreview(STAGED);
 }
 function closeDataset(){
- if(!STAGED)return;const k=afdKeyHybrid(STAGED.date,STAGED.afd),existing=JSON.parse(localStorage.getItem(k)||'null'),closingId=existing?.closingId||('CLOSE-'+STAGED.afd+'-'+STAGED.date);
- const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};localStorage.setItem(k,JSON.stringify(snap));
- let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}idx=idx.filter(x=>!(x.date===snap.date&&x.afd===snap.afd));idx.push({date:snap.date,afd:snap.afd});idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));localStorage.setItem('adriana_afd_index',JSON.stringify(idx));
- // Keep V22 legacy storage for OC so the original history remains readable.
- if(snap.afd==='OC'){localStorage.setItem('adriana_daily_'+snap.date,JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(snap.date))dates.push(snap.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));}
- ACTIVE=snap;STAGED=null;window.ADRIANA_DATA=buildData(snap);renderAll(snap);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');
+ try{
+  if(!STAGED){
+   const msg=document.getElementById('reconBox');
+   if(msg)msg.innerHTML='<b>BLOCKED:</b> Tidak ada dataset yang siap di-close. Klik UPLOAD & PROCESS terlebih dahulu.';
+   return;
+  }
+  const date=String(STAGED.date||'').trim();
+  const afd=STAGED.afd||detectAFDHybrid(STAGED.sections||{},STAGED.files?.[0]||'')||ACTIVE_AFD||'OC';
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){
+   document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> Format tanggal dataset tidak valid: '+html.escape(date||'UNAVAILABLE');
+   return;
+  }
+  const key=afdKeyHybrid(date,afd);
+  let existing=null;
+  try{existing=JSON.parse(localStorage.getItem(key)||'null')}catch(e){
+   // Recover a corrupted old lock record instead of failing silently.
+   localStorage.removeItem(key);
+  }
+  const closingId=existing?.closingId||('CLOSE-'+afd+'-'+date);
+  const snap={...STAGED,afd,afdLabel:AFD_LABEL[afd]||afd,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};
+  localStorage.setItem(key,JSON.stringify(snap));
+
+  let idx=[];
+  try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){idx=[]}
+  if(!Array.isArray(idx))idx=[];
+  idx=idx.filter(x=>!(x.date===date&&x.afd===afd));
+  idx.push({date,afd});
+  idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  localStorage.setItem('adriana_afd_index',JSON.stringify(idx));
+
+  // Preserve legacy OC history for existing modules.
+  if(afd==='OC'){
+   localStorage.setItem('adriana_daily_'+date,JSON.stringify(snap));
+   let dates=[];
+   try{dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){dates=[]}
+   if(!Array.isArray(dates))dates=[];
+   if(!dates.includes(date))dates.push(date);
+   dates.sort().reverse();
+   localStorage.setItem('adriana_daily_index',JSON.stringify(dates));
+  }
+
+  ACTIVE=snap;
+  STAGED=null;
+  window.ADRIANA_DATA=buildData(snap);
+  renderAll(snap);
+  document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';
+  document.getElementById('uploadMsg').innerHTML='<b>LOCKED:</b> '+fmtDate(date)+' · '+html.escape(closingId);
+  document.getElementById('reconBox').innerHTML='<b>CLOSED & LOCKED</b><br>Afdeling: <b>'+html.escape(AFD_LABEL[afd]||afd)+'</b> · Tanggal: <b>'+fmtDate(date)+'</b> · Closing ID: <b>'+html.escape(closingId)+'</b>';
+  const lb=document.getElementById('lockBtn'); if(lb)lb.disabled=true;
+  const pb=document.getElementById('processBtn'); if(pb)pb.disabled=true;
+  renderHistory();
+  alert('Dataset '+fmtDate(date)+' berhasil di-CLOSE & LOCK.');
+ }catch(err){
+  console.error('ADRIANA closeDataset error:',err);
+  const box=document.getElementById('reconBox');
+  if(box)box.innerHTML='<b>LOCK FAILED:</b> '+html.escape(err?.message||String(err));
+ }
 }
 function renderAfdSelectorHybrid(){const el=document.getElementById('afdFilter');if(!el)return;el.value=ACTIVE_AFD;el.onchange=()=>{ACTIVE_AFD=el.value;localStorage.setItem('adriana_active_afd',ACTIVE_AFD);const snaps=getAfdSnapshotsHybrid(ACTIVE_AFD);if(snaps.length){renderAll(snaps[snaps.length-1]);}else{document.getElementById('activeDate').textContent='No dataset';document.getElementById('activeMeta').textContent=(AFD_LABEL[ACTIVE_AFD]||'Semua Afdeling')+' · Belum ada dataset';document.getElementById('lockState').textContent='● NO DATASET';document.getElementById('dashboardSignals').innerHTML='<div class="notice">Belum ada dataset untuk afdeling ini.</div>';document.getElementById('dashboardDecision').textContent='—';document.getElementById('dashboardDecisionText').textContent='Upload AMANTA untuk afdeling yang dipilih.';renderHarvestDensitySummary({blocks:{}});renderHistory();renderDecisionHistory();}}}
 function renderHistory(){const host=document.getElementById('evalHistory');if(!host)return;migrateLegacyHistoryHybrid();const idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');const rows=idx.map(x=>{const s=JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null');return s?`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)} · ${html.escape(s.afdLabel||s.afd)}</b><br>${s.jjg?Number(s.jjg).toLocaleString():'—'} JJG · ${s.producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadAfdDateHybrid('${s.date}','${s.afd}')">LOAD THIS DATE</button></div>`:''}).join('');host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>');if(typeof renderDecisionHistory==='function')renderDecisionHistory();}
