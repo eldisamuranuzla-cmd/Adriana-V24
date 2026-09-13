@@ -117,11 +117,11 @@ body{background:#f4f7f3}
   </div>
   <div class="peopleTableWrap">
     <table>
-      <thead><tr><th>Pemanen</th><th>JJG Today</th><th>Basis Seksi (Avg)</th><th>More Basis</th><th>More Basis MTD</th><th>Premi Today</th><th>Premi MTD</th><th>Class</th></tr></thead>
+      <thead><tr><th>Pemanen</th><th>JJG Today</th><th>Basis Blok (Avg)</th><th>More Basis</th><th>More Basis MTD</th><th>Premi Today</th><th>Premi MTD</th><th>Class</th></tr></thead>
       <tbody id="dashPeopleBody"><tr><td colspan="7" class="small">Upload &amp; lock AMANTA untuk melihat People Performance.</td></tr></tbody>
     </table>
   </div>
-  <div class="peopleNote">Premi dihitung harian per blok yang benar-benar dipanen: JJG AMANTA pemanen pada blok tersebut dikurangi basis blok master sesuai seksi. More Basis dan Premi MTD diakumulasi dari tanggal 1 sampai tanggal aktif pada bulan berjalan. Minggu: Rp2.500/JJG. Jan–Aug 2026 tidak ditampilkan.</div>
+  <div class="peopleNote">Premi dihitung harian per pemanen: seluruh JJG pemanen dari blok yang benar-benar dipanen dikurangi rata-rata basis blok yang dipanen pemanen tersebut. More Basis dan Premi MTD diakumulasi dari tanggal 1 sampai tanggal aktif pada bulan berjalan. Minggu: Rp2.500/JJG. Jan–Aug 2026 tidak ditampilkan.</div>
 </div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
 <div class="footer">ADRIANA v22.13 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
@@ -182,7 +182,7 @@ body{background:#f4f7f3}
   <div class="panel">
     <div class="peoplePeriodBar">
       <div><b>Periode aktif:</b> <span id="peoplePeriod">September 2026 onward</span></div>
-      <div class="small">OCYM · Premi harian dihitung dari basis blok yang aktual dipanen</div>
+      <div class="small">OCYM · Premi harian dihitung dari basis blok yang aktual dipanen oleh pemanen</div>
     </div>
     <div class="peopleKpis peopleKpisLarge">
       <div class="peopleKpi"><small>TOTAL PEMANEN AKTIF</small><strong id="peopleCount">—</strong></div>
@@ -201,7 +201,7 @@ body{background:#f4f7f3}
       <table>
         <thead>
           <tr>
-            <th>Pemanen</th><th>JJG Today</th><th>Basis Seksi (Avg)</th><th>More Basis</th>
+            <th>Pemanen</th><th>JJG Today</th><th>Basis Blok (Avg)</th><th>More Basis</th>
             <th>Premi Today</th><th>More Basis MTD</th><th>Premi MTD</th><th>JJG/HK MTD</th><th>Achievement</th><th>Class</th>
           </tr>
         </thead>
@@ -211,9 +211,9 @@ body{background:#f4f7f3}
     <div class="panel" style="margin-top:14px;background:#f8fbf9">
       <h2 style="margin-bottom:8px">Aturan Premi</h2>
       <div class="notice">
-        <b>Hari efektif:</b> Premi = max(0, JJG aktual − Basis Seksi) × Rp1.500.<br>
+        <b>Hari efektif:</b> Premi = max(0, JJG aktual − Basis Blok) × Rp1.500.<br>
         <b>Minggu:</b> seluruh JJG × Rp2.500, tanpa basis.<br>
-        <b>Basis Seksi:</b> rata-rata basis blok yang benar-benar dipanen pada seksi tersebut pada hari itu.<br>
+        <b>Basis Blok:</b> rata-rata basis blok yang benar-benar dipanen oleh pemanen tersebut pada hari itu.<br>
         <b>Catatan:</b> JJG/HK digunakan untuk performance, bukan untuk menghitung premi. Tidak ada premi negatif.
       </div>
     </div>
@@ -601,33 +601,57 @@ function peopleProductionRows(snap){
 function buildPeopleDay(snap){
  if(!snap||snap.afd&&snap.afd!=='OC')return{date:snap?.date||null,afd:snap?.afd||null,rows:[],transactions:[],totalJjg:0,totalMore:0,totalPremi:0,isSunday:false};
  const rows=peopleProductionRows(snap), isSun=peopleDateSunday(snap.date), grouped={};
+
+ /* FINAL PREMI RULE:
+    Fokus hanya pada BLOK yang benar-benar dipanen oleh masing-masing PEMANEN.
+    Tidak ada penguncian / averaging per seksi.
+    Untuk satu pemanen pada satu tanggal:
+      1) kumpulkan semua blok yang dia panen;
+      2) ambil basis setiap blok;
+      3) average = total basis blok unik / jumlah blok unik;
+      4) More Basis = max(0, total JJG pemanen - average basis tersebut).
+    Premi Mon-Sat = More Basis x Rp1.500.
+    Premi Sunday = seluruh JJG x Rp2.500.
+ */
  rows.forEach(r=>{
-   const block=peopleBlockKey(r.block), basis=peopleBasisForBlock(r.block), sec=peopleSectionForBlock(r.block);
-   if(!block||basis==null||!sec)return;
-   const key=r.npk+'||'+sec;
-   grouped[key]??={npk:r.npk,name:r.name,section:sec,jjg:0,blocks:[],blockBases:[],mandors:[]};
-   const x=grouped[key]; x.jjg+=r.jjg;
-   if(!x.blocks.includes(block)){x.blocks.push(block);x.blockBases.push(`${block}: ${basis}`);}
+   const block=peopleBlockKey(r.block), basis=peopleBasisForBlock(r.block);
+   if(!block||basis==null)return;
+   const key=r.npk;
+   grouped[key]??={npk:r.npk,name:r.name,jjg:0,blocks:[],blockBases:[],mandors:[]};
+   const x=grouped[key];
+   x.jjg+=r.jjg;
+   if(!x.blocks.includes(block)){
+     x.blocks.push(block);
+     x.blockBases.push(`${block}: ${basis}`);
+   }
    if(r.mandor&&!x.mandors.includes(r.mandor))x.mandors.push(r.mandor);
  });
+
  const transactions=Object.values(grouped).map(x=>{
    const bases=x.blocks.map(b=>peopleBasisForBlock(b)).filter(v=>Number.isFinite(v));
    const basis=bases.length?bases.reduce((a,b)=>a+b,0)/bases.length:null;
    const more=isSun?0:(basis==null?0:Math.max(0,x.jjg-basis));
    const premi=isSun?x.jjg*2500:more*1500;
-   return {...x,basis,more,premi,isSunday:isSun};
+   return {
+     npk:x.npk,name:x.name,jjg:x.jjg,section:null,
+     blocks:[...x.blocks],blockBases:[...x.blockBases],mandors:[...x.mandors],
+     basis,more,premi,isSunday:isSun
+   };
  });
- const byHarvester={};
- transactions.forEach(x=>{
-   const y=byHarvester[x.npk]??={npk:x.npk,name:x.name,jjg:0,more:0,premi:0,basisWeightedSum:0,basisWeight:0,sections:[],blocks:[],blockBases:[],sectionBases:[]};
-   y.jjg+=x.jjg;y.more+=x.more;y.premi+=x.premi;
-   if(x.basis!=null){y.basisWeightedSum+=x.basis*x.jjg;y.basisWeight+=x.jjg;}
-   if(!y.sections.includes(x.section))y.sections.push(x.section);
-   y.blocks.push(...x.blocks);y.blockBases.push(...x.blockBases);
-   y.sectionBases.push(`${x.section}: ${x.basis==null?'—':x.basis.toFixed(2)}`);
- });
- const summary=Object.values(byHarvester).map(x=>({...x,basis:x.basisWeight?x.basisWeightedSum/x.basisWeight:null,blocks:[...new Set(x.blocks)],blockBases:[...new Set(x.blockBases)],sectionBases:[...new Set(x.sectionBases)]}));
- return {date:snap.date,afd:'OC',rows:summary,transactions,totalJjg:rows.reduce((a,r)=>a+r.jjg,0),totalMore:transactions.reduce((a,r)=>a+r.more,0),totalPremi:transactions.reduce((a,r)=>a+r.premi,0),isSunday:isSun};
+
+ const summary=transactions.map(x=>({
+   ...x,
+   sections:[...new Set(x.blocks.map(b=>peopleSectionForBlock(b)).filter(Boolean))],
+   sectionBases:[x.basis==null?'—':`AVG ${x.basis.toFixed(2)}`]
+ }));
+
+ return {
+   date:snap.date,afd:'OC',rows:summary,transactions,
+   totalJjg:rows.reduce((a,r)=>a+r.jjg,0),
+   totalMore:transactions.reduce((a,r)=>a+r.more,0),
+   totalPremi:transactions.reduce((a,r)=>a+r.premi,0),
+   isSunday:isSun
+};
 }
 function peopleHistorySnapshots(activeDate,currentSnap){
  const active=new Date(activeDate+'T00:00:00'),y=active.getFullYear(),m=active.getMonth();
@@ -665,6 +689,85 @@ function renderPeoplePerformance(d){
 function renderPeopleAI(d){
  const host=document.getElementById('aiAnalysis');if(!host||!d?.date||d.date<PEOPLE_START_DATE||ACTIVE_AFD!=='OC')return;const pm=peopleMtdRows(d.date,d),rows=pm.rows,under=rows.filter(x=>x.cluster.key==='C').sort((a,b)=>(a.achievement??999)-(b.achievement??999)).slice(0,5);const blockTotals={};(d.sections?.PRODUKSIBLOK?.rows||[]).forEach(r=>{const h=d.sections.PRODUKSIBLOK.header,bi=h.indexOf('BLOK'),ji=h.indexOf('JJG'),b=cleanCell(r[bi]);if(b!=='—')blockTotals[b]=(blockTotals[b]||0)+num(r[ji]);});const focusBlock=Object.entries(blockTotals).sort((a,b)=>a[1]-b[1])[0];const peopleText=under.length?under.map(x=>`<b>${html.escape(x.name!=='—'?x.name:x.npk)}</b> — ${x.jjg.toLocaleString('id-ID')} JJG today, achievement ${x.achievement?.toFixed(1)}%, Class C. Coaching: verify harvest execution with Mandor Panen/Mandor 1.`).join('<br>'):'No Class C harvester signal today.';const blockText=focusBlock?`<b>${html.escape(focusBlock[0])}</b> — ${focusBlock[1].toLocaleString('id-ID')} JJG today; use as intervention review point alongside rotation and quality evidence.`:'No block intervention signal available.';host.innerHTML=`<b>People coaching signal</b><br><br>${peopleText}<br><br><b>Block intervention signal</b><br><br>${blockText}<br><br><span class="small">AI is a coaching/support signal only. Premi is deterministic and is not calculated by AI.</span>`;
 }
+
+/* V25 HARD FIX — PREMI IS PER HARVESTER, PER DAY, BASED ONLY ON THE BLOCKS THAT HARVESTER ACTUALLY HARVESTED.
+   No section basis is used in the premi comparison.
+   Mon-Sat: max(0, harvester JJG - average of that harvester's harvested-block bases) * 1500.
+   Sunday: harvester JJG * 2500.
+   MTD: sum of each daily premi transaction from day 1 through active date in the active month. */
+(function(){
+  const _blockBasis = (block)=>{
+    const k=peopleBlockKey(block);
+    return k && Object.prototype.hasOwnProperty.call(OC_PREMIUM_BASIS,k) ? Number(OC_PREMIUM_BASIS[k]) : null;
+  };
+  const _dayRows = (snap)=>{
+    const p=snap?.sections?.PRODUKSIBLOK;
+    if(!p) return [];
+    const h=p.header||[];
+    const ix={npk:h.indexOf('NPK'),name:h.indexOf('NAMA'),block:h.indexOf('BLOK'),jjg:h.indexOf('JJG'),mandor:h.indexOf('KEMANDORAN')};
+    if(ix.npk<0||ix.block<0||ix.jjg<0) return [];
+    return (p.rows||[]).map(r=>({
+      npk:cleanCell(r[ix.npk]), name:ix.name>=0?cleanCell(r[ix.name]):'—',
+      block:cleanCell(r[ix.block]), jjg:num(r[ix.jjg]), mandor:ix.mandor>=0?cleanCell(r[ix.mandor]):'—'
+    })).filter(r=>r.npk!=='—' && r.block!=='—' && r.jjg>0 && _blockBasis(r.block)!=null);
+  };
+  window.ADRIANA_BUILD_PREMI_DAY=function(snap){
+    const rows=_dayRows(snap), sunday=peopleDateSunday(snap?.date), by={};
+    rows.forEach(r=>{
+      const k=r.npk;
+      by[k] ||= {npk:r.npk,name:r.name,jjg:0,blocks:[],bases:[],mandors:[]};
+      const x=by[k]; x.jjg+=r.jjg;
+      const b=peopleBlockKey(r.block), basis=_blockBasis(r.block);
+      if(!x.blocks.includes(b)){x.blocks.push(b);x.bases.push(basis);}
+      if(r.mandor && !x.mandors.includes(r.mandor)) x.mandors.push(r.mandor);
+    });
+    const transactions=Object.values(by).map(x=>{
+      const avg=x.bases.length ? x.bases.reduce((a,b)=>a+b,0)/x.bases.length : null;
+      const more=sunday?0:Math.max(0,x.jjg-(avg??0));
+      const premi=sunday?x.jjg*2500:more*1500;
+      return {npk:x.npk,name:x.name,jjg:x.jjg,blocks:x.blocks,blockBases:x.bases,avgBasis:avg,more,premi,isSunday:sunday,mandors:x.mandors};
+    });
+    return {date:snap?.date||null,rows:transactions,transactions,totalJjg:rows.reduce((a,r)=>a+r.jjg,0),totalMore:transactions.reduce((a,r)=>a+r.more,0),totalPremi:transactions.reduce((a,r)=>a+r.premi,0),isSunday:sunday};
+  };
+  window.ADRIANA_BUILD_PREMI_HISTORY=function(activeDate,currentSnap){
+    const d=new Date(activeDate+'T00:00:00'), y=d.getFullYear(), m=d.getMonth();
+    const start=`${y}-${String(m+1).padStart(2,'0')}-01`;
+    const snaps=peopleLockedSnapshots('OC').filter(x=>x.date>=start&&x.date<=activeDate);
+    if(currentSnap?.date>=start&&currentSnap.date<=activeDate) snaps.push(currentSnap);
+    const unique=new Map(snaps.map(x=>[x.date,x]));
+    const daily=[...unique.values()].sort((a,b)=>a.date.localeCompare(b.date)).map(window.ADRIANA_BUILD_PREMI_DAY);
+    const agg={};
+    daily.forEach(day=>day.rows.forEach(x=>{
+      const k=x.npk; agg[k] ||= {npk:k,name:x.name,jjg:0,more:0,premi:0,hkDays:0};
+      agg[k].jjg+=x.jjg; agg[k].more+=x.more; agg[k].premi+=x.premi; agg[k].hkDays+=1;
+    }));
+    return {daily,agg:Object.values(agg)};
+  };
+  window.ADRIANA_PREMI_RENDER=function(d){
+    const host=document.getElementById('peopleBody'), dashHost=document.getElementById('dashPeopleBody');
+    if(!d?.date||d.date<PEOPLE_START_DATE||ACTIVE_AFD==='OE') return;
+    const hist=window.ADRIANA_BUILD_PREMI_HISTORY(d.date,d), day=hist.daily.find(x=>x.date===d.date)||window.ADRIANA_BUILD_PREMI_DAY(d);
+    const map=Object.fromEntries(hist.agg.map(x=>[x.npk,x]));
+    const rows=day.rows.slice().sort((a,b)=>b.jjg-a.jjg).map(x=>{
+      const a=map[x.npk]||{jjg:0,more:0,premi:0,hkDays:0};
+      const achievement=a.hkDays && x.avgBasis>0 ? (a.jjg/a.hkDays)/x.avgBasis*100 : null;
+      return {...x,mtdMore:a.more,mtdPremi:a.premi,mtdJjg:a.jjg,mtdHk:a.hkDays,achievement,cluster:peopleClass(achievement)};
+    });
+    const cls={A:0,B:0,C:0}; rows.forEach(x=>{if(cls[x.cluster.key]!=null)cls[x.cluster.key]++;});
+    const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+    set('peopleCount',rows.length);set('peopleJjg',day.totalJjg.toLocaleString('id-ID'));set('peopleMore',day.totalMore.toFixed(2));set('peopleMoreMtd',rows.reduce((a,x)=>a+x.mtdMore,0).toFixed(2));set('peoplePremi',moneyRp(day.totalPremi));set('peoplePremiMtd',moneyRp(rows.reduce((a,x)=>a+x.mtdPremi,0)));
+    set('classACount',cls.A);set('classBCount',cls.B);set('classCCount',cls.C);
+    set('dashPeopleCount',rows.length);set('dashPeopleJjg',day.totalJjg.toLocaleString('id-ID'));set('dashPeopleMore',day.totalMore.toFixed(2));set('dashPeopleMoreMtd',rows.reduce((a,x)=>a+x.mtdMore,0).toFixed(2));set('dashPeoplePremi',moneyRp(day.totalPremi));set('dashPeoplePremiMtd',moneyRp(rows.reduce((a,x)=>a+x.mtdPremi,0)));
+    const rowHtml=rows.map(x=>`<tr><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${x.jjg.toLocaleString('id-ID')}</td><td>${x.avgBasis==null?'—':x.avgBasis.toFixed(2)}</td><td>${x.more.toFixed(2)}</td><td>${x.mtdMore.toFixed(2)}</td><td class="premiMoney">${moneyRp(x.premi)}</td><td class="premiMoney">${moneyRp(x.mtdPremi)}</td><td>${(x.mtdJjg/x.mtdHk||0).toFixed(2)}</td><td>${x.achievement==null?'—':x.achievement.toFixed(1)+'%'}</td><td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td></tr>`).join('');
+    if(host)host.innerHTML=rowHtml||'<tr><td colspan="10">No producing harvester.</td></tr>';
+    if(dashHost)dashHost.innerHTML=rows.map(x=>`<tr><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${x.jjg.toLocaleString('id-ID')}</td><td>${x.avgBasis==null?'—':x.avgBasis.toFixed(2)}</td><td>${x.more.toFixed(2)}</td><td>${x.mtdMore.toFixed(2)}</td><td class="premiMoney">${moneyRp(x.premi)}</td><td class="premiMoney">${moneyRp(x.mtdPremi)}</td><td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td></tr>`).join('')||'<tr><td colspan="8">No producing harvester.</td></tr>';
+  };
+  renderPeoplePerformance=function(d){window.ADRIANA_PREMI_RENDER(d);};
+  buildPeopleDay=function(snap){return window.ADRIANA_BUILD_PREMI_DAY(snap);};
+  buildPeopleHistory=function(activeDate,currentSnap){return window.ADRIANA_BUILD_PREMI_HISTORY(activeDate,currentSnap);};
+  peopleMtdRows=function(activeDate,currentSnap){const h=window.ADRIANA_BUILD_PREMI_HISTORY(activeDate,currentSnap),active=h.daily.find(x=>x.date===activeDate)||window.ADRIANA_BUILD_PREMI_DAY(currentSnap),map=Object.fromEntries(h.agg.map(x=>[x.npk,x]));return {history:h,rows:active.rows.map(x=>{const a=map[x.npk]||{jjg:0,more:0,premi:0,hkDays:0};return {...x,mtdMore:a.more,mtdPremi:a.premi,mtdJjg:a.jjg,mtdHk:a.hkDays,achievement:a.hkDays&&x.avgBasis?(a.jjg/a.hkDays)/x.avgBasis*100:null,cluster:peopleClass(a.hkDays&&x.avgBasis?(a.jjg/a.hkDays)/x.avgBasis*100:null)};})};};
+})();
+
 const _ADRIANA_RENDER_ALL_BASE=renderAll;
 renderAll=function(snap){
   _ADRIANA_RENDER_ALL_BASE(snap);
