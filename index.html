@@ -117,11 +117,11 @@ body{background:#f4f7f3}
   </div>
   <div class="peopleTableWrap">
     <table>
-      <thead><tr><th>Pemanen</th><th>JJG Today</th><th>Basis Blok</th><th>More Basis</th><th>More Basis MTD</th><th>Premi Today</th><th>Premi MTD</th><th>Class</th></tr></thead>
+      <thead><tr><th>Pemanen</th><th>JJG Today</th><th>Basis Seksi (Avg)</th><th>More Basis</th><th>More Basis MTD</th><th>Premi Today</th><th>Premi MTD</th><th>Class</th></tr></thead>
       <tbody id="dashPeopleBody"><tr><td colspan="7" class="small">Upload &amp; lock AMANTA untuk melihat People Performance.</td></tr></tbody>
     </table>
   </div>
-  <div class="peopleNote">Premi dihitung harian per blok yang benar-benar dipanen: JJG AMANTA pemanen pada blok tersebut dikurangi basis blok master sesuai seksi. More Basis dan Premi MTD diakumulasi dari tanggal 1 sampai tanggal aktif pada bulan berjalan. Minggu: Rp2.500/JJG. Minggu: Rp2.500/JJG. Jan–Aug 2026 tidak ditampilkan.</div>
+  <div class="peopleNote">Premi dihitung harian per blok yang benar-benar dipanen: JJG AMANTA pemanen pada blok tersebut dikurangi basis blok master sesuai seksi. More Basis dan Premi MTD diakumulasi dari tanggal 1 sampai tanggal aktif pada bulan berjalan. Minggu: Rp2.500/JJG. Jan–Aug 2026 tidak ditampilkan.</div>
 </div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
 <div class="footer">ADRIANA v22.13 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
@@ -174,7 +174,7 @@ body{background:#f4f7f3}
 <section id="people" class="section">
   <div class="top">
     <div>
-      <div class="eyebrow">PEOPLE · PREMIUM</div>
+      <div class="eyebrow">PEOPLE · PREMI</div>
       <div class="title">People Performance</div>
       <div class="meta">Pemanen Cluster, Performance &amp; Development · mulai September 2026 dan berlanjut.</div>
     </div>
@@ -201,7 +201,7 @@ body{background:#f4f7f3}
       <table>
         <thead>
           <tr>
-            <th>Pemanen</th><th>JJG Today</th><th>Basis Blok</th><th>More Basis</th>
+            <th>Pemanen</th><th>JJG Today</th><th>Basis Seksi (Avg)</th><th>More Basis</th>
             <th>Premi Today</th><th>More Basis MTD</th><th>Premi MTD</th><th>JJG/HK MTD</th><th>Achievement</th><th>Class</th>
           </tr>
         </thead>
@@ -613,47 +613,84 @@ function peopleProductionRows(snap){
 function buildPeopleDay(snap){
   if(!snap||snap.afd&&snap.afd!=='OC')return {date:snap?.date||null,afd:snap?.afd||null,sections:{},rows:[],totalJjg:0,totalMore:0,totalPremi:0};
   const rows=peopleProductionRows(snap);
-  const grouped={};
 
-  // Premi harian dihitung dari setiap BLOK yang benar-benar dipanen.
-  // JJG AMANTA untuk pemanen+blok hari tersebut dikurangi BASIS BLOK master.
+  // BASIS PREMI HARIAN = AVERAGE BASIS BLOK YANG BENAR-BENAR DIPANEN
+  // pada masing-masing SEKSI di tanggal tersebut. Bukan total/sum seluruh blok.
+  const sectionBlocks={};
   rows.forEach(r=>{
     const sec=peopleSectionForBlock(r.block), block=peopleBlockKey(r.block), basis=peopleBasisForBlock(r.block);
     if(!sec||basis==null||!block)return;
-    const key=r.npk+'||'+sec+'||'+block;
-    grouped[key]??={npk:r.npk,name:r.name,section:sec,block,jjg:0,basis,mandors:new Set()};
+    sectionBlocks[sec]??={};
+    sectionBlocks[sec][block]=basis;
+  });
+  const sectionBasis={};
+  Object.entries(sectionBlocks).forEach(([sec,blocks])=>{
+    const vals=Object.values(blocks).map(Number).filter(Number.isFinite);
+    sectionBasis[sec]=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null;
+  });
+
+  // Agregasi JJG per PEMANEN + SEKSI. Setelah itu baru dibandingkan
+  // dengan AVERAGE BASIS SEKSI pada hari tersebut.
+  const grouped={};
+  rows.forEach(r=>{
+    const sec=peopleSectionForBlock(r.block), block=peopleBlockKey(r.block), basis=peopleBasisForBlock(r.block);
+    if(!sec||basis==null||!block)return;
+    const key=r.npk+'||'+sec;
+    grouped[key]??={npk:r.npk,name:r.name,section:sec,jjg:0,blocks:new Set(),blockBases:new Set(),mandors:new Set()};
     grouped[key].jjg+=r.jjg;
+    grouped[key].blocks.add(block);
+    grouped[key].blockBases.add(`${block}: ${basis}`);
     grouped[key].mandors.add(r.mandor);
   });
 
   const isSun=peopleDateSunday(snap.date),out=[];
   Object.values(grouped).forEach(x=>{
-    const basis=isSun?null:x.basis;
-    const more=isSun?0:Math.max(0,x.jjg-x.basis);
+    const basis=isSun?null:sectionBasis[x.section];
+    const more=isSun?0:Math.max(0,x.jjg-(basis||0));
     const premi=isSun?x.jjg*2500:more*1500;
-    out.push({...x,blocks:[x.block],mandors:[...x.mandors],basis,more,premi,isSunday:isSun});
+    out.push({
+      ...x,
+      blocks:[...x.blocks],
+      blockBases:[...x.blockBases],
+      mandors:[...x.mandors],
+      basis,
+      more,
+      premi,
+      isSunday:isSun
+    });
   });
 
+  // Ringkas ke level PEMANEN untuk tabel roll-call. Jika pemanen bekerja
+  // di lebih dari satu seksi, premi dihitung per seksi lalu dijumlahkan.
   const byHarvester={};
   out.forEach(x=>{
     const k=x.npk;
-    byHarvester[k]??={npk:x.npk,name:x.name,jjg:0,more:0,premi:0,basisSum:0,basisCount:0,sections:[],blocks:[],blockBases:[]};
+    byHarvester[k]??={npk:x.npk,name:x.name,jjg:0,more:0,premi:0,basisWeightedSum:0,basisJjgWeight:0,sections:[],blocks:[],blockBases:[],sectionBases:[]};
     const y=byHarvester[k];
-    y.jjg+=x.jjg;y.more+=x.more;y.premi+=x.premi;
-    if(x.basis!=null){y.basisSum+=x.basis;y.basisCount++;y.blockBases.push(`${x.block}: ${x.basis}`);}
-    y.sections.push(x.section);y.blocks.push(...x.blocks);
+    y.jjg+=x.jjg;
+    y.more+=x.more;
+    y.premi+=x.premi;
+    y.sections.push(x.section);
+    y.blocks.push(...x.blocks);
+    y.blockBases.push(...x.blockBases);
+    y.sectionBases.push(`${x.section}: ${x.basis==null?'—':Number(x.basis).toFixed(2)}`);
+    if(x.basis!=null&&x.jjg>0){
+      y.basisWeightedSum+=x.basis*x.jjg;
+      y.basisJjgWeight+=x.jjg;
+    }
   });
   const summary=Object.values(byHarvester).map(x=>({
     ...x,
-    basis:x.basisCount?x.basisSum/x.basisCount:null,
+    basis:x.basisJjgWeight?x.basisWeightedSum/x.basisJjgWeight:null,
     jjgPerHK:x.jjg,
     blocks:[...new Set(x.blocks)],
     sections:[...new Set(x.sections)],
-    blockBases:[...new Set(x.blockBases)]
+    blockBases:[...new Set(x.blockBases)],
+    sectionBases:[...new Set(x.sectionBases)]
   }));
   return {
     date:snap.date,afd:'OC',
-    sections:{},
+    sections:sectionBasis,
     rows:summary,
     transactions:out,
     totalJjg:rows.reduce((a,r)=>a+r.jjg,0),
@@ -719,8 +756,8 @@ function renderPeoplePerformance(d){
   set('classACount',cls.A);set('classBCount',cls.B);set('classCCount',cls.C);
   set('dashPeopleCount',rows.length);set('dashPeopleJjg',day.totalJjg.toLocaleString('id-ID'));set('dashPeopleMore',day.totalMore.toFixed(2));set('dashPeopleMoreMtd',rows.reduce((a,x)=>a+x.mtdMore,0).toFixed(2));set('dashPeoplePremi',moneyRp(day.totalPremi));set('dashPeoplePremiMtd',moneyRp(rows.reduce((a,x)=>a+x.mtdPremi,0)));
   const fmtBasis=x=>x.basis==null?'—':x.basis.toFixed(2);
-  if(host)host.innerHTML=rows.map(x=>`<tr><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${x.jjg.toLocaleString('id-ID')}</td><td>${(x.blockBases&&x.blockBases.length?x.blockBases.join('<br>'):'—')}</td><td>${x.more.toFixed(2)}</td><td>${x.mtdMore.toFixed(2)}</td><td class="premiMoney">${moneyRp(x.premi)}</td><td class="premiMoney">${moneyRp(x.mtdPremi)}</td><td>${x.mtdJjgPerHK.toFixed(2)}</td><td>${x.achievement==null?'—':x.achievement.toFixed(1)+'%'}</td><td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td></tr>`).join('')||'<tr><td colspan="10">No producing harvester.</td></tr>';
-  if(dashHost)dashHost.innerHTML=rows.map(x=>`<tr><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${x.jjg.toLocaleString('id-ID')}</td><td>${(x.blockBases&&x.blockBases.length?x.blockBases.join('<br>'):'—')}</td><td>${x.more.toFixed(2)}</td><td>${x.mtdMore.toFixed(2)}</td><td class="premiMoney">${moneyRp(x.premi)}</td><td class="premiMoney">${moneyRp(x.mtdPremi)}</td><td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td></tr>`).join('')||'<tr><td colspan="8">No producing harvester.</td></tr>';
+  if(host)host.innerHTML=rows.map(x=>`<tr><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${x.jjg.toLocaleString('id-ID')}</td><td>${(x.sectionBases&&x.sectionBases.length?x.sectionBases.join('<br>'):'—')}</td><td>${x.more.toFixed(2)}</td><td>${x.mtdMore.toFixed(2)}</td><td class="premiMoney">${moneyRp(x.premi)}</td><td class="premiMoney">${moneyRp(x.mtdPremi)}</td><td>${x.mtdJjgPerHK.toFixed(2)}</td><td>${x.achievement==null?'—':x.achievement.toFixed(1)+'%'}</td><td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td></tr>`).join('')||'<tr><td colspan="10">No producing harvester.</td></tr>';
+  if(dashHost)dashHost.innerHTML=rows.map(x=>`<tr><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${x.jjg.toLocaleString('id-ID')}</td><td>${(x.sectionBases&&x.sectionBases.length?x.sectionBases.join('<br>'):'—')}</td><td>${x.more.toFixed(2)}</td><td>${x.mtdMore.toFixed(2)}</td><td class="premiMoney">${moneyRp(x.premi)}</td><td class="premiMoney">${moneyRp(x.mtdPremi)}</td><td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td></tr>`).join('')||'<tr><td colspan="8">No producing harvester.</td></tr>';
 }
 function renderPeopleAI(d){
   const host=document.getElementById('aiAnalysis');if(!host||!d?.date||d.date<PEOPLE_START_DATE||ACTIVE_AFD!=='OC')return;
