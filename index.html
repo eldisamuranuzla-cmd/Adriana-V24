@@ -63,6 +63,16 @@ body{background:#f4f7f3}
 
 .peopleDashPanel{margin-top:12px}.peopleKpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.peopleKpi{background:#f7fbf8;border:1px solid #dce9e1;border-radius:12px;padding:12px}.peopleKpi small{display:block;color:#718277;font-size:9px;font-weight:800;letter-spacing:.04em}.peopleKpi strong{display:block;color:#164a32;font-size:21px;margin-top:5px}.peopleTableWrap{overflow-x:auto;margin-top:12px}.peopleTableWrap table{min-width:900px}.peopleTableWrap th,.peopleTableWrap td{white-space:nowrap}.peopleNote{font-size:10px;color:#718077;margin-top:9px}.peoplePeriodBar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.peopleKpisLarge{margin-top:14px}.peopleClassGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.classBox{border:1px solid var(--line);border-radius:12px;padding:12px}.classBox small{display:block;font-size:9px;font-weight:900}.classBox strong{display:block;font-size:24px;margin-top:3px}.classBox span{font-size:10px;color:var(--muted)}.classA{background:#eaf5ee;color:#155c3b}.classB{background:#fff8e8;color:#8b6118}.classC{background:#fbeceb;color:#a94332}.premiMoney{font-weight:900;color:#155c3b}.classPill{display:inline-block;padding:4px 8px;border-radius:8px;font-size:9px;font-weight:900}.classPill.A{background:#dcfce7;color:#166534}.classPill.B{background:#fef3c7;color:#92400e}.classPill.C{background:#fee2e2;color:#991b1b}.classPill.NA{background:#eef2f0;color:#64746a}
 @media(max-width:1000px){.peopleKpis{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.peopleKpis,.peopleClassGrid{grid-template-columns:1fr 1fr}.peopleKpi strong{font-size:19px}}
+
+/* BOOK PERIOD / CLOSING */
+.periodClosingPanel{border:1px solid #d7e5dc}
+.periodClosingHead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.periodStatus{padding:7px 11px;border-radius:999px;background:#e7f1eb;color:#155c3b;font-size:11px;font-weight:800;letter-spacing:.04em}
+.periodStatus.closed{background:#e8eef0;color:#34444b}
+.periodStatus.closing{background:#fff2d9;color:#8a5b0b}
+.periodKpis{margin-top:12px}
+.periodLogicNote{margin-top:12px}
+
 </style>
 </head>
 <body>
@@ -106,22 +116,22 @@ body{background:#f4f7f3}
 </div></div>
 
 <div class="panel peopleDashPanel">
-  <div class="panelHead"><h2>People Performance &amp; Premi</h2><span>September 2026 onward</span></div>
+  <div class="panelHead"><h2>People Performance &amp; Premi</h2><span id="dashPeoplePeriod">Book Period —</span></div>
   <div class="peopleKpis">
     <div class="peopleKpi"><small>PEMANEN AKTIF</small><strong id="dashPeopleCount">—</strong></div>
     <div class="peopleKpi"><small>JJG TODAY</small><strong id="dashPeopleJjg">—</strong></div>
     <div class="peopleKpi"><small>MORE BASIS TODAY</small><strong id="dashPeopleMore">—</strong></div>
-    <div class="peopleKpi"><small>MORE BASIS MTD</small><strong id="dashPeopleMoreMtd">—</strong></div>
+    <div class="peopleKpi"><small>MORE BASIS PERIODE</small><strong id="dashPeopleMoreMtd">—</strong></div>
     <div class="peopleKpi"><small>PREMI HARI INI</small><strong id="dashPeoplePremi">—</strong></div>
-    <div class="peopleKpi"><small>PREMI MTD</small><strong id="dashPeoplePremiMtd">—</strong></div>
+    <div class="peopleKpi"><small>PREMI PERIODE</small><strong id="dashPeoplePremiMtd">—</strong></div>
   </div>
   <div class="peopleTableWrap">
     <table>
-      <thead><tr><th>Pemanen</th><th>JJG Today</th><th>Basis Blok (Avg)</th><th>More Basis</th><th>More Basis MTD</th><th>Premi Today</th><th>Premi MTD</th><th>Class</th></tr></thead>
+      <thead><tr><th>Pemanen</th><th>JJG Today</th><th>Basis Blok (Avg)</th><th>More Basis</th><th>More Basis Periode</th><th>Premi Today</th><th>Premi Periode</th><th>Class</th></tr></thead>
       <tbody id="dashPeopleBody"><tr><td colspan="7" class="small">Upload &amp; lock AMANTA untuk melihat People Performance.</td></tr></tbody>
     </table>
   </div>
-  <div class="peopleNote">Premi dihitung harian per pemanen: seluruh JJG pemanen dari blok yang benar-benar dipanen dikurangi rata-rata basis blok yang dipanen pemanen tersebut. More Basis dan Premi MTD diakumulasi dari tanggal 1 sampai tanggal aktif pada bulan berjalan. Minggu: Rp2.500/JJG. Jan–Aug 2026 tidak ditampilkan.</div>
+  <div class="peopleNote">Premi dihitung harian per pemanen: seluruh JJG pemanen dari blok yang benar-benar dipanen dikurangi rata-rata basis blok yang dipanen pemanen tersebut. More Basis dan Premi Periode diakumulasi berdasarkan Open Book–Closing Book. Periode payroll: tanggal 21 sampai tanggal 20 bulan berikutnya. Minggu: Rp2.500/JJG.</div>
 </div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
 <div class="footer">ADRIANA v22.13 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
@@ -176,21 +186,21 @@ body{background:#f4f7f3}
     <div>
       <div class="eyebrow">PEOPLE · PREMI</div>
       <div class="title">People Performance</div>
-      <div class="meta">Pemanen Cluster, Performance &amp; Development · mulai September 2026 dan berlanjut.</div>
+      <div class="meta">Pemanen Cluster, Performance &amp; Development · mengikuti Open Book–Closing Book.</div>
     </div>
   </div>
   <div class="panel">
     <div class="peoplePeriodBar">
-      <div><b>Periode aktif:</b> <span id="peoplePeriod">September 2026 onward</span></div>
-      <div class="small">OCYM · Premi harian dihitung dari basis blok yang aktual dipanen oleh pemanen</div>
+      <div><b>Periode Book:</b> <span id="peoplePeriod">—</span></div>
+      <div class="small">OCYM · Premi dihitung harian, lalu diakumulasi sesuai periode Book 21–20</div>
     </div>
     <div class="peopleKpis peopleKpisLarge">
       <div class="peopleKpi"><small>TOTAL PEMANEN AKTIF</small><strong id="peopleCount">—</strong></div>
       <div class="peopleKpi"><small>TOTAL JJG TODAY</small><strong id="peopleJjg">—</strong></div>
       <div class="peopleKpi"><small>MORE BASIS TODAY</small><strong id="peopleMore">—</strong></div>
-      <div class="peopleKpi"><small>MORE BASIS MTD</small><strong id="peopleMoreMtd">—</strong></div>
+      <div class="peopleKpi"><small>MORE BASIS PERIODE</small><strong id="peopleMoreMtd">—</strong></div>
       <div class="peopleKpi"><small>PREMI HARI INI</small><strong id="peoplePremi">—</strong></div>
-      <div class="peopleKpi"><small>PREMI MTD</small><strong id="peoplePremiMtd">—</strong></div>
+      <div class="peopleKpi"><small>PREMI PERIODE</small><strong id="peoplePremiMtd">—</strong></div>
     </div>
     <div class="peopleClassGrid">
       <div class="classBox classA"><small>CLASS A</small><strong id="classACount">—</strong><span>≥100% basis</span></div>
@@ -202,12 +212,48 @@ body{background:#f4f7f3}
         <thead>
           <tr>
             <th>Pemanen</th><th>JJG Today</th><th>Basis Blok (Avg)</th><th>More Basis</th>
-            <th>Premi Today</th><th>More Basis MTD</th><th>Premi MTD</th><th>JJG/HK MTD</th><th>Achievement</th><th>Class</th>
+            <th>Premi Today</th><th>More Basis Periode</th><th>Premi Periode</th><th>JJG/HK MTD</th><th>Achievement</th><th>Class</th>
           </tr>
         </thead>
         <tbody id="peopleBody"><tr><td colspan="9" class="small">Belum ada dataset aktif.</td></tr></tbody>
       </table>
     </div>
+    
+    <div class="panel periodClosingPanel" style="margin-top:14px">
+      <div class="periodClosingHead">
+        <div>
+          <div class="eyebrow">BOOK PERIOD · OPEN → CLOSING</div>
+          <h2 style="margin:4px 0 2px">Premi Closing Periode</h2>
+          <div id="peoplePeriodDetail" class="small">Periode Book —</div>
+        </div>
+        <div id="peoplePeriodStatus" class="periodStatus">—</div>
+      </div>
+      <div class="peopleKpis periodKpis">
+        <div class="peopleKpi"><small>OPEN BOOK</small><strong id="peopleOpenBook">—</strong></div>
+        <div class="peopleKpi"><small>CLOSING BOOK</small><strong id="peopleCloseBook">—</strong></div>
+        <div class="peopleKpi"><small>PREMI PERIODE</small><strong id="peoplePeriodPremi">—</strong></div>
+        <div class="peopleKpi"><small>MORE BASIS PERIODE</small><strong id="peoplePeriodMore">—</strong></div>
+      </div>
+      <div class="peopleTableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th><th>Pemanen</th><th>JJG Periode</th><th>Hari Panen</th>
+              <th>More Basis Periode</th><th>Premi Periode</th><th>JJG/HK</th>
+            </tr>
+          </thead>
+          <tbody id="peoplePeriodBody">
+            <tr><td colspan="7" class="small">Belum ada dataset periode.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="notice periodLogicNote">
+        <b>Book logic:</b> satu periode selalu dibuka tanggal 21 dan ditutup tanggal 20 bulan berikutnya.
+        Data aktual hanya dihitung sampai tanggal aktif; setelah tanggal 20, periode menjadi <b>Closed</b>.
+        Jadi Book September 2026 = <b>21 Agustus 2026–20 September 2026</b>.
+      </div>
+    </div>
+
     <div class="panel" style="margin-top:14px;background:#f8fbf9">
       <h2 style="margin-bottom:8px">Aturan Premi</h2>
       <div class="notice">
@@ -766,6 +812,185 @@ function renderPeopleAI(d){
   buildPeopleDay=function(snap){return window.ADRIANA_BUILD_PREMI_DAY(snap);};
   buildPeopleHistory=function(activeDate,currentSnap){return window.ADRIANA_BUILD_PREMI_HISTORY(activeDate,currentSnap);};
   peopleMtdRows=function(activeDate,currentSnap){const h=window.ADRIANA_BUILD_PREMI_HISTORY(activeDate,currentSnap),active=h.daily.find(x=>x.date===activeDate)||window.ADRIANA_BUILD_PREMI_DAY(currentSnap),map=Object.fromEntries(h.agg.map(x=>[x.npk,x]));return {history:h,rows:active.rows.map(x=>{const a=map[x.npk]||{jjg:0,more:0,premi:0,hkDays:0};return {...x,mtdMore:a.more,mtdPremi:a.premi,mtdJjg:a.jjg,mtdHk:a.hkDays,achievement:a.hkDays&&x.avgBasis?(a.jjg/a.hkDays)/x.avgBasis*100:null,cluster:peopleClass(a.hkDays&&x.avgBasis?(a.jjg/a.hkDays)/x.avgBasis*100:null)};})};};
+})();
+
+
+/* ADRIANA PERIOD BOOK UPGRADE
+   Book September 2026 = 21 Aug 2026 through 20 Sep 2026.
+   Every daily premi transaction remains deterministic; aggregation is by Open Book–Closing Book.
+*/
+(function(){
+  const PERIOD_MIN_DATE='2026-08-21';
+
+  function isoDate(d){
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function localDate(s){ return new Date(String(s)+'T00:00:00'); }
+  function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+  function addMonths(d,n){ const x=new Date(d); x.setMonth(x.getMonth()+n); return x; }
+
+  function bookPeriod(activeDate){
+    const d=localDate(activeDate);
+    let open, close, bookMonth;
+    if(d.getDate()>=21){
+      open=new Date(d.getFullYear(),d.getMonth(),21);
+      close=new Date(d.getFullYear(),d.getMonth()+1,20);
+      bookMonth=new Date(d.getFullYear(),d.getMonth()+1,1);
+    }else{
+      open=new Date(d.getFullYear(),d.getMonth()-1,21);
+      close=new Date(d.getFullYear(),d.getMonth(),20);
+      bookMonth=new Date(d.getFullYear(),d.getMonth(),1);
+    }
+    return {open:isoDate(open),close:isoDate(close),bookMonth:isoDate(bookMonth).slice(0,7)};
+  }
+
+  function allLockedOC(){
+    let arr=[];
+    try{ if(typeof getAfdSnapshotsHybrid==='function') arr=getAfdSnapshotsHybrid('OC')||[]; }catch(e){}
+    if(!arr.length){
+      try{ if(typeof getLockedSnapshots==='function') arr=getLockedSnapshots().filter(x=>!x.afd||x.afd==='OC'); }catch(e){}
+    }
+    return (arr||[]).filter(x=>x&&x.date&&x.date>=PERIOD_MIN_DATE)
+      .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  }
+
+  /* Override the old month-1-to-active-date history. */
+  window.ADRIANA_BUILD_PREMI_HISTORY=function(activeDate,currentSnap){
+    const p=bookPeriod(activeDate);
+    const end=String(activeDate)<p.close?String(activeDate):p.close;
+    const snaps=allLockedOC().filter(x=>x.date>=p.open && x.date<=end);
+    if(currentSnap?.date && currentSnap.date>=p.open && currentSnap.date<=end) snaps.push(currentSnap);
+    const unique=new Map(snaps.map(x=>[x.date,x]));
+    const daily=[...unique.values()]
+      .sort((a,b)=>String(a.date).localeCompare(String(b.date)))
+      .map(window.ADRIANA_BUILD_PREMI_DAY);
+
+    const agg={};
+    daily.forEach(day=>day.rows.forEach(x=>{
+      const k=x.npk;
+      agg[k] ||= {npk:k,name:x.name,jjg:0,more:0,premi:0,hkDays:0,basisSum:0,basisCount:0};
+      const a=agg[k];
+      a.jjg+=x.jjg;
+      a.more+=x.more;
+      a.premi+=x.premi;
+      a.hkDays+=1;
+      if(Number.isFinite(x.avgBasis)){a.basisSum+=x.avgBasis;a.basisCount+=1;}
+    }));
+    return {
+      open:p.open,close:p.close,bookMonth:p.bookMonth,end,
+      daily,
+      agg:Object.values(agg).map(x=>({...x,
+        jjgPerHK:x.hkDays?x.jjg/x.hkDays:0,
+        avgBasis:x.basisCount?x.basisSum/x.basisCount:null
+      }))
+    };
+  };
+
+  function periodLabel(p){
+    return `Book ${fmtDate(p.bookMonth+'-01').replace(/\s+\d{4}$/,'')} ${p.bookMonth.slice(0,4)}`;
+  }
+
+  function renderPeriodClosing(hist, activeDate){
+    const p={open:hist.open,close:hist.close,bookMonth:hist.bookMonth};
+    const active=String(activeDate);
+    const closed=active>=p.close;
+    const closing=active===p.close;
+
+    const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+    set('peoplePeriod',`${fmtDate(p.open)} – ${fmtDate(p.close)}`);
+    set('dashPeoplePeriod',`Book ${p.bookMonth}`);
+    set('peoplePeriodDetail',`Book ${p.bookMonth} · Open ${fmtDate(p.open)} · Closing ${fmtDate(p.close)} · Actual through ${fmtDate(hist.end)}`);
+    set('peopleOpenBook',fmtDate(p.open));
+    set('peopleCloseBook',fmtDate(p.close));
+
+    const status=document.getElementById('peoplePeriodStatus');
+    if(status){
+      status.className='periodStatus'+(closed?' closed':(closing?' closing':''));
+      status.textContent=closed?'CLOSED':(closing?'CLOSING TODAY':'OPEN');
+    }
+
+    const totalPremi=hist.agg.reduce((a,x)=>a+x.premi,0);
+    const totalMore=hist.agg.reduce((a,x)=>a+x.more,0);
+    set('peoplePeriodPremi',moneyRp(totalPremi));
+    set('peoplePeriodMore',totalMore.toFixed(2));
+
+    const host=document.getElementById('peoplePeriodBody');
+    if(host){
+      const rows=hist.agg.slice().sort((a,b)=>b.premi-a.premi);
+      host.innerHTML=rows.map((x,i)=>`
+        <tr>
+          <td>${i+1}</td>
+          <td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td>
+          <td>${x.jjg.toLocaleString('id-ID')}</td>
+          <td>${x.hkDays}</td>
+          <td>${x.more.toFixed(2)}</td>
+          <td class="premiMoney">${moneyRp(x.premi)}</td>
+          <td>${x.jjgPerHK.toFixed(2)}</td>
+        </tr>`).join('') || '<tr><td colspan="7" class="small">Belum ada realisasi premi pada periode ini.</td></tr>';
+    }
+  }
+
+  window.ADRIANA_PREMI_RENDER=function(d){
+    const host=document.getElementById('peopleBody'), dashHost=document.getElementById('dashPeopleBody');
+    if(!d?.date||String(d.date)<PERIOD_MIN_DATE||ACTIVE_AFD==='OE'){
+      const msg=ACTIVE_AFD==='OE'?'OEYM belum memiliki master basis premi.':`People Performance dimulai ${fmtDate(PERIOD_MIN_DATE)}.`;
+      if(host)host.innerHTML=`<tr><td colspan="10" class="small">${msg}</td></tr>`;
+      if(dashHost)dashHost.innerHTML=`<tr><td colspan="8" class="small">${msg}</td></tr>`;
+      return;
+    }
+
+    const hist=window.ADRIANA_BUILD_PREMI_HISTORY(d.date,d);
+    const day=hist.daily.find(x=>x.date===d.date)||window.ADRIANA_BUILD_PREMI_DAY(d);
+    const map=Object.fromEntries(hist.agg.map(x=>[x.npk,x]));
+    const rows=day.rows.slice().sort((a,b)=>b.jjg-a.jjg).map(x=>{
+      const a=map[x.npk]||{jjg:0,more:0,premi:0,hkDays:0,jjgPerHK:0,avgBasis:null};
+      const achievement=a.avgBasis&&a.avgBasis>0 ? (a.jjgPerHK/a.avgBasis*100):null;
+      return {...x,mtdMore:a.more,mtdPremi:a.premi,mtdJjg:a.jjg,mtdHk:a.hkDays,mtdJjgPerHK:a.jjgPerHK,
+        achievement,cluster:peopleClass(achievement)};
+    });
+
+    const cls={A:0,B:0,C:0};
+    rows.forEach(x=>{if(cls[x.cluster.key]!=null)cls[x.cluster.key]++;});
+    const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+    set('peopleCount',rows.length);
+    set('peopleJjg',day.totalJjg.toLocaleString('id-ID'));
+    set('peopleMore',day.totalMore.toFixed(2));
+    set('peopleMoreMtd',hist.agg.reduce((a,x)=>a+x.more,0).toFixed(2));
+    set('peoplePremi',moneyRp(day.totalPremi));
+    set('peoplePremiMtd',moneyRp(hist.agg.reduce((a,x)=>a+x.premi,0)));
+    set('classACount',cls.A);set('classBCount',cls.B);set('classCCount',cls.C);
+    set('dashPeopleCount',rows.length);set('dashPeopleJjg',day.totalJjg.toLocaleString('id-ID'));
+    set('dashPeopleMore',day.totalMore.toFixed(2));
+    set('dashPeopleMoreMtd',hist.agg.reduce((a,x)=>a+x.more,0).toFixed(2));
+    set('dashPeoplePremi',moneyRp(day.totalPremi));
+    set('dashPeoplePremiMtd',moneyRp(hist.agg.reduce((a,x)=>a+x.premi,0)));
+
+    if(host)host.innerHTML=rows.map(x=>`<tr>
+      <td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td>
+      <td>${x.jjg.toLocaleString('id-ID')}</td>
+      <td>${x.avgBasis==null?'—':x.avgBasis.toFixed(2)}</td>
+      <td>${x.more.toFixed(2)}</td>
+      <td>${moneyRp(x.premi)}</td>
+      <td>${x.mtdMore.toFixed(2)}</td>
+      <td>${moneyRp(x.mtdPremi)}</td>
+      <td>${x.mtdJjgPerHK.toFixed(2)}</td>
+      <td>${x.achievement==null?'—':x.achievement.toFixed(1)+'%'}</td>
+      <td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td>
+    </tr>`).join('')||'<tr><td colspan="10">No producing harvester.</td></tr>';
+
+    if(dashHost)dashHost.innerHTML=rows.map(x=>`<tr>
+      <td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td>
+      <td>${x.jjg.toLocaleString('id-ID')}</td>
+      <td>${x.avgBasis==null?'—':x.avgBasis.toFixed(2)}</td>
+      <td>${x.more.toFixed(2)}</td>
+      <td>${x.mtdMore.toFixed(2)}</td>
+      <td>${moneyRp(x.premi)}</td>
+      <td>${moneyRp(x.mtdPremi)}</td>
+      <td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td>
+    </tr>`).join('')||'<tr><td colspan="8">No producing harvester.</td></tr>';
+
+    renderPeriodClosing(hist,d.date);
+  };
 })();
 
 const _ADRIANA_RENDER_ALL_BASE=renderAll;
