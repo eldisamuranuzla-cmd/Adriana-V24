@@ -1101,4 +1101,108 @@ renderAll=function(snap){
 
 document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();renderAfdSelectorHybrid();const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;});
 </script>
+
+<script>
+/* FINAL SURGICAL FIX: Close & Lock only.
+   Does not alter dataset calculation, Book 21–20 logic, or existing storage migration.
+   Uses the same AFD key as the hybrid history and guards malformed localStorage. */
+(function(){
+  window.closeDataset = function(){
+    try{
+      if(!window.STAGED){
+        const m=document.getElementById('uploadMsg');
+        if(m) m.innerHTML += '<br><b>LOCK FAILED:</b> No staged dataset.';
+        return;
+      }
+
+      const staged=window.STAGED;
+      const afd=staged.afd || window.ACTIVE_AFD || 'OC';
+      const date=String(staged.date||'').trim();
+
+      if(!date){
+        const m=document.getElementById('uploadMsg');
+        if(m) m.innerHTML += '<br><b>LOCK FAILED:</b> Dataset date is empty.';
+        return;
+      }
+
+      const key=(typeof window.afdKeyHybrid==='function')
+        ? window.afdKeyHybrid(date,afd)
+        : ('adriana_daily_'+afd+'_'+date);
+
+      let existing=null;
+      try{
+        const raw=localStorage.getItem(key);
+        existing=raw ? JSON.parse(raw) : null;
+      }catch(e){
+        existing=null;
+      }
+
+      const closingId=(existing && existing.closingId)
+        ? existing.closingId
+        : ('CLOSE-'+afd+'-'+date);
+
+      const snap=Object.assign({},staged,{
+        afd:afd,
+        afdLabel:(typeof AFD_LABEL!=='undefined' ? (AFD_LABEL[afd]||afd) : afd),
+        closingId:closingId,
+        status:'LOCKED',
+        lockedAt:new Date().toISOString(),
+        versionNumber:(existing && existing.versionNumber) || 1
+      });
+
+      localStorage.setItem(key,JSON.stringify(snap));
+
+      let idx=[];
+      try{
+        const rawIdx=localStorage.getItem('adriana_afd_index');
+        const parsed=rawIdx ? JSON.parse(rawIdx) : [];
+        idx=Array.isArray(parsed) ? parsed : [];
+      }catch(e){ idx=[]; }
+
+      idx=idx.filter(x=>!(String(x.date)===date && String(x.afd)===String(afd)));
+      idx.push({date:date,afd:afd});
+      idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+      localStorage.setItem('adriana_afd_index',JSON.stringify(idx));
+
+      /* Keep OC legacy history intact for existing ADRIANA history readers. */
+      if(afd==='OC'){
+        localStorage.setItem('adriana_daily_'+date,JSON.stringify(snap));
+        let legacy=[];
+        try{
+          const rawLegacy=localStorage.getItem('adriana_daily_index');
+          const parsedLegacy=rawLegacy ? JSON.parse(rawLegacy) : [];
+          legacy=Array.isArray(parsedLegacy) ? parsedLegacy : [];
+        }catch(e){ legacy=[]; }
+        if(!legacy.includes(date)) legacy.push(date);
+        legacy.sort().reverse();
+        localStorage.setItem('adriana_daily_index',JSON.stringify(legacy));
+      }
+
+      window.ACTIVE=snap;
+      window.STAGED=null;
+      window.ADRIANA_DATA=buildData(snap);
+      renderAll(snap);
+
+      const lockState=document.getElementById('lockState');
+      if(lockState) lockState.textContent='● DATA LOCKED · VALIDATED';
+
+      const uploadMsg=document.getElementById('uploadMsg');
+      if(uploadMsg) uploadMsg.innerHTML += '<br><b>LOCKED:</b> '+fmtDate(date)+' · '+closingId;
+
+      if(typeof renderHistory==='function') renderHistory();
+
+      const lockBtn=document.getElementById('lockBtn');
+      if(lockBtn) lockBtn.disabled=true;
+
+      alert('Dataset '+fmtDate(date)+' berhasil di-CLOSE & LOCK.');
+    }catch(err){
+      const msg='LOCK FAILED: '+(err && err.message ? err.message : String(err));
+      const box=document.getElementById('uploadMsg');
+      if(box) box.innerHTML += '<br><b>'+html.escape(msg)+'</b>';
+      console.error('[ADRIANA Close & Lock]',err);
+    }
+  };
+})();
+</script>
+
 </body></html>
