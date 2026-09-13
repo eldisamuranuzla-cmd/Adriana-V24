@@ -111,16 +111,17 @@ body{background:#f4f7f3}
     <div class="peopleKpi"><small>PEMANEN AKTIF</small><strong id="dashPeopleCount">—</strong></div>
     <div class="peopleKpi"><small>JJG TODAY</small><strong id="dashPeopleJjg">—</strong></div>
     <div class="peopleKpi"><small>MORE BASIS TODAY</small><strong id="dashPeopleMore">—</strong></div>
+    <div class="peopleKpi"><small>MORE BASIS MTD</small><strong id="dashPeopleMoreMtd">—</strong></div>
     <div class="peopleKpi"><small>PREMI HARI INI</small><strong id="dashPeoplePremi">—</strong></div>
     <div class="peopleKpi"><small>PREMI MTD</small><strong id="dashPeoplePremiMtd">—</strong></div>
   </div>
   <div class="peopleTableWrap">
     <table>
-      <thead><tr><th>Pemanen</th><th>JJG Today</th><th>Basis Seksi</th><th>More Basis</th><th>Premi Today</th><th>Premi MTD</th><th>Class</th></tr></thead>
+      <thead><tr><th>Pemanen</th><th>JJG Today</th><th>Basis Blok</th><th>More Basis</th><th>More Basis MTD</th><th>Premi Today</th><th>Premi MTD</th><th>Class</th></tr></thead>
       <tbody id="dashPeopleBody"><tr><td colspan="7" class="small">Upload &amp; lock AMANTA untuk melihat People Performance.</td></tr></tbody>
     </table>
   </div>
-  <div class="peopleNote">Premi dihitung harian dari blok yang benar-benar dipanen. Basis premi adalah rata-rata basis blok dalam seksi pada hari tersebut. Minggu: Rp2.500/JJG. Jan–Aug 2026 tidak ditampilkan.</div>
+  <div class="peopleNote">Premi dihitung harian per blok yang benar-benar dipanen: JJG AMANTA pemanen pada blok tersebut dikurangi basis blok master sesuai seksi. More Basis dan Premi MTD diakumulasi dari tanggal 1 sampai tanggal aktif pada bulan berjalan. Minggu: Rp2.500/JJG. Minggu: Rp2.500/JJG. Jan–Aug 2026 tidak ditampilkan.</div>
 </div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
 <div class="footer">ADRIANA v22.13 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
@@ -181,12 +182,13 @@ body{background:#f4f7f3}
   <div class="panel">
     <div class="peoplePeriodBar">
       <div><b>Periode aktif:</b> <span id="peoplePeriod">September 2026 onward</span></div>
-      <div class="small">OCYM · Basis seksi dihitung dari blok aktual yang dipanen hari itu</div>
+      <div class="small">OCYM · Premi harian dihitung dari basis blok yang aktual dipanen</div>
     </div>
     <div class="peopleKpis peopleKpisLarge">
       <div class="peopleKpi"><small>TOTAL PEMANEN AKTIF</small><strong id="peopleCount">—</strong></div>
       <div class="peopleKpi"><small>TOTAL JJG TODAY</small><strong id="peopleJjg">—</strong></div>
       <div class="peopleKpi"><small>MORE BASIS TODAY</small><strong id="peopleMore">—</strong></div>
+      <div class="peopleKpi"><small>MORE BASIS MTD</small><strong id="peopleMoreMtd">—</strong></div>
       <div class="peopleKpi"><small>PREMI HARI INI</small><strong id="peoplePremi">—</strong></div>
       <div class="peopleKpi"><small>PREMI MTD</small><strong id="peoplePremiMtd">—</strong></div>
     </div>
@@ -199,8 +201,8 @@ body{background:#f4f7f3}
       <table>
         <thead>
           <tr>
-            <th>Pemanen</th><th>JJG Today</th><th>Basis Seksi</th><th>More Basis</th>
-            <th>Premi Today</th><th>Premi MTD</th><th>JJG/HK MTD</th><th>Achievement</th><th>Class</th>
+            <th>Pemanen</th><th>JJG Today</th><th>Basis Blok</th><th>More Basis</th>
+            <th>Premi Today</th><th>More Basis MTD</th><th>Premi MTD</th><th>JJG/HK MTD</th><th>Achievement</th><th>Class</th>
           </tr>
         </thead>
         <tbody id="peopleBody"><tr><td colspan="9" class="small">Belum ada dataset aktif.</td></tr></tbody>
@@ -610,52 +612,79 @@ function peopleProductionRows(snap){
 }
 function buildPeopleDay(snap){
   if(!snap||snap.afd&&snap.afd!=='OC')return {date:snap?.date||null,afd:snap?.afd||null,sections:{},rows:[],totalJjg:0,totalMore:0,totalPremi:0};
-  const rows=peopleProductionRows(snap), sectionBlocks={};
-  rows.forEach(r=>{
-    const sec=peopleSectionForBlock(r.block),basis=peopleBasisForBlock(r.block);
-    if(!sec||basis==null)return;
-    sectionBlocks[sec]??=new Set();sectionBlocks[sec].add(peopleBlockKey(r.block));
-  });
-  const secBasis={};
-  for(const [sec,set] of Object.entries(sectionBlocks)){
-    const vals=[...set].map(b=>OC_PREMIUM_BASIS[b]).filter(Number.isFinite);
-    if(vals.length)secBasis[sec]=vals.reduce((a,b)=>a+b,0)/vals.length;
-  }
+  const rows=peopleProductionRows(snap);
   const grouped={};
+
+  // Premi harian dihitung dari setiap BLOK yang benar-benar dipanen.
+  // JJG AMANTA untuk pemanen+blok hari tersebut dikurangi BASIS BLOK master.
   rows.forEach(r=>{
-    const sec=peopleSectionForBlock(r.block);if(!sec)return;
-    const key=r.npk+'||'+sec;
-    grouped[key]??={npk:r.npk,name:r.name,section:sec,jjg:0,blocks:new Set(),mandors:new Set()};
-    grouped[key].jjg+=r.jjg;grouped[key].blocks.add(r.block);grouped[key].mandors.add(r.mandor);
+    const sec=peopleSectionForBlock(r.block), block=peopleBlockKey(r.block), basis=peopleBasisForBlock(r.block);
+    if(!sec||basis==null||!block)return;
+    const key=r.npk+'||'+sec+'||'+block;
+    grouped[key]??={npk:r.npk,name:r.name,section:sec,block,jjg:0,basis,mandors:new Set()};
+    grouped[key].jjg+=r.jjg;
+    grouped[key].mandors.add(r.mandor);
   });
+
   const isSun=peopleDateSunday(snap.date),out=[];
   Object.values(grouped).forEach(x=>{
-    const basis=isSun?null:(secBasis[x.section]??null);
-    const more=isSun?0:Math.max(0,x.jjg-(basis??Infinity));
-    const premi=isSun?x.jjg*2500:(basis!=null?more*1500:0);
-    out.push({...x,blocks:[...x.blocks],mandors:[...x.mandors],basis,more,premi,isSunday:isSun});
+    const basis=isSun?null:x.basis;
+    const more=isSun?0:Math.max(0,x.jjg-x.basis);
+    const premi=isSun?x.jjg*2500:more*1500;
+    out.push({...x,blocks:[x.block],mandors:[...x.mandors],basis,more,premi,isSunday:isSun});
   });
+
   const byHarvester={};
   out.forEach(x=>{
     const k=x.npk;
-    byHarvester[k]??={npk:x.npk,name:x.name,jjg:0,more:0,premi:0,basisSum:0,basisCount:0,sections:[],blocks:[]};
-    const y=byHarvester[k];y.jjg+=x.jjg;y.more+=x.more;y.premi+=x.premi;
-    if(x.basis!=null){y.basisSum+=x.basis;y.basisCount++}
+    byHarvester[k]??={npk:x.npk,name:x.name,jjg:0,more:0,premi:0,basisSum:0,basisCount:0,sections:[],blocks:[],blockBases:[]};
+    const y=byHarvester[k];
+    y.jjg+=x.jjg;y.more+=x.more;y.premi+=x.premi;
+    if(x.basis!=null){y.basisSum+=x.basis;y.basisCount++;y.blockBases.push(`${x.block}: ${x.basis}`);}
     y.sections.push(x.section);y.blocks.push(...x.blocks);
   });
-  const summary=Object.values(byHarvester).map(x=>({...x,basis:x.basisCount?x.basisSum/x.basisCount:null,jjgPerHK:x.jjg,blocks:[...new Set(x.blocks)],sections:[...new Set(x.sections)]}));
-  return {date:snap.date,afd:'OC',sections:secBasis,rows:summary,transactions:out,totalJjg:rows.reduce((a,r)=>a+r.jjg,0),totalMore:out.reduce((a,r)=>a+r.more,0),totalPremi:out.reduce((a,r)=>a+r.premi,0),isSunday:isSun};
+  const summary=Object.values(byHarvester).map(x=>({
+    ...x,
+    basis:x.basisCount?x.basisSum/x.basisCount:null,
+    jjgPerHK:x.jjg,
+    blocks:[...new Set(x.blocks)],
+    sections:[...new Set(x.sections)],
+    blockBases:[...new Set(x.blockBases)]
+  }));
+  return {
+    date:snap.date,afd:'OC',
+    sections:{},
+    rows:summary,
+    transactions:out,
+    totalJjg:rows.reduce((a,r)=>a+r.jjg,0),
+    totalMore:out.reduce((a,r)=>a+r.more,0),
+    totalPremi:out.reduce((a,r)=>a+r.premi,0),
+    isSunday:isSun
+  };
 }
 function buildPeopleHistory(activeDate){
-  const snaps=peopleLockedSnapshots('OC').filter(x=>x.date<=activeDate);
+  const active=new Date(activeDate+'T00:00:00');
+  const y=active.getFullYear(),m=active.getMonth();
+  const monthStart=`${y}-${String(m+1).padStart(2,'0')}-01`;
+  const snaps=peopleLockedSnapshots('OC')
+    .filter(x=>x.date>=PEOPLE_START_DATE&&x.date>=monthStart&&x.date<=activeDate);
   const daily=snaps.map(buildPeopleDay);
   const agg={};
   daily.forEach(day=>day.rows.forEach(x=>{
-    const k=x.npk;agg[k]??={npk:x.npk,name:x.name,jjg:0,more:0,premi:0,hkDays:0,basisSum:0,basisCount:0};
-    const a=agg[k];a.jjg+=x.jjg;a.more+=x.more;a.premi+=x.premi;a.hkDays+=1;
+    const k=x.npk;
+    agg[k]??={npk:x.npk,name:x.name,jjg:0,more:0,premi:0,hkDays:0,basisSum:0,basisCount:0};
+    const a=agg[k];
+    a.jjg+=x.jjg;a.more+=x.more;a.premi+=x.premi;a.hkDays+=1;
     if(x.basis!=null){a.basisSum+=x.basis;a.basisCount++}
   }));
-  return {daily,agg:Object.values(agg).map(x=>({...x,jjgPerHK:x.hkDays?x.jjg/x.hkDays:null,avgBasis:x.basisCount?x.basisSum/x.basisCount:null}))};
+  return {
+    daily,
+    agg:Object.values(agg).map(x=>({
+      ...x,
+      jjgPerHK:x.hkDays?x.jjg/x.hkDays:null,
+      avgBasis:x.basisCount?x.basisSum/x.basisCount:null
+    }))
+  };
 }
 function peopleClass(achievement){
   if(!Number.isFinite(achievement))return {key:'NA',label:'—'};
@@ -669,7 +698,7 @@ function peopleMtdRows(activeDate){
   const rows=active.rows.map(x=>{
     const a=map[x.npk]||{jjg:0,hkDays:0,premi:0,avgBasis:null};
     const achievement=a.avgBasis&&a.avgBasis>0?(a.jjgPerHK/a.avgBasis*100):null;
-    return {...x,mtdPremi:a.premi||0,mtdJjg:a.jjg||0,mtdHk:a.hkDays||0,mtdJjgPerHK:a.jjgPerHK||0,achievement,cluster:peopleClass(achievement)};
+    return {...x,mtdMore:a.more||0,mtdPremi:a.premi||0,mtdJjg:a.jjg||0,mtdHk:a.hkDays||0,mtdJjgPerHK:a.jjgPerHK||0,achievement,cluster:peopleClass(achievement)};
   });
   return {history:h,rows};
 }
@@ -680,18 +709,18 @@ function renderPeoplePerformance(d){
     const msg=ACTIVE_AFD==='OE'?'OEYM belum memiliki master basis premi.':`People Performance dimulai ${fmtDate(PEOPLE_START_DATE)}.`;
     if(host)host.innerHTML=`<tr><td colspan="9" class="small">${msg}</td></tr>`;
     if(dashHost)dashHost.innerHTML=`<tr><td colspan="7" class="small">${msg}</td></tr>`;
-    ['peopleCount','peopleJjg','peopleMore','peoplePremi','peoplePremiMtd','dashPeopleCount','dashPeopleJjg','dashPeopleMore','dashPeoplePremi','dashPeoplePremiMtd'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='—'});
+    ['peopleCount','peopleJjg','peopleMore','peopleMoreMtd','peoplePremi','peoplePremiMtd','dashPeopleCount','dashPeopleJjg','dashPeopleMore','dashPeopleMoreMtd','dashPeoplePremi','dashPeoplePremiMtd'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='—'});
     return;
   }
   const pm=peopleMtdRows(d.date), day=pm.history.daily.find(x=>x.date===d.date)||buildPeopleDay(d), rows=pm.rows.sort((a,b)=>b.jjg-a.jjg);
   const cls={A:0,B:0,C:0};rows.forEach(x=>{if(cls[x.cluster.key]!=null)cls[x.cluster.key]++});
   const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
-  set('peopleCount',rows.length);set('peopleJjg',day.totalJjg.toLocaleString('id-ID'));set('peopleMore',day.totalMore.toFixed(2));set('peoplePremi',moneyRp(day.totalPremi));set('peoplePremiMtd',moneyRp(rows.reduce((a,x)=>a+x.mtdPremi,0)));
+  set('peopleCount',rows.length);set('peopleJjg',day.totalJjg.toLocaleString('id-ID'));set('peopleMore',day.totalMore.toFixed(2));set('peopleMoreMtd',rows.reduce((a,x)=>a+x.mtdMore,0).toFixed(2));set('peoplePremi',moneyRp(day.totalPremi));set('peoplePremiMtd',moneyRp(rows.reduce((a,x)=>a+x.mtdPremi,0)));
   set('classACount',cls.A);set('classBCount',cls.B);set('classCCount',cls.C);
-  set('dashPeopleCount',rows.length);set('dashPeopleJjg',day.totalJjg.toLocaleString('id-ID'));set('dashPeopleMore',day.totalMore.toFixed(2));set('dashPeoplePremi',moneyRp(day.totalPremi));set('dashPeoplePremiMtd',moneyRp(rows.reduce((a,x)=>a+x.mtdPremi,0)));
+  set('dashPeopleCount',rows.length);set('dashPeopleJjg',day.totalJjg.toLocaleString('id-ID'));set('dashPeopleMore',day.totalMore.toFixed(2));set('dashPeopleMoreMtd',rows.reduce((a,x)=>a+x.mtdMore,0).toFixed(2));set('dashPeoplePremi',moneyRp(day.totalPremi));set('dashPeoplePremiMtd',moneyRp(rows.reduce((a,x)=>a+x.mtdPremi,0)));
   const fmtBasis=x=>x.basis==null?'—':x.basis.toFixed(2);
-  if(host)host.innerHTML=rows.map(x=>`<tr><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${x.jjg.toLocaleString('id-ID')}</td><td>${fmtBasis(x)}</td><td>${x.more.toFixed(2)}</td><td class="premiMoney">${moneyRp(x.premi)}</td><td class="premiMoney">${moneyRp(x.mtdPremi)}</td><td>${x.mtdJjgPerHK.toFixed(2)}</td><td>${x.achievement==null?'—':x.achievement.toFixed(1)+'%'}</td><td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td></tr>`).join('')||'<tr><td colspan="9">No producing harvester.</td></tr>';
-  if(dashHost)dashHost.innerHTML=rows.map(x=>`<tr><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${x.jjg.toLocaleString('id-ID')}</td><td>${fmtBasis(x)}</td><td>${x.more.toFixed(2)}</td><td class="premiMoney">${moneyRp(x.premi)}</td><td class="premiMoney">${moneyRp(x.mtdPremi)}</td><td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td></tr>`).join('')||'<tr><td colspan="7">No producing harvester.</td></tr>';
+  if(host)host.innerHTML=rows.map(x=>`<tr><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${x.jjg.toLocaleString('id-ID')}</td><td>${(x.blockBases&&x.blockBases.length?x.blockBases.join('<br>'):'—')}</td><td>${x.more.toFixed(2)}</td><td>${x.mtdMore.toFixed(2)}</td><td class="premiMoney">${moneyRp(x.premi)}</td><td class="premiMoney">${moneyRp(x.mtdPremi)}</td><td>${x.mtdJjgPerHK.toFixed(2)}</td><td>${x.achievement==null?'—':x.achievement.toFixed(1)+'%'}</td><td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td></tr>`).join('')||'<tr><td colspan="10">No producing harvester.</td></tr>';
+  if(dashHost)dashHost.innerHTML=rows.map(x=>`<tr><td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td><td>${x.jjg.toLocaleString('id-ID')}</td><td>${(x.blockBases&&x.blockBases.length?x.blockBases.join('<br>'):'—')}</td><td>${x.more.toFixed(2)}</td><td>${x.mtdMore.toFixed(2)}</td><td class="premiMoney">${moneyRp(x.premi)}</td><td class="premiMoney">${moneyRp(x.mtdPremi)}</td><td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td></tr>`).join('')||'<tr><td colspan="8">No producing harvester.</td></tr>';
 }
 function renderPeopleAI(d){
   const host=document.getElementById('aiAnalysis');if(!host||!d?.date||d.date<PEOPLE_START_DATE||ACTIVE_AFD!=='OC')return;
