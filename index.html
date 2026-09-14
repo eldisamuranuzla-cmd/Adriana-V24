@@ -363,7 +363,7 @@ function mergeSections(a,b){const out=JSON.parse(JSON.stringify(a));const report
 async function processAMANTA(){const files=[...document.getElementById('amantaFiles').files];if(!files.length)return;const parsed=[];for(const f of files.slice(0,2))parsed.push({name:f.name,sections:parseCSV(await f.text()),size:f.size});const metas=parsed.map(x=>detectMeta(x.sections));const dates=[...new Set(metas.map(x=>x.date).filter(Boolean))];const unresolved=metas.map((m,i)=>m.date?null:`File ${i+1}: tanggal tidak terdeteksi`).filter(Boolean);const inconsistent=metas.some(m=>m.dates.length>1);const sites=[...new Set(parsed.map(x=>secGet(x.sections,'PRODUKSIBLOK','SITECODE').find(Boolean)).filter(Boolean))];if(unresolved.length||dates.length!==1||inconsistent){const detail=metas.map((m,i)=>`File ${i+1}: ${m.dates.length?m.dates.join(', '):'UNAVAILABLE'}`).join(' · ');document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> tanggal antar file tidak sama/tidak terdeteksi. '+html.escape(detail);return}let merged=parsed[0].sections,report=[];if(parsed[1]){const m=mergeSections(merged,parsed[1].sections);merged=m.sections;report=m.report}else{report=Object.entries(merged).map(([k,v])=>({section:k,file1:v.rows.length,file2:0,duplicates:0,final:v.rows.length}))}STAGED={date:dates[0],site:sites[0]||'—',version:'3.2.8.9',files:parsed.map(x=>x.name),sections:merged,recon:report,processedAt:new Date().toISOString()};document.getElementById('uploadMsg').innerHTML='<b>Parsed:</b> '+parsed.length+' file(s) · '+html.escape(parsed.map(x=>x.name).join(' + '));const dup=report.reduce((a,x)=>a+x.duplicates,0),raw=parsed.reduce((a,x)=>a+Object.values(x.sections).reduce((n,s)=>n+s.rows.length,0),0),fin=Object.values(merged).reduce((n,s)=>n+s.rows.length,0);document.getElementById('reconBox').innerHTML=`<b>READY TO CLOSE</b><br>Tanggal: <b>${fmtDate(STAGED.date)}</b> · Site: ${html.escape(STAGED.site)} · ${parsed.length} file<br>Raw rows: ${raw.toLocaleString()} · Duplicate rows removed: ${dup.toLocaleString()} · Final reconciled rows: ${fin.toLocaleString()}<br><span class="small">Identical rows are deduplicated; records are not blindly summed across files.</span>`;document.getElementById('lockBtn').disabled=false;renderStagedPreview(STAGED)}
 function fmtDate(iso){if(!iso)return 'No dataset';const d=new Date(iso+'T00:00:00');return isNaN(d)?iso:d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}
 function lockKey(date){return 'adriana_daily_'+date}
-function closeDataset(){if(!STAGED)return;const existing=JSON.parse(localStorage.getItem(lockKey(STAGED.date))||'null');const closingId=existing?.closingId||('CLOSE-'+STAGED.date);const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};localStorage.setItem(lockKey(STAGED.date),JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(STAGED.date))dates.push(STAGED.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));ACTIVE=snap;window.ADRIANA_DATA=buildData(snap);renderAll(ACTIVE);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');}
+function closeDatasetLegacyUnused(){if(!STAGED)return;const existing=JSON.parse(localStorage.getItem(lockKey(STAGED.date))||'null');const closingId=existing?.closingId||('CLOSE-'+STAGED.date);const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};localStorage.setItem(lockKey(STAGED.date),JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(STAGED.date))dates.push(STAGED.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));ACTIVE=snap;window.ADRIANA_DATA=buildData(snap);renderAll(ACTIVE);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');}
 function buildData(snap){const sections=snap.sections,prod=sections.PRODUKSIBLOK;let jjg=0;const npks=new Set(),mand=new Set(),blocks={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{jjg+=num(r[ji]);if(r[ni])npks.add(r[ni]);if(r[mi])mand.add(r[mi]);const b=r[bi]||'—';blocks[b]=(blocks[b]||0)+num(r[ji])})}let net=0,trips=0;const tr=sections.TR_TBS_TRANSPORT;if(tr){const wi=tr.header.indexOf('WEIGHTIN'),wo=tr.header.indexOf('WEIGHTOUT');tr.rows.forEach(r=>{const x=num(r[wi])-num(r[wo]);if(x>0){net+=x;trips++}})}const harvesters={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),namei=h.indexOf('NAMA'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{const npk=cleanCell(r[ni]);if(npk==='—')return;const name=cleanCell(r[namei]);const key=npk;harvesters[key]??={npk,name,j:0,blocks:new Set(),mandorans:new Set()};harvesters[key].j+=num(r[ji]);const b=cleanCell(r[bi]),m=cleanCell(r[mi]);if(b!=='—')harvesters[key].blocks.add(b);if(m!=='—')harvesters[key].mandorans.add(m)});}const bjrKgPerJjg=jjg>0&&net>0?net/jjg:null;return {...snap,jjg,producingHK:npks.size,mandorans:[...mand],blocks,netTransportKg:net,trips,bjrKgPerJjg,harvesters:Object.values(harvesters).map(x=>({...x,blocks:[...x.blocks],mandorans:[...x.mandorans],jjgPerHK:x.j}))}}
 function renderStagedPreview(s){const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent='—';vals[1].textContent='—';vals[2].textContent='—';}
 function renderAll(snap){const d=buildData(snap);ACTIVE=snap;window.ADRIANA_DATA=d;document.getElementById('activeDate').textContent=fmtDate(snap.date);document.getElementById('activeMeta').textContent=`${snap.site} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent=d.jjg.toLocaleString();vals[1].textContent=d.producingHK.toLocaleString();vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';const bjrNotice=document.getElementById('bjrNotice');if(bjrNotice)bjrNotice.innerHTML=d.bjrKgPerJjg?`<b>BJR:</b> ${d.bjrKgPerJjg.toFixed(2)} kg/JJG · ${d.netTransportKg.toLocaleString()} kg net ÷ ${d.jjg.toLocaleString()} JJG`:'<b>BJR:</b> unavailable because net transport or JJG is unavailable.';const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();renderProduction(d);renderQuality(d);renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d)}
@@ -569,7 +569,7 @@ function renderEvalHistory(){const el=document.getElementById('evalHistory');if(
 // Build by-mandoran data after core is built
 const oldBuildData=buildData;buildData=function(snap){const d=oldBuildData(snap);d.byMandoran={};const p=d.sections.PRODUKSIBLOK;if(p){const h=p.header,mi=h.indexOf('KEMANDORAN'),ni=h.indexOf('NPK'),ji=h.indexOf('JJG');p.rows.forEach(r=>{const m=r[mi]||'—';d.byMandoran[m]??={j:0,n:new Set()};d.byMandoran[m].j+=num(r[ji]);if(r[ni])d.byMandoran[m].n.add(r[ni])})}return d}
 document.getElementById('amantaFiles').addEventListener('change',()=>{const n=document.getElementById('amantaFiles').files.length;document.getElementById('processBtn').disabled=!n;document.getElementById('uploadMsg').textContent=n?`${n} file dipilih.`:'Belum ada file.'});
-renderDecisionHistory();renderEvalHistory();const bootDates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(bootDates[0]){const boot=JSON.parse(localStorage.getItem(lockKey(bootDates[0]))||'null');if(boot)renderAll(boot);}
+renderDecisionHistory();renderEvalHistory();const bootDates=safeStorageJSON('adriana_daily_index',[]);if(Array.isArray(bootDates)&&bootDates[0]){const boot=safeStorageJSON(lockKey(bootDates[0]),null)||getLegacySnapshotHybrid(bootDates[0],'OC');if(boot)renderAll(boot);}
 
 /* ================= V22.6 HYBRID: MULTI-AFD + LOCKED HISTORY ================= */
 function detectAFDHybrid(sections,filename=''){
@@ -581,13 +581,30 @@ function detectAFDHybrid(sections,filename=''){
 }
 function afdKeyHybrid(date,afd){return 'adriana_daily_'+afd+'_'+date}
 function migrateLegacyHistoryHybrid(){
- let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){}
- if(!Array.isArray(idx))idx=[];let afdIdx=[];try{afdIdx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}
- if(!Array.isArray(afdIdx))afdIdx=[];
- for(const date of idx){let snap=null;try{snap=JSON.parse(localStorage.getItem('adriana_daily_'+date)||'null')}catch(e){}if(!snap)continue;const afd=detectAFDHybrid(snap.sections||{},snap.files?.[0]||'')||'OC';const k=afdKeyHybrid(snap.date||date,afd);if(!localStorage.getItem(k))localStorage.setItem(k,JSON.stringify({...snap,afd,afdLabel:AFD_LABEL[afd]||afd,migratedFrom:'adriana_daily_'+date,migratedAt:new Date().toISOString()}));if(!afdIdx.some(x=>x.date===(snap.date||date)&&x.afd===afd))afdIdx.push({date:snap.date||date,afd});}
- afdIdx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));try{localStorage.setItem('adriana_afd_index',JSON.stringify(afdIdx));}catch(e){console.warn('ADRIANA legacy migration index write skipped',e);}
+ /* Legacy snapshots are READ-ONLY. Never copy full AMANTA payloads into another localStorage key. */
+ let idx=safeStorageJSON('adriana_daily_index',[]);if(!Array.isArray(idx))idx=[];
+ let afdIdx=safeStorageJSON('adriana_afd_index',[]);if(!Array.isArray(afdIdx))afdIdx=[];
+ for(const date of idx){
+  const snap=safeStorageJSON('adriana_daily_'+date,null);if(!snap)continue;
+  const afd=snap.afd||detectAFDHybrid(snap.sections||{},snap.files?.[0]||'')||'OC',d=snap.date||date;
+  if(!afdIdx.some(x=>x&&x.date===d&&x.afd===afd))afdIdx.push({date:d,afd});
+ }
+ afdIdx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+ try{localStorage.setItem('adriana_afd_index',JSON.stringify(afdIdx));}catch(e){console.warn('ADRIANA legacy index update skipped',e);}
 }
-function getAfdSnapshotsHybrid(afd){migrateLegacyHistoryHybrid();let idx=safeStorageJSON('adriana_afd_index',[]);if(!Array.isArray(idx))idx=[];const out={};idx.forEach(x=>{const id=hybridMemKey(x.date,x.afd),s=HYBRID_MEMORY[id]||safeStorageJSON(afdKeyHybrid(x.date,x.afd),null);if(s)out[id]=s;});Object.values(HYBRID_MEMORY).forEach(s=>{if(s&&s.date&&s.afd)out[hybridMemKey(s.date,s.afd)]=s;});return Object.values(out).filter(x=>x&&(!afd||afd==='ALL'||x.afd===afd)).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
+function getLegacySnapshotHybrid(date,afd){
+ let s=safeStorageJSON(afdKeyHybrid(date,afd),null);if(s)return s;
+ s=safeStorageJSON('adriana_daily_'+date,null);
+ if(s){const detected=s.afd||detectAFDHybrid(s.sections||{},s.files?.[0]||'')||'OC';if(!afd||afd==='ALL'||detected===afd)return {...s,afd:detected,afdLabel:AFD_LABEL[detected]||detected};}
+ return null;
+}
+function getAfdSnapshotsHybrid(afd){
+ migrateLegacyHistoryHybrid();const out={};
+ const dates=safeStorageJSON('adriana_daily_index',[]);if(Array.isArray(dates))dates.forEach(date=>{const snap=getLegacySnapshotHybrid(date,afd);if(snap)out[hybridMemKey(snap.date||date,snap.afd||'OC')]=snap;});
+ const idx=safeStorageJSON('adriana_afd_index',[]);if(Array.isArray(idx))idx.forEach(x=>{if(!x||!x.date||!x.afd)return;const id=hybridMemKey(x.date,x.afd),snap=HYBRID_MEMORY[id]||getLegacySnapshotHybrid(x.date,x.afd);if(snap)out[id]=snap;});
+ Object.values(HYBRID_MEMORY).forEach(snap=>{if(snap&&snap.date&&snap.afd)out[hybridMemKey(snap.date,snap.afd)]=snap;});
+ return Object.values(out).filter(x=>x&&(!afd||afd==='ALL'||x.afd===afd)).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+}
 function getLockedSnapshots(){return getAfdSnapshotsHybrid(ACTIVE_AFD==='ALL'?'':ACTIVE_AFD)}
 async function processAMANTA(){
  const files=[...document.getElementById('amantaFiles').files];if(!files.length)return;
@@ -620,40 +637,30 @@ async function hydrateHybridStorage(){try{const rows=await hybridDBGetAll();rows
 async function closeDataset(){
  if(!STAGED)return;
  const btn=document.getElementById('lockBtn');if(btn)btn.disabled=true;
- const safe=safeStorageJSON;
- const afd=STAGED.afd||detectAFDHybrid(STAGED.sections||{},STAGED.files?.[0]||'')||'OC';
- const date=STAGED.date;
- const k=afdKeyHybrid(date,afd);
- const existing=HYBRID_MEMORY[hybridMemKey(date,afd)]||safe(k,null);
- const closingId=existing?.closingId||('CLOSE-'+afd+'-'+date);
+ const afd=STAGED.afd||detectAFDHybrid(STAGED.sections||{},STAGED.files?.[0]||'')||'OC',date=STAGED.date,id=hybridMemKey(date,afd);
+ const existing=HYBRID_MEMORY[id]||getLegacySnapshotHybrid(date,afd),closingId=existing?.closingId||('CLOSE-'+afd+'-'+date);
  const snap={...STAGED,afd,afdLabel:AFD_LABEL[afd]||afd,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};
  try{
-  await hybridDBPut(snap);
-  HYBRID_MEMORY[hybridMemKey(date,afd)]=snap;
+  await hybridDBPut(snap);HYBRID_MEMORY[id]=snap;
  }catch(e){
-  /* Legacy fallback only when IndexedDB is unavailable. */
-  try{localStorage.setItem(k,JSON.stringify(snap));HYBRID_MEMORY[hybridMemKey(date,afd)]=snap;}
-  catch(e2){if(btn)btn.disabled=false;const box=document.getElementById('reconBox');if(box)box.innerHTML='<b>LOCK FAILED:</b> penyimpanan browser penuh/tidak tersedia. Dataset belum dinyatakan LOCKED.';console.error('ADRIANA LOCK failed',e,e2);return;}
+  if(btn)btn.disabled=false;
+  const box=document.getElementById('reconBox');
+  if(box)box.innerHTML='<b>LOCK FAILED:</b> IndexedDB tidak dapat menyimpan dataset. Data lama TIDAK dihapus dan dataset baru belum LOCKED.<br><span class="small">'+html.escape(String(e?.name||'StorageError'))+': '+html.escape(String(e?.message||e||'Unknown error'))+'</span>';
+  console.error('ADRIANA IDB LOCK failed',e);return;
  }
- // Small metadata index only; the full dataset is no longer duplicated in localStorage.
- let idx=safe('adriana_afd_index',[]);if(!Array.isArray(idx))idx=[];
- idx=idx.filter(x=>x&&!(x.date===date&&x.afd===afd));idx.push({date,afd});idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
- try{localStorage.setItem('adriana_afd_index',JSON.stringify(idx));}catch(e){console.warn('ADRIANA AFD index write failed',e);}
- if(afd==='OC'){
-  let dates=safe('adriana_daily_index',[]);if(!Array.isArray(dates))dates=[];
-  if(!dates.includes(date))dates.push(date);dates.sort().reverse();try{localStorage.setItem('adriana_daily_index',JSON.stringify(dates));}catch(e){}
- }
+ /* Only tiny metadata indexes go to localStorage. Full AMANTA data stays in IndexedDB. */
+ let idx=safeStorageJSON('adriana_afd_index',[]);if(!Array.isArray(idx))idx=[];idx=idx.filter(x=>x&&!(x.date===date&&x.afd===afd));idx.push({date,afd});idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));try{localStorage.setItem('adriana_afd_index',JSON.stringify(idx));}catch(e){console.warn('ADRIANA AFD index write skipped',e);}
+ if(afd==='OC'){let dates=safeStorageJSON('adriana_daily_index',[]);if(!Array.isArray(dates))dates=[];if(!dates.includes(date))dates.push(date);dates.sort().reverse();try{localStorage.setItem('adriana_daily_index',JSON.stringify(dates));}catch(e){}}
  ACTIVE=snap;STAGED=null;window.ADRIANA_DATA=buildData(snap);
  const ls=document.getElementById('lockState');if(ls)ls.textContent='● DATA LOCKED · VALIDATED';
  const um=document.getElementById('uploadMsg');if(um)um.innerHTML+='<br><b>LOCKED:</b> '+fmtDate(date)+' · '+closingId;
- try{renderAll(snap);}catch(e){console.error('ADRIANA post-lock render failed',e);}
- try{renderHistory();}catch(e){console.error('ADRIANA history render failed',e);}
- if(btn)btn.disabled=false;
- alert('Dataset '+fmtDate(date)+' berhasil di-CLOSE & LOCK.');
+ try{renderAll(snap)}catch(e){console.error('ADRIANA post-lock render failed',e)}
+ try{renderHistory()}catch(e){console.error('ADRIANA history render failed',e)}
+ if(btn)btn.disabled=false;alert('Dataset '+fmtDate(date)+' berhasil di-CLOSE & LOCK.');
 }
 function renderAfdSelectorHybrid(){const el=document.getElementById('afdFilter');if(!el)return;el.value=ACTIVE_AFD;el.onchange=()=>{ACTIVE_AFD=el.value;localStorage.setItem('adriana_active_afd',ACTIVE_AFD);const snaps=getAfdSnapshotsHybrid(ACTIVE_AFD);if(snaps.length){renderAll(snaps[snaps.length-1]);}else{document.getElementById('activeDate').textContent='No dataset';document.getElementById('activeMeta').textContent=(AFD_LABEL[ACTIVE_AFD]||'Semua Afdeling')+' · Belum ada dataset';document.getElementById('lockState').textContent='● NO DATASET';document.getElementById('dashboardSignals').innerHTML='<div class="notice">Belum ada dataset untuk afdeling ini.</div>';document.getElementById('dashboardDecision').textContent='—';document.getElementById('dashboardDecisionText').textContent='Upload AMANTA untuk afdeling yang dipilih.';renderHarvestDensitySummary({blocks:{}});renderHistory();renderDecisionHistory();}}}
 function renderHistory(){const host=document.getElementById('evalHistory');if(!host)return;const snaps=getAfdSnapshotsHybrid('ALL');const rows=snaps.map(s=>`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)} · ${html.escape(s.afdLabel||s.afd)}</b><br>${s.jjg?Number(s.jjg).toLocaleString():'—'} JJG · ${s.producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadAfdDateHybrid('${s.date}','${s.afd}')">LOAD THIS DATE</button></div>`).join('');host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>');if(typeof renderDecisionHistory==='function')renderDecisionHistory();}
-function loadAfdDateHybrid(date,afd){const s=HYBRID_MEMORY[hybridMemKey(date,afd)]||safeStorageJSON(afdKeyHybrid(date,afd),null);if(!s)return;ACTIVE_AFD=afd;localStorage.setItem('adriana_active_afd',afd);const f=document.getElementById('afdFilter');if(f)f.value=afd;ACTIVE=s;renderAll(s);show('dashboard');}
+function loadAfdDateHybrid(date,afd){const s=HYBRID_MEMORY[hybridMemKey(date,afd)]||getLegacySnapshotHybrid(date,afd);if(!s)return;ACTIVE_AFD=afd;localStorage.setItem('adriana_active_afd',afd);const f=document.getElementById('afdFilter');if(f)f.value=afd;ACTIVE=s;renderAll(s);show('dashboard');}
 function loadDate(date){const afd=ACTIVE_AFD==='ALL'?'OC':ACTIVE_AFD;loadAfdDateHybrid(date,afd)}
 function renderAll(snap){const d=buildData(snap);ACTIVE=snap;window.ADRIANA_DATA=d;document.getElementById('activeDate').textContent=fmtDate(snap.date);document.getElementById('activeMeta').textContent=`${snap.site} · ${AFD_LABEL[snap.afd]||snap.afd||'OCYM'} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';const vals=document.querySelectorAll('#dashboard .card .value');if(vals[0])vals[0].textContent=d.jjg.toLocaleString();if(vals[1])vals[1].textContent=d.producingHK.toLocaleString();if(vals[2])vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';if(vals[3])vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();renderProduction(d);renderHarvestDensitySummary(d);renderJJGContribution(d);renderQuality(d);renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d);}
 
