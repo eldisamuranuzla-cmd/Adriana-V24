@@ -1011,11 +1011,11 @@ function renderPeopleAI(d){
 
 /* ADRIANA INFIELD REAL — TEAM BY AMANTA NPK/NPKUTAMA */
 (function(){
- const clean=v=>String(v??'').trim(), n=v=>{const x=Number(String(v??'').replace(/,/g,''));return Number.isFinite(x)?x:0};
+ const clean=v=>String(v??'').trim(), key=v=>String(v??'').trim().toUpperCase(), n=v=>{const x=Number(String(v??'').replace(/,/g,''));return Number.isFinite(x)?x:0};
  const sec=(d,n)=>d?.sections?.[n]||null;
  const ix=(h,arr)=>{for(const a of arr){const i=(h||[]).findIndex(x=>clean(x).toUpperCase()===a);if(i>=0)return i}return -1};
  function build(d){
-  const am=sec(d,'AMANTA'), noc=sec(d,'TR_NOC_DETAIL'), lt=sec(d,'TR_LANGSIR_TRANSPORT'), tr=sec(d,'TR_TBS_TRANSPORT');
+  const am=sec(d,'ABSENSI'), noc=sec(d,'TR_NOC_DETAIL'), lt=sec(d,'TR_LANGSIR_TRANSPORT'), tr=sec(d,'TR_TBS_TRANSPORT');
   /*
     AMANTA is the source of the Infield team identity:
     - Main worker: NPK + KODEUNIT
@@ -1026,7 +1026,7 @@ function renderPeopleAI(d){
   if(am){
    const h=am.header||[], ni=ix(h,['NPK']), nn=ix(h,['NAMA']), ai=ix(h,['KODEUNIT','KODEALAT','KODE ALAT']), hi=ix(h,['NPKUTAMA']);
    (am.rows||[]).forEach(r=>{
-    const npk=ni>=0?clean(r[ni]):'', name=nn>=0?clean(r[nn]):'', code=ai>=0?clean(r[ai]):'', main=hi>=0?clean(r[hi]):'';
+    const npk=ni>=0?key(r[ni]):'', name=nn>=0?clean(r[nn]):'', code=ai>=0?key(r[ai]):'', main=hi>=0?key(r[hi]):'';
     if(!npk)return;
     if(code){ mainByNpk[npk]={npk,name,code}; }
     if(main){ (helpersByMain[main] ||= []).push({npk,name}); }
@@ -1042,12 +1042,12 @@ function renderPeopleAI(d){
   /* TAP JJG: aggregate ALL blocks belonging to the same KODEALAT/team. */
   const gross={};
   if(noc){const h=noc.header||[],ai=ix(h,['KODEALAT','KODE ALAT']),bi=ix(h,['BLOCKCODE','BLOK','BLOCK']),ji=ix(h,['TOTALJJG','JMLJJG','JJG']);
-   (noc.rows||[]).forEach(r=>{const c=ai>=0?clean(r[ai]):'',b=bi>=0?clean(r[bi]):'',j=ji>=0?n(r[ji]):0;if(!c||j<=0)return;gross[c] ||= {code:c,jjg:0,blocks:new Set()};gross[c].jjg+=j;if(b)gross[c].blocks.add(b);});
+   (noc.rows||[]).forEach(r=>{const c=ai>=0?key(r[ai]):'',b=bi>=0?clean(r[bi]):'',j=ji>=0?n(r[ji]):0;if(!c||j<=0)return;gross[c] ||= {code:c,jjg:0,blocks:new Set()};gross[c].jjg+=j;if(b)gross[c].blocks.add(b);});
   }
   /* Explicit Langsir JJG, aggregated by tool code. */
   const ded={};
   if(lt){const h=lt.header||[],ai=ix(h,['ALAT','KODEALAT','KODE ALAT']),bi=ix(h,['BLOK','BLOCKCODE','BLOCK']),ji=ix(h,['JJG','TOTALJJG','JMLJJG']);
-   (lt.rows||[]).forEach(r=>{const c=ai>=0?clean(r[ai]):'',b=bi>=0?clean(r[bi]):'',j=ji>=0?n(r[ji]):0;if(!j)return;const key=c||'*';ded[key]=(ded[key]||0)+j;});
+   (lt.rows||[]).forEach(r=>{const c=ai>=0?key(r[ai]):'',b=bi>=0?clean(r[bi]):'',j=ji>=0?n(r[ji]):0;if(!j)return;const k=c||'*';ded[k]=(ded[k]||0)+j;});
   }
   let wi=0,wo=0;if(tr){const h=tr.header||[],a=ix(h,['WEIGHTIN']),b=ix(h,['WEIGHTOUT']);if(a>=0&&b>=0)(tr.rows||[]).forEach(r=>{wi+=n(r[a]);wo+=n(r[b]);});}
   const totalGross=Object.values(gross).reduce((a,x)=>a+x.jjg,0),bjr=totalGross>0?Math.max(0,wi-wo)/totalGross:null;
