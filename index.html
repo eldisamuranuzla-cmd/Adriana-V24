@@ -184,8 +184,8 @@ body{background:#f4f7f3}
 
 <section id="infield" class="section">
 <div class="panel" style="margin-top:12px">
-<div class="panelHead"><h2>Infield Control — Real AMANTA</h2><span>TAP AMANTA · Langsir Deduction · BJR Aktual</span></div>
-<div class="notice">Tim Infield dikunci dari AMANTA: NPK utama + NPKUTAMA (helper) → KODE ALAT. JJG Gross adalah akumulasi TOTALJJG TR_NOC_DETAIL per KODE ALAT. Langsir menjadi deduction bila JJG langsir eksplisit tersedia.</div>
+<div class="panelHead"><h2>Infield Control — Real AMANTA</h2><span>PRODUKSI UNIT AMANTA · BJR Aktual</span></div>
+<div class="notice">Penginfield dikunci dari KODEUNIT. Tim Infield dibentuk dari NPK utama + NPKUTAMA (helper). JJG Infield berasal dari PRODUKSIUNIT.JJG berdasarkan KODEUNIT. JJG Langsir tidak dikurangkan karena data absen langsir tidak menyediakan JJG.</div>
 <div class="peopleKpis" style="margin-top:12px">
 <div class="peopleKpi"><small>PENGINFIELD</small><strong id="infieldPeople">—</strong></div>
 <div class="peopleKpi"><small>BLOK INFIELD</small><strong id="infieldBlocks">—</strong></div>
@@ -193,8 +193,8 @@ body{background:#f4f7f3}
 <div class="peopleKpi"><small>JJG LANGSIR</small><strong id="infieldLangsir">—</strong></div>
 <div class="peopleKpi"><small>JJG INFIELD REAL</small><strong id="infieldNet">—</strong></div>
 </div>
-<div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Tim Infield (Utama + Helper)</th><th>Kode Alat</th><th>Blok</th><th>JJG TAP</th><th>Langsir</th><th>JJG Infield Real</th><th>BJR Aktual</th><th>Tonase</th></tr></thead><tbody id="infieldBody"><tr><td colspan="9" class="small">Upload &amp; lock AMANTA untuk melihat Infield.</td></tr></tbody></table></div>
-<div class="perfNote">1 KODE ALAT = 1 tim Infield. Nama tim berasal dari NPK utama + NPKUTAMA helper pada AMANTA. Seluruh JJG TAP diakumulasi per KODE ALAT; Langsir adalah deduction.</div>
+<div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Tim Infield</th><th>Kode Alat</th><th>Blok</th><th>JJG TAP</th><th>Langsir</th><th>JJG Infield Real</th><th>BJR Aktual</th><th>Tonase</th></tr></thead><tbody id="infieldBody"><tr><td colspan="9" class="small">Upload &amp; lock AMANTA untuk melihat Infield.</td></tr></tbody></table></div>
+<div class="perfNote">Ranking diurutkan dari JJG Infield Real paling sedikit. Sumber JJG: PRODUKSIUNIT.JJG berdasarkan KODEUNIT. NPKUTAMA digunakan untuk menghubungkan helper. Langsir tidak menjadi deduction JJG.</div>
 </div></section>
 <section id="people" class="section">
   <div class="top">
@@ -1009,57 +1009,65 @@ function renderPeopleAI(d){
   };
 })();
 
-/* ADRIANA INFIELD REAL — TEAM BY AMANTA NPK/NPKUTAMA */
+/* ADRIANA INFIELD REAL — PRODUKSIUNIT + NPKUTAMA HELPER */
 (function(){
- const clean=v=>String(v??'').trim(), key=v=>String(v??'').trim().toUpperCase(), n=v=>{const x=Number(String(v??'').replace(/,/g,''));return Number.isFinite(x)?x:0};
+ const clean=v=>String(v??'').trim(), up=v=>clean(v).toUpperCase(), n=v=>{const x=Number(String(v??'').replace(/,/g,''));return Number.isFinite(x)?x:0};
  const sec=(d,n)=>d?.sections?.[n]||null;
- const ix=(h,arr)=>{for(const a of arr){const i=(h||[]).findIndex(x=>clean(x).toUpperCase()===a);if(i>=0)return i}return -1};
+ const ix=(h,arr)=>{for(const a of arr){const i=(h||[]).findIndex(x=>up(x)===up(a));if(i>=0)return i}return -1};
  function build(d){
-  const am=sec(d,'ABSENSI'), noc=sec(d,'TR_NOC_DETAIL'), lt=sec(d,'TR_LANGSIR_TRANSPORT'), tr=sec(d,'TR_TBS_TRANSPORT');
-  /*
-    AMANTA is the source of the Infield team identity:
-    - Main worker: NPK + KODEUNIT
-    - Helper: NPK + NPKUTAMA matching the main worker NPK
-    Therefore one KODEUNIT/KODEALAT can have 1 main NPK + 1 or more helper NPKs.
-  */
-  const mainByNpk={}, helpersByMain={};
-  if(am){
-   const h=am.header||[], ni=ix(h,['NPK']), nn=ix(h,['NAMA']), ai=ix(h,['KODEUNIT','KODEALAT','KODE ALAT']), hi=ix(h,['NPKUTAMA']);
-   (am.rows||[]).forEach(r=>{
-    const npk=ni>=0?key(r[ni]):'', name=nn>=0?clean(r[nn]):'', code=ai>=0?key(r[ai]):'', main=hi>=0?key(r[hi]):'';
-    if(!npk)return;
-    if(code){ mainByNpk[npk]={npk,name,code}; }
-    if(main){ (helpersByMain[main] ||= []).push({npk,name}); }
+  const abs=sec(d,'ABSENSI'), prod=sec(d,'PRODUKSIUNIT'), tr=sec(d,'TR_TBS_TRANSPORT');
+  const teams={}; const npkToCode={}; const npkNames={};
+  if(abs){
+   const h=abs.header||[], ni=ix(h,['NPK']), nn=ix(h,['NAMA']), ai=ix(h,['KODEUNIT','KODEALAT','KODE ALAT']), hi=ix(h,['NPKUTAMA']);
+   (abs.rows||[]).forEach(r=>{
+    const npk=ni>=0?clean(r[ni]):'', name=nn>=0?clean(r[nn]):'', code=ai>=0?clean(r[ai]):'', main=hi>=0?clean(r[hi]):'';
+    if(npk&&name)npkNames[npk]=name;
+    if(code&&npk){
+      const k=code.toUpperCase();
+      npkToCode[npk]=k;
+      teams[k] ||= {code:k,mainNpk:npk,mainName:name,helpers:[],members:[]};
+      if(!teams[k].members.some(x=>x.npk===npk))teams[k].members.push({npk,name,role:'Utama'});
+    }
+   });
+   // Helper: NPKUTAMA menunjuk ke NPK utama yang memegang KODEUNIT.
+   (abs.rows||[]).forEach(r=>{
+    const npk=ni>=0?clean(r[ni]):'', name=nn>=0?clean(r[nn]):'', main=hi>=0?clean(r[hi]):'';
+    if(!npk||!main||npk===main)return;
+    const code=npkToCode[main];
+    if(!code)return;
+    const t=teams[code];
+    if(t&&!t.members.some(x=>x.npk===npk))t.members.push({npk,name:name||npkNames[npk]||npk,role:'Helper'});
    });
   }
-  const teams={};
-  Object.values(mainByNpk).forEach(m=>{
-   const hs=helpersByMain[m.npk]||[];
-   const members=[m,...hs.filter(h=>h.npk!==m.npk)];
-   teams[m.code]={code:m.code,mainNpk:m.npk,nama:m.name,helpers:hs,members};
-  });
-
-  /* TAP JJG: aggregate ALL blocks belonging to the same KODEALAT/team. */
-  const gross={};
-  if(noc){const h=noc.header||[],ai=ix(h,['KODEALAT','KODE ALAT']),bi=ix(h,['BLOCKCODE','BLOK','BLOCK']),ji=ix(h,['TOTALJJG','JMLJJG','JJG']);
-   (noc.rows||[]).forEach(r=>{const c=ai>=0?key(r[ai]):'',b=bi>=0?clean(r[bi]):'',j=ji>=0?n(r[ji]):0;if(!c||j<=0)return;gross[c] ||= {code:c,jjg:0,blocks:new Set()};gross[c].jjg+=j;if(b)gross[c].blocks.add(b);});
+  // JJG Infield = PRODUKSIUNIT.JJG grouped by KODEUNIT, tanpa deduction langsir.
+  const by={};
+  if(prod){
+   const h=prod.header||[], ci=ix(h,['KODEUNIT']), bi=ix(h,['BLOK','BLOCKCODE','BLOCK']), ji=ix(h,['JJG']);
+   (prod.rows||[]).forEach(r=>{
+    const code=ci>=0?clean(r[ci]).toUpperCase():'', block=bi>=0?clean(r[bi]):'', jjg=ji>=0?n(r[ji]):0;
+    if(!code||jjg<=0)return;
+    const k=code+'|'+block;
+    by[k] ||= {code,block,jjg:0}; by[k].jjg+=jjg;
+   });
   }
-  /* Explicit Langsir JJG, aggregated by tool code. */
-  const ded={};
-  if(lt){const h=lt.header||[],ai=ix(h,['ALAT','KODEALAT','KODE ALAT']),bi=ix(h,['BLOK','BLOCKCODE','BLOCK']),ji=ix(h,['JJG','TOTALJJG','JMLJJG']);
-   (lt.rows||[]).forEach(r=>{const c=ai>=0?key(r[ai]):'',b=bi>=0?clean(r[bi]):'',j=ji>=0?n(r[ji]):0;if(!j)return;const k=c||'*';ded[k]=(ded[k]||0)+j;});
-  }
-  let wi=0,wo=0;if(tr){const h=tr.header||[],a=ix(h,['WEIGHTIN']),b=ix(h,['WEIGHTOUT']);if(a>=0&&b>=0)(tr.rows||[]).forEach(r=>{wi+=n(r[a]);wo+=n(r[b]);});}
-  const totalGross=Object.values(gross).reduce((a,x)=>a+x.jjg,0),bjr=totalGross>0?Math.max(0,wi-wo)/totalGross:null;
-  const rows=Object.values(gross).filter(x=>teams[x.code]||x.code).map(x=>{
-   const t=teams[x.code]||{code:x.code,mainNpk:'—',nama:'Nama belum terhubung',helpers:[],members:[]};
-   const l=Math.min(x.jjg,ded[x.code]||0);
-   const memberNames=t.members?.length?t.members.map(m=>m.name).filter(Boolean):[t.nama];
-   return {...x,...t,nama:memberNames.join(' + '),members:t.members||[],langsir:l,net:x.jjg-l,bjr,tonase:bjr!=null?(x.jjg-l)*bjr/1000:null,block:[...x.blocks].join(', ')};
+  let wi=0,wo=0;if(tr){const h=tr.header||[],a=ix(h,['WEIGHTIN']),b=ix(h,['WEIGHTOUT']);if(a>=0||b>=0)(tr.rows||[]).forEach(r=>{wi+=a>=0?n(r[a]):0;wo+=b>=0?n(r[b]):0;});}
+  const totalGross=Object.values(by).reduce((a,x)=>a+x.jjg,0), bjr=totalGross>0?Math.max(0,wi-wo)/totalGross:null;
+  const rows=Object.values(by).map(x=>{
+    const t=teams[x.code];
+    const members=t?.members||[];
+    const nama=members.length?members.map(m=>m.name).join(' + '):'Nama belum terhubung';
+    return {...x,nama,mainName:t?.mainName||'Nama belum terhubung',members,bjr,langsir:null,net:x.jjg,tonase:bjr!=null?x.jjg*bjr/1000:null};
   });
-  return {rows,people:rows.map(x=>x.code),gross:totalGross,langsir:rows.reduce((a,x)=>a+x.langsir,0),net:rows.reduce((a,x)=>a+x.net,0)};
+  const teamCodes=new Set(rows.map(x=>x.code));
+  return {rows,people:[...teamCodes],gross:totalGross,langsir:null,net:totalGross};
  }
- function render(d){const host=document.getElementById('infieldBody');if(!host)return;if(!d?.date||ACTIVE_AFD!=='OC'){host.innerHTML='<tr><td colspan="9" class="small">Infield tersedia untuk OCYM setelah dataset diproses.</td></tr>';return;}const x=build(d),rows=x.rows.sort((a,b)=>a.net-b.net),set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};set('infieldPeople',x.people.length.toLocaleString('id-ID'));set('infieldBlocks',new Set(rows.flatMap(r=>String(r.block||'').split(',').map(v=>v.trim()).filter(Boolean))).size.toLocaleString('id-ID'));set('infieldGross',x.gross.toLocaleString('id-ID'));set('infieldLangsir',x.langsir.toLocaleString('id-ID'));set('infieldNet',x.net.toLocaleString('id-ID'));host.innerHTML=rows.map((r,i)=>`<tr><td><span class="rankBadge ${i===0?'low':''}">${i+1}</span></td><td><b>${html.escape(r.nama)}</b></td><td>${html.escape(r.code)}</td><td>${html.escape(r.block||'—')}</td><td>${r.jjg.toLocaleString('id-ID')}</td><td>${r.langsir.toLocaleString('id-ID')}</td><td><b>${r.net.toLocaleString('id-ID')}</b></td><td>${r.bjr==null?'—':r.bjr.toFixed(2)+' kg/JJG'}</td><td>${r.tonase==null?'—':r.tonase.toFixed(3)+' T'}</td></tr>`).join('')||'<tr><td colspan="9" class="small">Belum ada record KODE ALAT + TAP JJG.</td></tr>';}
+ function render(d){
+  const host=document.getElementById('infieldBody');if(!host)return;
+  if(!d?.date||ACTIVE_AFD!=='OC'){host.innerHTML='<tr><td colspan="9" class="small">Infield tersedia untuk OCYM setelah dataset diproses.</td></tr>';return;}
+  const x=build(d),rows=x.rows.sort((a,b)=>a.net-b.net),set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+  set('infieldPeople',x.people.length.toLocaleString('id-ID'));set('infieldBlocks',new Set(rows.map(r=>r.block)).size.toLocaleString('id-ID'));set('infieldGross',x.gross.toLocaleString('id-ID'));set('infieldLangsir','—');set('infieldNet',x.net.toLocaleString('id-ID'));
+  host.innerHTML=rows.map((r,i)=>`<tr><td><span class="rankBadge ${i===0?'low':''}">${i+1}</span></td><td><b>${html.escape(r.nama)}</b></td><td>${html.escape(r.code)}</td><td>${html.escape(r.block)}</td><td>${r.jjg.toLocaleString('id-ID')}</td><td>—</td><td><b>${r.net.toLocaleString('id-ID')}</b></td><td>${r.bjr==null?'—':r.bjr.toFixed(2)+' kg/JJG'}</td><td>${r.tonase==null?'—':r.tonase.toFixed(3)+' T'}</td></tr>`).join('')||'<tr><td colspan="9" class="small">Belum ada record PRODUKSIUNIT dengan KODEUNIT.</td></tr>';
+ }
  window.ADRIANA_BUILD_INFIELD_REAL=build;const base=renderAll;renderAll=function(snap){base(snap);try{render(snap)}catch(e){console.warn('Infield:',e)}};
 })();
 
