@@ -581,44 +581,13 @@ function detectAFDHybrid(sections,filename=''){
 }
 function afdKeyHybrid(date,afd){return 'adriana_daily_'+afd+'_'+date}
 function migrateLegacyHistoryHybrid(){
-  // Legacy history is read in-place. Do NOT copy full snapshots into another
-  // localStorage key: doing so can double storage usage and exhaust quota.
-  let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){}
-  if(!Array.isArray(idx))idx=[];
-  let afdIdx=[];try{afdIdx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}
-  if(!Array.isArray(afdIdx))afdIdx=[];
-  for(const date of idx){
-    let snap=null;try{snap=JSON.parse(localStorage.getItem('adriana_daily_'+date)||'null')}catch(e){}
-    if(!snap)continue;
-    const afd=detectAFDHybrid(snap.sections||{},snap.files?.[0]||'')||'OC';
-    if(!afdIdx.some(x=>x.date===(snap.date||date)&&x.afd===afd))afdIdx.push({date:snap.date||date,afd});
-  }
-  // Index write is best-effort only; a full browser quota must never block history.
-  try{afdIdx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));localStorage.setItem('adriana_afd_index',JSON.stringify(afdIdx))}catch(e){}
+ let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){}
+ if(!Array.isArray(idx))idx=[];let afdIdx=[];try{afdIdx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}
+ if(!Array.isArray(afdIdx))afdIdx=[];
+ for(const date of idx){let snap=null;try{snap=JSON.parse(localStorage.getItem('adriana_daily_'+date)||'null')}catch(e){}if(!snap)continue;const afd=detectAFDHybrid(snap.sections||{},snap.files?.[0]||'')||'OC';const k=afdKeyHybrid(snap.date||date,afd);if(!localStorage.getItem(k))localStorage.setItem(k,JSON.stringify({...snap,afd,afdLabel:AFD_LABEL[afd]||afd,migratedFrom:'adriana_daily_'+date,migratedAt:new Date().toISOString()}));if(!afdIdx.some(x=>x.date===(snap.date||date)&&x.afd===afd))afdIdx.push({date:snap.date||date,afd});}
+ afdIdx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));localStorage.setItem('adriana_afd_index',JSON.stringify(afdIdx));
 }
-
-function getAfdSnapshotsHybrid(afd){
-  migrateLegacyHistoryHybrid();
-  const out=new Map();
-  // New locked datasets: IndexedDB memory cache (loaded asynchronously at startup).
-  try{Object.values(window.ADRIANA_IDB_CACHE||{}).forEach(x=>{if(x&&(!afd||afd==='ALL'||x.afd===afd))out.set((x.afd||'OC')+'|'+x.date,x)})}catch(e){}
-  // Existing legacy datasets: read original keys without duplicating them.
-  let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}
-  if(!Array.isArray(idx))idx=[];
-  for(const x of idx){
-    if(afd&&afd!=='ALL'&&x.afd!==afd)continue;
-    let snap=null;try{snap=JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null')}catch(e){}
-    if(!snap&&(!x.afd||x.afd==='OC')){try{snap=JSON.parse(localStorage.getItem('adriana_daily_'+x.date)||'null')}catch(e){}}
-    if(snap)out.set((snap.afd||x.afd||'OC')+'|'+snap.date,snap);
-  }
-  // Also include legacy dates even if the hybrid index itself could not be written.
-  let legacy=[];try{legacy=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){}
-  if(Array.isArray(legacy))for(const date of legacy){
-    let snap=null;try{snap=JSON.parse(localStorage.getItem('adriana_daily_'+date)||'null')}catch(e){}
-    if(snap){const a=snap.afd||detectAFDHybrid(snap.sections||{},snap.files?.[0]||'')||'OC';if(!afd||afd==='ALL'||a===afd)out.set(a+'|'+snap.date,snap)}
-  }
-  return [...out.values()].filter(x=>x&&x.status!=='DRAFT').sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-}
+function getAfdSnapshotsHybrid(afd){migrateLegacyHistoryHybrid();let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}return idx.map(x=>{try{return JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null')}catch(e){return null}}).filter(x=>x&&(!afd||afd==='ALL'||x.afd===afd)).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
 function getLockedSnapshots(){return getAfdSnapshotsHybrid(ACTIVE_AFD==='ALL'?'':ACTIVE_AFD)}
 async function processAMANTA(){
  const files=[...document.getElementById('amantaFiles').files];if(!files.length)return;
@@ -635,38 +604,14 @@ async function processAMANTA(){
  document.getElementById('reconBox').innerHTML=`<b>READY TO CLOSE</b><br>Afdeling: <b>${AFD_LABEL[afd]}</b> · Tanggal: <b>${fmtDate(STAGED.date)}</b> · Site: ${html.escape(STAGED.site)} · ${parsed.length} file<br>Raw rows: ${raw.toLocaleString()} · Duplicate rows removed: ${dup.toLocaleString()} · Final reconciled rows: ${fin.toLocaleString()}<br><span class="small">Identical rows are deduplicated; records are not blindly summed across files.</span>`;
  document.getElementById('lockBtn').disabled=false;renderStagedPreview(STAGED);
 }
-/* LOCK STORAGE: full dataset goes to IndexedDB; localStorage remains legacy-compatible. */
-window.ADRIANA_IDB_CACHE=window.ADRIANA_IDB_CACHE||{};
-const ADRIANA_IDB_NAME='adriana_v24_lock_store',ADRIANA_IDB_STORE='snapshots';
-function adrianaIDBOpen(){return new Promise((resolve,reject)=>{try{const r=indexedDB.open(ADRIANA_IDB_NAME,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(ADRIANA_IDB_STORE))r.result.createObjectStore(ADRIANA_IDB_STORE,{keyPath:'key'})};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error||new Error('IndexedDB open failed'))}catch(e){reject(e)}})}
-async function adrianaIDBPut(snap){const db=await adrianaIDBOpen();return new Promise((resolve,reject)=>{const tx=db.transaction(ADRIANA_IDB_STORE,'readwrite'),store=tx.objectStore(ADRIANA_IDB_STORE);store.put({...snap,key:(snap.afd||'OC')+'|'+snap.date});tx.oncomplete=()=>{db.close();resolve(true)};tx.onerror=()=>{db.close();reject(tx.error||new Error('IndexedDB write failed'))}})}
-async function adrianaIDBLoadAll(){try{const db=await adrianaIDBOpen();const rows=await new Promise((resolve,reject)=>{const tx=db.transaction(ADRIANA_IDB_STORE,'readonly'),req=tx.objectStore(ADRIANA_IDB_STORE).getAll();req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error)});db.close();for(const x of rows){if(x?.date)window.ADRIANA_IDB_CACHE[x.key||((x.afd||'OC')+'|'+x.date)]=x}return rows}catch(e){console.warn('ADRIANA IDB load:',e);return []}}
-async function closeDataset(){
-  if(!STAGED){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> belum ada dataset READY TO CLOSE.';return;}
-  const snap={...STAGED,closingId:('CLOSE-'+(STAGED.afd||'OC')+'-'+STAGED.date),status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:1};
-  const key=(snap.afd||'OC')+'|'+snap.date;
-  try{
-    // The authoritative full snapshot is written here, outside localStorage quota.
-    await adrianaIDBPut(snap);
-    window.ADRIANA_IDB_CACHE[key]=snap;
-  }catch(e){
-    document.getElementById('reconBox').innerHTML='<b>LOCK FAILED:</b> IndexedDB browser storage tidak tersedia. Dataset belum dinyatakan LOCKED.';
-    console.error('ADRIANA LOCK:',e);return;
-  }
-  // Small indexes are best-effort. Full snapshot is NEVER written to localStorage.
-  try{
-    let idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');if(!Array.isArray(idx))idx=[];
-    idx=idx.filter(x=>!(x.date===snap.date&&x.afd===snap.afd));idx.push({date:snap.date,afd:snap.afd});idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-    localStorage.setItem('adriana_afd_index',JSON.stringify(idx));
-  }catch(e){console.warn('Index storage full; IDB lock retained.',e)}
-  ACTIVE=snap;STAGED=null;window.ADRIANA_DATA=buildData(snap);
-  document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';
-  document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;
-  try{renderAll(snap)}catch(e){console.warn('Post-lock render:',e)}
-  try{renderHistory()}catch(e){console.warn('Post-lock history:',e)}
-  alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');
+function closeDataset(){
+ if(!STAGED)return;const k=afdKeyHybrid(STAGED.date,STAGED.afd),existing=JSON.parse(localStorage.getItem(k)||'null'),closingId=existing?.closingId||('CLOSE-'+STAGED.afd+'-'+STAGED.date);
+ const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};localStorage.setItem(k,JSON.stringify(snap));
+ let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}idx=idx.filter(x=>!(x.date===snap.date&&x.afd===snap.afd));idx.push({date:snap.date,afd:snap.afd});idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));localStorage.setItem('adriana_afd_index',JSON.stringify(idx));
+ // Keep V22 legacy storage for OC so the original history remains readable.
+ if(snap.afd==='OC'){localStorage.setItem('adriana_daily_'+snap.date,JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(snap.date))dates.push(snap.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));}
+ ACTIVE=snap;STAGED=null;window.ADRIANA_DATA=buildData(snap);renderAll(snap);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');
 }
-
 function renderAfdSelectorHybrid(){const el=document.getElementById('afdFilter');if(!el)return;el.value=ACTIVE_AFD;el.onchange=()=>{ACTIVE_AFD=el.value;localStorage.setItem('adriana_active_afd',ACTIVE_AFD);const snaps=getAfdSnapshotsHybrid(ACTIVE_AFD);if(snaps.length){renderAll(snaps[snaps.length-1]);}else{document.getElementById('activeDate').textContent='No dataset';document.getElementById('activeMeta').textContent=(AFD_LABEL[ACTIVE_AFD]||'Semua Afdeling')+' · Belum ada dataset';document.getElementById('lockState').textContent='● NO DATASET';document.getElementById('dashboardSignals').innerHTML='<div class="notice">Belum ada dataset untuk afdeling ini.</div>';document.getElementById('dashboardDecision').textContent='—';document.getElementById('dashboardDecisionText').textContent='Upload AMANTA untuk afdeling yang dipilih.';renderHarvestDensitySummary({blocks:{}});renderHistory();renderDecisionHistory();}}}
 function renderHistory(){const host=document.getElementById('evalHistory');if(!host)return;migrateLegacyHistoryHybrid();const idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');const rows=idx.map(x=>{const s=JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null');return s?`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)} · ${html.escape(s.afdLabel||s.afd)}</b><br>${s.jjg?Number(s.jjg).toLocaleString():'—'} JJG · ${s.producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadAfdDateHybrid('${s.date}','${s.afd}')">LOAD THIS DATE</button></div>`:''}).join('');host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>');if(typeof renderDecisionHistory==='function')renderDecisionHistory();}
 function loadAfdDateHybrid(date,afd){const s=JSON.parse(localStorage.getItem(afdKeyHybrid(date,afd))||'null');if(!s)return;ACTIVE_AFD=afd;localStorage.setItem('adriana_active_afd',afd);const f=document.getElementById('afdFilter');if(f)f.value=afd;ACTIVE=s;renderAll(s);show('dashboard');}
@@ -1136,7 +1081,33 @@ renderAll=function(snap){
   try{renderPeoplePerformance(window.ADRIANA_DATA||buildData(snap));renderPeopleAI(window.ADRIANA_DATA||buildData(snap));}catch(e){console.warn('People Performance render:',e)}
 };
 
-document.addEventListener('DOMContentLoaded',async()=>{migrateLegacyHistoryHybrid();await adrianaIDBLoadAll();renderAfdSelectorHybrid();const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;try{renderHistory()}catch(e){console.warn('History init:',e)}});
+
+/* FINAL LOCK-ONLY PATCH: preserve legacy history, store new full snapshots in IndexedDB, and render both stores. */
+const ADRIANA_LOCK_IDB_NAME='adriana_v24_lock_store_v2',ADRIANA_LOCK_IDB_STORE='snapshots';
+function lockIdbOpen(){return new Promise((resolve,reject)=>{try{const r=indexedDB.open(ADRIANA_LOCK_IDB_NAME,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(ADRIANA_LOCK_IDB_STORE))r.result.createObjectStore(ADRIANA_LOCK_IDB_STORE,{keyPath:'key'})};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error||new Error('IndexedDB open failed'));}catch(e){reject(e)}})}
+async function lockIdbPut(snap){const db=await lockIdbOpen();return new Promise((resolve,reject)=>{const tx=db.transaction(ADRIANA_LOCK_IDB_STORE,'readwrite');tx.objectStore(ADRIANA_LOCK_IDB_STORE).put({...snap,key:(snap.afd||'OC')+'|'+snap.date});tx.oncomplete=()=>{db.close();resolve(true)};tx.onerror=()=>{db.close();reject(tx.error||new Error('IndexedDB write failed'))};tx.onabort=()=>{db.close();reject(tx.error||new Error('IndexedDB transaction aborted'))}})}
+async function lockIdbAll(){const db=await lockIdbOpen();return new Promise((resolve,reject)=>{const tx=db.transaction(ADRIANA_LOCK_IDB_STORE,'readonly'),req=tx.objectStore(ADRIANA_LOCK_IDB_STORE).getAll();req.onsuccess=()=>{const rows=req.result||[];db.close();resolve(rows)};req.onerror=()=>{db.close();reject(req.error||new Error('IndexedDB read failed'))}})}
+function legacyHybridSnapshots(){let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}if(!Array.isArray(idx))idx=[];const out=[];for(const x of idx){try{const s=JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null');if(s)out.push(s)}catch(e){}}return out}
+function legacyDailySnapshots(){let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){}if(!Array.isArray(idx))idx=[];const out=[];for(const date of idx){try{const s=JSON.parse(localStorage.getItem('adriana_daily_'+date)||'null');if(s)out.push(s)}catch(e){}}return out}
+function combinedLockedSnapshots(){const map=new Map();for(const s of legacyDailySnapshots()){const afd=detectAFDHybrid(s.sections||{},s.files?.[0]||'')||s.afd||'OC';map.set((afd)+'|'+s.date,{...s,afd,afdLabel:AFD_LABEL[afd]||afd})}for(const s of legacyHybridSnapshots()){const afd=s.afd||'OC';map.set(afd+'|'+s.date,s)}for(const s of Object.values(window.ADRIANA_LOCK_IDB_CACHE||{})){if(s?.date)map.set((s.afd||'OC')+'|'+s.date,s)}return [...map.values()]}
+window.ADRIANA_LOCK_IDB_CACHE=window.ADRIANA_LOCK_IDB_CACHE||{};
+async function refreshLockIdbCache(){try{const rows=await lockIdbAll();for(const s of rows){if(s?.date)window.ADRIANA_LOCK_IDB_CACHE[s.key||((s.afd||'OC')+'|'+s.date)]=s}renderHistory()}catch(e){console.warn('ADRIANA IDB history:',e)}}
+/* Disable the old migration: it duplicated large legacy snapshots and could exhaust browser storage. */
+function migrateLegacyHistoryHybrid(){return;}
+function getAfdSnapshotsHybrid(afd){return combinedLockedSnapshots().filter(x=>!afd||afd==='ALL'||x.afd===afd).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
+async function closeDataset(){
+ if(!STAGED){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> belum ada dataset READY TO CLOSE.';return;}
+ const snap={...STAGED,closingId:'CLOSE-'+(STAGED.afd||'OC')+'-'+STAGED.date,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:1};
+ try{await lockIdbPut(snap);window.ADRIANA_LOCK_IDB_CACHE[(snap.afd||'OC')+'|'+snap.date]=snap}catch(e){document.getElementById('reconBox').innerHTML='<b>LOCK FAILED:</b> IndexedDB browser storage tidak tersedia. Dataset belum dinyatakan LOCKED.';console.error('ADRIANA LOCK:',e);return}
+ ACTIVE=snap;STAGED=null;window.ADRIANA_DATA=buildData(snap);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;
+ try{renderAll(snap)}catch(e){console.warn('Post-lock render:',e)} try{renderHistory()}catch(e){console.warn('Post-lock history:',e)}
+ alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');
+}
+function renderHistory(){const host=document.getElementById('evalHistory');if(!host)return;const all=combinedLockedSnapshots();const rows=all.filter(s=>!s||!s.afd||ACTIVE_AFD==='ALL'||s.afd===ACTIVE_AFD).sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(s=>`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)}</b> · ${html.escape(s.closingId||'LOCKED')} · ${html.escape(AFD_LABEL[s.afd]||s.afd||'—')}<br>${Number(s.jjg||buildData(s).jjg||0).toLocaleString()} JJG · ${s.producingHK||buildData(s).producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadDate('${s.date}','${s.afd||''}')">LOAD THIS DATE</button></div>`).join('');host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>');if(typeof renderDecisionHistory==='function')renderDecisionHistory()}
+async function loadAfdDateHybrid(date,afd){const key=(afd||'OC')+'|'+date;let s=window.ADRIANA_LOCK_IDB_CACHE[key];if(!s){try{const rows=await lockIdbAll();s=rows.find(x=>x.key===key)}catch(e){}if(!s){try{s=JSON.parse(localStorage.getItem(afdKeyHybrid(date,afd))||'null')}catch(e){}}}if(!s)return;window.ADRIANA_LOCK_IDB_CACHE[key]=s;ACTIVE_AFD=s.afd||afd||'OC';try{localStorage.setItem('adriana_active_afd',ACTIVE_AFD)}catch(e){}const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;ACTIVE=s;renderAll(s);show('dashboard')}
+async function loadDate(date,afd){return loadAfdDateHybrid(date,afd||ACTIVE_AFD||'OC')}
+
+document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();renderAfdSelectorHybrid();const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;refreshLockIdbCache();});
 </script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('SW:',e)));}</script>
 </body></html>
