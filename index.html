@@ -193,7 +193,7 @@ body{background:#f4f7f3}
 <div class="peopleKpi"><small>JJG LANGSIR</small><strong id="infieldLangsir">—</strong></div>
 <div class="peopleKpi"><small>JJG INFIELD REAL</small><strong id="infieldNet">—</strong></div>
 </div>
-<div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Tim Infield</th><th>Kode Alat</th><th>Blok</th><th>JJG TAP</th><th>Langsir</th><th>JJG Infield Real</th><th>BJR Aktual</th><th>Tonase</th></tr></thead><tbody id="infieldBody"><tr><td colspan="9" class="small">Upload &amp; lock AMANTA untuk melihat Infield.</td></tr></tbody></table></div>
+<div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Tim Infield (NPK + Helper)</th><th>Kode Alat</th><th>Blok Summary</th><th>JJG TAP</th><th>Langsir</th><th>JJG Infield Real</th><th>BJR Aktual</th><th>Tonase</th></tr></thead><tbody id="infieldBody"><tr><td colspan="9" class="small">Upload &amp; lock AMANTA untuk melihat Infield.</td></tr></tbody></table></div>
 <div class="perfNote">Ranking diurutkan dari JJG Infield Real paling sedikit. Sumber JJG: PRODUKSIUNIT.JJG berdasarkan KODEUNIT. NPKUTAMA digunakan untuk menghubungkan helper. Langsir tidak menjadi deduction JJG.</div>
 </div></section>
 <section id="people" class="section">
@@ -1040,14 +1040,17 @@ function renderPeopleAI(d){
    });
   }
   // JJG Infield = PRODUKSIUNIT.JJG grouped by KODEUNIT, tanpa deduction langsir.
+  // SUMMARY PER TIM / KODEUNIT — jangan pecah per blok.
+  // Semua JJG PRODUKSIUNIT dijumlahkan ke 1 tim, sementara blok hanya diringkas unik.
   const by={};
   if(prod){
    const h=prod.header||[], ci=ix(h,['KODEUNIT']), bi=ix(h,['BLOK','BLOCKCODE','BLOCK']), ji=ix(h,['JJG']);
    (prod.rows||[]).forEach(r=>{
     const code=ci>=0?clean(r[ci]).toUpperCase():'', block=bi>=0?clean(r[bi]):'', jjg=ji>=0?n(r[ji]):0;
     if(!code||jjg<=0)return;
-    const k=code+'|'+block;
-    by[k] ||= {code,block,jjg:0}; by[k].jjg+=jjg;
+    by[code] ||= {code,jjg:0,blocks:new Set()};
+    by[code].jjg+=jjg;
+    if(block && block!=='—')by[code].blocks.add(block);
    });
   }
   let wi=0,wo=0;if(tr){const h=tr.header||[],a=ix(h,['WEIGHTIN']),b=ix(h,['WEIGHTOUT']);if(a>=0||b>=0)(tr.rows||[]).forEach(r=>{wi+=a>=0?n(r[a]):0;wo+=b>=0?n(r[b]):0;});}
@@ -1056,7 +1059,8 @@ function renderPeopleAI(d){
     const t=teams[x.code];
     const members=t?.members||[];
     const nama=members.length?members.map(m=>m.name).join(' + '):'Nama belum terhubung';
-    return {...x,nama,mainName:t?.mainName||'Nama belum terhubung',members,bjr,langsir:null,net:x.jjg,tonase:bjr!=null?x.jjg*bjr/1000:null};
+    const ident=members.length?members.map(m=>`${m.name} (${m.npk})`).join(' + '):'NPK belum terhubung';
+    return {...x,blocks:[...x.blocks].sort(),nama,ident,mainName:t?.mainName||'Nama belum terhubung',members,bjr,langsir:null,net:x.jjg,tonase:bjr!=null?x.jjg*bjr/1000:null};
   });
   const teamCodes=new Set(rows.map(x=>x.code));
   return {rows,people:[...teamCodes],gross:totalGross,langsir:null,net:totalGross};
@@ -1065,8 +1069,8 @@ function renderPeopleAI(d){
   const host=document.getElementById('infieldBody');if(!host)return;
   if(!d?.date||ACTIVE_AFD!=='OC'){host.innerHTML='<tr><td colspan="9" class="small">Infield tersedia untuk OCYM setelah dataset diproses.</td></tr>';return;}
   const x=build(d),rows=x.rows.sort((a,b)=>a.net-b.net),set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
-  set('infieldPeople',x.people.length.toLocaleString('id-ID'));set('infieldBlocks',new Set(rows.map(r=>r.block)).size.toLocaleString('id-ID'));set('infieldGross',x.gross.toLocaleString('id-ID'));set('infieldLangsir','—');set('infieldNet',x.net.toLocaleString('id-ID'));
-  host.innerHTML=rows.map((r,i)=>`<tr><td><span class="rankBadge ${i===0?'low':''}">${i+1}</span></td><td><b>${html.escape(r.nama)}</b></td><td>${html.escape(r.code)}</td><td>${html.escape(r.block)}</td><td>${r.jjg.toLocaleString('id-ID')}</td><td>—</td><td><b>${r.net.toLocaleString('id-ID')}</b></td><td>${r.bjr==null?'—':r.bjr.toFixed(2)+' kg/JJG'}</td><td>${r.tonase==null?'—':r.tonase.toFixed(3)+' T'}</td></tr>`).join('')||'<tr><td colspan="9" class="small">Belum ada record PRODUKSIUNIT dengan KODEUNIT.</td></tr>';
+  set('infieldPeople',x.people.length.toLocaleString('id-ID'));set('infieldBlocks',new Set(rows.flatMap(r=>r.blocks||[])).size.toLocaleString('id-ID'));set('infieldGross',x.gross.toLocaleString('id-ID'));set('infieldLangsir','—');set('infieldNet',x.net.toLocaleString('id-ID'));
+  host.innerHTML=rows.map((r,i)=>{const blockText=(r.blocks||[]).join(', ');return `<tr><td><span class="rankBadge ${i===0?'low':''}">${i+1}</span></td><td><b>${html.escape(r.nama)}</b><div class="small">${html.escape(r.ident)}</div></td><td>${html.escape(r.code)}</td><td>${html.escape(blockText||'—')}</td><td>${r.jjg.toLocaleString('id-ID')}</td><td>—</td><td><b>${r.net.toLocaleString('id-ID')}</b></td><td>${r.bjr==null?'—':r.bjr.toFixed(2)+' kg/JJG'}</td><td>${r.tonase==null?'—':r.tonase.toFixed(3)+' T'}</td></tr>`}).join('')||'<tr><td colspan="9" class="small">Belum ada record PRODUKSIUNIT dengan KODEUNIT.</td></tr>';
  }
  window.ADRIANA_BUILD_INFIELD_REAL=build;const base=renderAll;renderAll=function(snap){base(snap);try{render(snap)}catch(e){console.warn('Infield:',e)}};
 })();
