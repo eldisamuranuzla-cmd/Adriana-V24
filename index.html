@@ -87,6 +87,7 @@ body{background:#f4f7f3}
     <button data-target="quality">Harvest Quality</button>
     <button data-target="transport">Transport & Restan</button>
     <button data-target="exception">Exception & Priority</button>
+    <button data-target="infield">Infield Control</button>
     <button data-target="people">People Performance</button>
     <button data-target="ai">AI Analysis</button>
     <button data-target="pdca">PDCA / Decision Log</button>
@@ -132,22 +133,6 @@ body{background:#f4f7f3}
     </table>
   </div>
   <div class="peopleNote">Premi dihitung harian per pemanen: seluruh JJG pemanen dari blok yang benar-benar dipanen dikurangi rata-rata basis blok yang dipanen pemanen tersebut. More Basis dan Premi Periode diakumulasi berdasarkan Open Book–Closing Book. Periode payroll: tanggal 21 sampai tanggal 20 bulan berikutnya. Minggu: Rp2.500/JJG.</div>
-</div>
-<div class="panel infieldPanel">
-  <div class="panelHead"><h2>Infield Performance</h2><span>AMANTA · TAP JJG − LANGSIR</span></div>
-  <div class="peopleKpis">
-    <div class="peopleKpi"><small>PENGINFIELD</small><strong id="infieldCount">—</strong></div>
-    <div class="peopleKpi"><small>BLOK INFIELD</small><strong id="infieldBlockCount">—</strong></div>
-    <div class="peopleKpi"><small>JJG TAP</small><strong id="infieldGrossJjg">—</strong></div>
-    <div class="peopleKpi"><small>JJG LANGSIR</small><strong id="infieldLangsirJjg">—</strong></div>
-    <div class="peopleKpi"><small>JJG INFIELD REAL</small><strong id="infieldNetJjg">—</strong></div>
-    <div class="peopleKpi"><small>TONASE INFIELD</small><strong id="infieldTonnage">—</strong></div>
-  </div>
-  <div class="peopleTableWrap">
-    <table><thead><tr><th>Rank</th><th>Penginfield</th><th>Kode Alat</th><th>Blok</th><th>JJG TAP</th><th>Langsir</th><th>JJG Infield Real</th><th>BJR Aktual</th><th>Tonase</th></tr></thead>
-    <tbody id="infieldBody"><tr><td colspan="9" class="small">Upload &amp; lock AMANTA untuk melihat Infield Performance.</td></tr></tbody></table>
-  </div>
-  <div class="peopleNote">JJG TAP berasal dari <b>TR_NOC_DETAIL.TOTALJJG</b> berdasarkan KODEALAT dan BLOK. Nama penginfield dipetakan dari KODEUNIT/Kode alat pada AMANTA. JJG LANGSIR hanya dikurangkan bila AMANTA menyediakan JJG eksplisit pada <b>TR_LANGSIR_TRANSPORT</b>; tidak ada estimasi dari aktivitas langsir tanpa JJG.</div>
 </div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
 <div class="footer">ADRIANA v22.13 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
@@ -197,6 +182,20 @@ body{background:#f4f7f3}
 
 
 
+<section id="infield" class="section">
+<div class="panel" style="margin-top:12px">
+<div class="panelHead"><h2>Infield Control — Real AMANTA</h2><span>TAP AMANTA · Langsir Deduction · BJR Aktual</span></div>
+<div class="notice">Penginfield dikunci dari KODE ALAT pada AMANTA. JJG Gross berasal dari TOTALJJG pada TR_NOC_DETAIL. Langsir hanya menjadi pengurang bila AMANTA memiliki record JJG langsir eksplisit.</div>
+<div class="peopleKpis" style="margin-top:12px">
+<div class="peopleKpi"><small>PENGINFIELD</small><strong id="infieldPeople">—</strong></div>
+<div class="peopleKpi"><small>BLOK INFIELD</small><strong id="infieldBlocks">—</strong></div>
+<div class="peopleKpi"><small>JJG TAP GROSS</small><strong id="infieldGross">—</strong></div>
+<div class="peopleKpi"><small>JJG LANGSIR</small><strong id="infieldLangsir">—</strong></div>
+<div class="peopleKpi"><small>JJG INFIELD REAL</small><strong id="infieldNet">—</strong></div>
+</div>
+<div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Penginfield</th><th>Kode Alat</th><th>Blok</th><th>JJG TAP</th><th>Langsir</th><th>JJG Infield Real</th><th>BJR Aktual</th><th>Tonase</th></tr></thead><tbody id="infieldBody"><tr><td colspan="9" class="small">Upload &amp; lock AMANTA untuk melihat Infield.</td></tr></tbody></table></div>
+<div class="perfNote">Ranking diurutkan dari JJG Infield Real paling sedikit. Sumber: AMANTA KODE ALAT + TR_NOC_DETAIL TOTALJJG; Langsir adalah deduction.</div>
+</div></section>
 <section id="people" class="section">
   <div class="top">
     <div>
@@ -364,64 +363,15 @@ function mergeSections(a,b){const out=JSON.parse(JSON.stringify(a));const report
 async function processAMANTA(){const files=[...document.getElementById('amantaFiles').files];if(!files.length)return;const parsed=[];for(const f of files.slice(0,2))parsed.push({name:f.name,sections:parseCSV(await f.text()),size:f.size});const metas=parsed.map(x=>detectMeta(x.sections));const dates=[...new Set(metas.map(x=>x.date).filter(Boolean))];const unresolved=metas.map((m,i)=>m.date?null:`File ${i+1}: tanggal tidak terdeteksi`).filter(Boolean);const inconsistent=metas.some(m=>m.dates.length>1);const sites=[...new Set(parsed.map(x=>secGet(x.sections,'PRODUKSIBLOK','SITECODE').find(Boolean)).filter(Boolean))];if(unresolved.length||dates.length!==1||inconsistent){const detail=metas.map((m,i)=>`File ${i+1}: ${m.dates.length?m.dates.join(', '):'UNAVAILABLE'}`).join(' · ');document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> tanggal antar file tidak sama/tidak terdeteksi. '+html.escape(detail);return}let merged=parsed[0].sections,report=[];if(parsed[1]){const m=mergeSections(merged,parsed[1].sections);merged=m.sections;report=m.report}else{report=Object.entries(merged).map(([k,v])=>({section:k,file1:v.rows.length,file2:0,duplicates:0,final:v.rows.length}))}STAGED={date:dates[0],site:sites[0]||'—',version:'3.2.8.9',files:parsed.map(x=>x.name),sections:merged,recon:report,processedAt:new Date().toISOString()};document.getElementById('uploadMsg').innerHTML='<b>Parsed:</b> '+parsed.length+' file(s) · '+html.escape(parsed.map(x=>x.name).join(' + '));const dup=report.reduce((a,x)=>a+x.duplicates,0),raw=parsed.reduce((a,x)=>a+Object.values(x.sections).reduce((n,s)=>n+s.rows.length,0),0),fin=Object.values(merged).reduce((n,s)=>n+s.rows.length,0);document.getElementById('reconBox').innerHTML=`<b>READY TO CLOSE</b><br>Tanggal: <b>${fmtDate(STAGED.date)}</b> · Site: ${html.escape(STAGED.site)} · ${parsed.length} file<br>Raw rows: ${raw.toLocaleString()} · Duplicate rows removed: ${dup.toLocaleString()} · Final reconciled rows: ${fin.toLocaleString()}<br><span class="small">Identical rows are deduplicated; records are not blindly summed across files.</span>`;document.getElementById('lockBtn').disabled=false;renderStagedPreview(STAGED)}
 function fmtDate(iso){if(!iso)return 'No dataset';const d=new Date(iso+'T00:00:00');return isNaN(d)?iso:d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}
 function lockKey(date){return 'adriana_daily_'+date}
-function closeDataset(){
- try{
-  if(!STAGED){
-   const msg=document.getElementById('reconBox');
-   if(msg)msg.innerHTML='<b>BLOCKED:</b> Tidak ada dataset yang siap di-close. Klik UPLOAD & PROCESS terlebih dahulu.';
-   return;
-  }
-  const date=String(STAGED.date||'').trim();
-  const afd=STAGED.afd||detectAFDHybrid(STAGED.sections||{},STAGED.files?.[0]||'')||ACTIVE_AFD||'OC';
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){
-   document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> Format tanggal dataset tidak valid: '+html.escape(date||'UNAVAILABLE');
-   return;
-  }
-  const key=afdKeyHybrid(date,afd);
-  let existing=null;
-  try{existing=JSON.parse(localStorage.getItem(key)||'null')}catch(e){
-   // Recover a corrupted old lock record instead of failing silently.
-   localStorage.removeItem(key);
-  }
-  const closingId=existing?.closingId||('CLOSE-'+afd+'-'+date);
-  const snap={...STAGED,afd,afdLabel:AFD_LABEL[afd]||afd,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};
-  localStorage.setItem(key,JSON.stringify(snap));
-
-  let idx=[];
-  try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){idx=[]}
-  if(!Array.isArray(idx))idx=[];
-  idx=idx.filter(x=>!(x.date===date&&x.afd===afd));
-  idx.push({date,afd});
-  idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  localStorage.setItem('adriana_afd_index',JSON.stringify(idx));
-
-  // Preserve legacy OC history for existing modules.
-  if(afd==='OC'){
-   localStorage.setItem('adriana_daily_'+date,JSON.stringify(snap));
-   let dates=[];
-   try{dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){dates=[]}
-   if(!Array.isArray(dates))dates=[];
-   if(!dates.includes(date))dates.push(date);
-   dates.sort().reverse();
-   localStorage.setItem('adriana_daily_index',JSON.stringify(dates));
-  }
-
-  ACTIVE=snap;
-  STAGED=null;
-  window.ADRIANA_DATA=buildData(snap);
-  renderAll(snap);
-  document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';
-  document.getElementById('uploadMsg').innerHTML='<b>LOCKED:</b> '+fmtDate(date)+' · '+html.escape(closingId);
-  document.getElementById('reconBox').innerHTML='<b>CLOSED & LOCKED</b><br>Afdeling: <b>'+html.escape(AFD_LABEL[afd]||afd)+'</b> · Tanggal: <b>'+fmtDate(date)+'</b> · Closing ID: <b>'+html.escape(closingId)+'</b>';
-  const lb=document.getElementById('lockBtn'); if(lb)lb.disabled=true;
-  const pb=document.getElementById('processBtn'); if(pb)pb.disabled=true;
-  renderHistory();
-  alert('Dataset '+fmtDate(date)+' berhasil di-CLOSE & LOCK.');
- }catch(err){
-  console.error('ADRIANA closeDataset error:',err);
-  const box=document.getElementById('reconBox');
-  if(box)box.innerHTML='<b>LOCK FAILED:</b> '+html.escape(err?.message||String(err));
- }
+function closeDataset(){if(!STAGED)return;const existing=JSON.parse(localStorage.getItem(lockKey(STAGED.date))||'null');const closingId=existing?.closingId||('CLOSE-'+STAGED.date);const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};localStorage.setItem(lockKey(STAGED.date),JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(STAGED.date))dates.push(STAGED.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));ACTIVE=snap;window.ADRIANA_DATA=buildData(snap);renderAll(ACTIVE);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');}
+function buildData(snap){const sections=snap.sections,prod=sections.PRODUKSIBLOK;let jjg=0;const npks=new Set(),mand=new Set(),blocks={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{jjg+=num(r[ji]);if(r[ni])npks.add(r[ni]);if(r[mi])mand.add(r[mi]);const b=r[bi]||'—';blocks[b]=(blocks[b]||0)+num(r[ji])})}let net=0,trips=0;const tr=sections.TR_TBS_TRANSPORT;if(tr){const wi=tr.header.indexOf('WEIGHTIN'),wo=tr.header.indexOf('WEIGHTOUT');tr.rows.forEach(r=>{const x=num(r[wi])-num(r[wo]);if(x>0){net+=x;trips++}})}const harvesters={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),namei=h.indexOf('NAMA'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{const npk=cleanCell(r[ni]);if(npk==='—')return;const name=cleanCell(r[namei]);const key=npk;harvesters[key]??={npk,name,j:0,blocks:new Set(),mandorans:new Set()};harvesters[key].j+=num(r[ji]);const b=cleanCell(r[bi]),m=cleanCell(r[mi]);if(b!=='—')harvesters[key].blocks.add(b);if(m!=='—')harvesters[key].mandorans.add(m)});}const bjrKgPerJjg=jjg>0&&net>0?net/jjg:null;return {...snap,jjg,producingHK:npks.size,mandorans:[...mand],blocks,netTransportKg:net,trips,bjrKgPerJjg,harvesters:Object.values(harvesters).map(x=>({...x,blocks:[...x.blocks],mandorans:[...x.mandorans],jjgPerHK:x.j}))}}
+function renderStagedPreview(s){const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent='—';vals[1].textContent='—';vals[2].textContent='—';}
+function renderAll(snap){const d=buildData(snap);ACTIVE=snap;window.ADRIANA_DATA=d;document.getElementById('activeDate').textContent=fmtDate(snap.date);document.getElementById('activeMeta').textContent=`${snap.site} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent=d.jjg.toLocaleString();vals[1].textContent=d.producingHK.toLocaleString();vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';const bjrNotice=document.getElementById('bjrNotice');if(bjrNotice)bjrNotice.innerHTML=d.bjrKgPerJjg?`<b>BJR:</b> ${d.bjrKgPerJjg.toFixed(2)} kg/JJG · ${d.netTransportKg.toLocaleString()} kg net ÷ ${d.jjg.toLocaleString()} JJG`:'<b>BJR:</b> unavailable because net transport or JJG is unavailable.';const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();renderProduction(d);renderQuality(d);renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d)}
+function normalizeDensityBlock(v,afd=ACTIVE_AFD){
+ const raw=String(v??'').trim().toUpperCase().replace(/\s+/g,'');if(!raw||raw==='—'||raw==='NULL')return null;
+ const m=raw.match(/^(?:OC|OE)?0*([0-9]+)(A)?$/);if(!m)return raw;
+ const n=String(Number(m[1])).padStart(3,'0');
+ return (afd==='OE'?'OE':'OC')+n+(m[2]?'A':'');
 }
 function hestiMasterForAfd(afd){
  if(afd==='OC')return HESTI_MASTER;
@@ -655,63 +605,12 @@ async function processAMANTA(){
  document.getElementById('lockBtn').disabled=false;renderStagedPreview(STAGED);
 }
 function closeDataset(){
- try{
-  if(!STAGED){
-   const msg=document.getElementById('reconBox');
-   if(msg)msg.innerHTML='<b>BLOCKED:</b> Tidak ada dataset yang siap di-close. Klik UPLOAD & PROCESS terlebih dahulu.';
-   return;
-  }
-  const date=String(STAGED.date||'').trim();
-  const afd=STAGED.afd||detectAFDHybrid(STAGED.sections||{},STAGED.files?.[0]||'')||ACTIVE_AFD||'OC';
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){
-   document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> Format tanggal dataset tidak valid: '+html.escape(date||'UNAVAILABLE');
-   return;
-  }
-  const key=afdKeyHybrid(date,afd);
-  let existing=null;
-  try{existing=JSON.parse(localStorage.getItem(key)||'null')}catch(e){
-   // Recover a corrupted old lock record instead of failing silently.
-   localStorage.removeItem(key);
-  }
-  const closingId=existing?.closingId||('CLOSE-'+afd+'-'+date);
-  const snap={...STAGED,afd,afdLabel:AFD_LABEL[afd]||afd,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};
-  localStorage.setItem(key,JSON.stringify(snap));
-
-  let idx=[];
-  try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){idx=[]}
-  if(!Array.isArray(idx))idx=[];
-  idx=idx.filter(x=>!(x.date===date&&x.afd===afd));
-  idx.push({date,afd});
-  idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  localStorage.setItem('adriana_afd_index',JSON.stringify(idx));
-
-  // Preserve legacy OC history for existing modules.
-  if(afd==='OC'){
-   localStorage.setItem('adriana_daily_'+date,JSON.stringify(snap));
-   let dates=[];
-   try{dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){dates=[]}
-   if(!Array.isArray(dates))dates=[];
-   if(!dates.includes(date))dates.push(date);
-   dates.sort().reverse();
-   localStorage.setItem('adriana_daily_index',JSON.stringify(dates));
-  }
-
-  ACTIVE=snap;
-  STAGED=null;
-  window.ADRIANA_DATA=buildData(snap);
-  renderAll(snap);
-  document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';
-  document.getElementById('uploadMsg').innerHTML='<b>LOCKED:</b> '+fmtDate(date)+' · '+html.escape(closingId);
-  document.getElementById('reconBox').innerHTML='<b>CLOSED & LOCKED</b><br>Afdeling: <b>'+html.escape(AFD_LABEL[afd]||afd)+'</b> · Tanggal: <b>'+fmtDate(date)+'</b> · Closing ID: <b>'+html.escape(closingId)+'</b>';
-  const lb=document.getElementById('lockBtn'); if(lb)lb.disabled=true;
-  const pb=document.getElementById('processBtn'); if(pb)pb.disabled=true;
-  renderHistory();
-  alert('Dataset '+fmtDate(date)+' berhasil di-CLOSE & LOCK.');
- }catch(err){
-  console.error('ADRIANA closeDataset error:',err);
-  const box=document.getElementById('reconBox');
-  if(box)box.innerHTML='<b>LOCK FAILED:</b> '+html.escape(err?.message||String(err));
- }
+ if(!STAGED)return;const k=afdKeyHybrid(STAGED.date,STAGED.afd),existing=JSON.parse(localStorage.getItem(k)||'null'),closingId=existing?.closingId||('CLOSE-'+STAGED.afd+'-'+STAGED.date);
+ const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};localStorage.setItem(k,JSON.stringify(snap));
+ let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}idx=idx.filter(x=>!(x.date===snap.date&&x.afd===snap.afd));idx.push({date:snap.date,afd:snap.afd});idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));localStorage.setItem('adriana_afd_index',JSON.stringify(idx));
+ // Keep V22 legacy storage for OC so the original history remains readable.
+ if(snap.afd==='OC'){localStorage.setItem('adriana_daily_'+snap.date,JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(snap.date))dates.push(snap.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));}
+ ACTIVE=snap;STAGED=null;window.ADRIANA_DATA=buildData(snap);renderAll(snap);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');
 }
 function renderAfdSelectorHybrid(){const el=document.getElementById('afdFilter');if(!el)return;el.value=ACTIVE_AFD;el.onchange=()=>{ACTIVE_AFD=el.value;localStorage.setItem('adriana_active_afd',ACTIVE_AFD);const snaps=getAfdSnapshotsHybrid(ACTIVE_AFD);if(snaps.length){renderAll(snaps[snaps.length-1]);}else{document.getElementById('activeDate').textContent='No dataset';document.getElementById('activeMeta').textContent=(AFD_LABEL[ACTIVE_AFD]||'Semua Afdeling')+' · Belum ada dataset';document.getElementById('lockState').textContent='● NO DATASET';document.getElementById('dashboardSignals').innerHTML='<div class="notice">Belum ada dataset untuk afdeling ini.</div>';document.getElementById('dashboardDecision').textContent='—';document.getElementById('dashboardDecisionText').textContent='Upload AMANTA untuk afdeling yang dipilih.';renderHarvestDensitySummary({blocks:{}});renderHistory();renderDecisionHistory();}}}
 function renderHistory(){const host=document.getElementById('evalHistory');if(!host)return;migrateLegacyHistoryHybrid();const idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');const rows=idx.map(x=>{const s=JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null');return s?`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)} · ${html.escape(s.afdLabel||s.afd)}</b><br>${s.jjg?Number(s.jjg).toLocaleString():'—'} JJG · ${s.producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadAfdDateHybrid('${s.date}','${s.afd}')">LOAD THIS DATE</button></div>`:''}).join('');host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>');if(typeof renderDecisionHistory==='function')renderDecisionHistory();}
@@ -936,7 +835,7 @@ function renderPeopleAI(d){
    Every daily premi transaction remains deterministic; aggregation is by Open Book–Closing Book.
 */
 (function(){
-  const PERIOD_MIN_DATE='2026-08-21';
+  const PERIOD_MIN_DATE='2026-08-18';
 
   function isoDate(d){
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -947,6 +846,7 @@ function renderPeopleAI(d){
 
   function bookPeriod(activeDate){
     const d=localDate(activeDate);
+    if(d>=localDate('2026-08-18') && d<=localDate('2026-09-20')) return {open:'2026-08-18',close:'2026-09-20',bookMonth:'2026-09'};
     let open, close, bookMonth;
     if(d.getDate()>=21){
       open=new Date(d.getFullYear(),d.getMonth(),21);
@@ -1109,6 +1009,28 @@ function renderPeopleAI(d){
   };
 })();
 
+/* ADRIANA INFIELD REAL */
+(function(){
+ const clean=v=>String(v??'').trim(), n=v=>{const x=Number(String(v??'').replace(/,/g,''));return Number.isFinite(x)?x:0};
+ const sec=(d,n)=>d?.sections?.[n]||null;
+ const ix=(h,arr)=>{for(const a of arr){const i=(h||[]).findIndex(x=>clean(x).toUpperCase()===a);if(i>=0)return i}return -1};
+ function build(d){
+  const am=sec(d,'AMANTA'), noc=sec(d,'TR_NOC_DETAIL'), lt=sec(d,'TR_LANGSIR_TRANSPORT'), tr=sec(d,'TR_TBS_TRANSPORT');
+  const people={};
+  if(am){const h=am.header||[],ni=ix(h,['NPK']),nn=ix(h,['NAMA']),ai=ix(h,['KODEALAT','KODE ALAT']);(am.rows||[]).forEach(r=>{const c=ai>=0?clean(r[ai]):'';if(c)people[c] ||= {code:c,npk:ni>=0?clean(r[ni]):'—',nama:nn>=0?clean(r[nn]):'—'};});}
+  const gross={};
+  if(noc){const h=noc.header||[],bi=ix(h,['BLOCKCODE','BLOK','BLOCK']),ai=ix(h,['KODEALAT','KODE ALAT']),ji=ix(h,['TOTALJJG','JMLJJG','JJG']);(noc.rows||[]).forEach(r=>{const c=ai>=0?clean(r[ai]):'',b=bi>=0?clean(r[bi]):'',j=ji>=0?n(r[ji]):0;if(!c||!b||j<=0)return;const k=c+'|'+b;gross[k] ||= {code:c,block:b,jjg:0};gross[k].jjg+=j;});}
+  const ded={};
+  if(lt){const h=lt.header||[],bi=ix(h,['BLOK','BLOCKCODE','BLOCK']),ai=ix(h,['ALAT','KODEALAT','KODE ALAT']),ji=ix(h,['JJG','TOTALJJG','JMLJJG']);(lt.rows||[]).forEach(r=>{const b=bi>=0?clean(r[bi]):'',c=ai>=0?clean(r[ai]):'',j=ji>=0?n(r[ji]):0;if(b&&j>0)ded[(c||'*')+'|'+b]=(ded[(c||'*')+'|'+b]||0)+j;});}
+  let wi=0,wo=0;if(tr){const h=tr.header||[],a=ix(h,['WEIGHTIN']),b=ix(h,['WEIGHTOUT']);(tr.rows||[]).forEach(r=>{wi+=n(r[a]);wo+=n(r[b]);});}
+  const totalGross=Object.values(gross).reduce((a,x)=>a+x.jjg,0),bjr=totalGross>0?Math.max(0,wi-wo)/totalGross:null;
+  const rows=Object.values(gross).map(x=>{const p=people[x.code]||{code:x.code,nama:'Nama belum terhubung',npk:'—'},l=Math.min(x.jjg,ded[x.code+'|'+x.block]||0);return {...x,...p,langsir:l,net:x.jjg-l,bjr,tonase:bjr!=null?(x.jjg-l)*bjr/1000:null};});
+  return {rows,people:[...new Set(rows.map(x=>x.code))],gross:totalGross,langsir:rows.reduce((a,x)=>a+x.langsir,0),net:rows.reduce((a,x)=>a+x.net,0)};
+ }
+ function render(d){const host=document.getElementById('infieldBody');if(!host)return;if(!d?.date||ACTIVE_AFD!=='OC'){host.innerHTML='<tr><td colspan="9" class="small">Infield tersedia untuk OCYM setelah dataset diproses.</td></tr>';return;}const x=build(d),rows=x.rows.sort((a,b)=>a.net-b.net),set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};set('infieldPeople',x.people.length.toLocaleString('id-ID'));set('infieldBlocks',new Set(rows.map(r=>r.block)).size.toLocaleString('id-ID'));set('infieldGross',x.gross.toLocaleString('id-ID'));set('infieldLangsir',x.langsir.toLocaleString('id-ID'));set('infieldNet',x.net.toLocaleString('id-ID'));host.innerHTML=rows.map((r,i)=>`<tr><td><span class="rankBadge ${i===0?'low':''}">${i+1}</span></td><td><b>${html.escape(r.nama)}</b></td><td>${html.escape(r.code)}</td><td>${html.escape(r.block)}</td><td>${r.jjg.toLocaleString('id-ID')}</td><td>${r.langsir.toLocaleString('id-ID')}</td><td><b>${r.net.toLocaleString('id-ID')}</b></td><td>${r.bjr==null?'—':r.bjr.toFixed(2)+' kg/JJG'}</td><td>${r.tonase==null?'—':r.tonase.toFixed(3)+' T'}</td></tr>`).join('')||'<tr><td colspan="9" class="small">Belum ada record KODE ALAT + TAP JJG.</td></tr>';}
+ window.ADRIANA_BUILD_INFIELD_REAL=build;const base=renderAll;renderAll=function(snap){base(snap);try{render(snap)}catch(e){console.warn('Infield:',e)}};
+})();
+
 const _ADRIANA_RENDER_ALL_BASE=renderAll;
 renderAll=function(snap){
   _ADRIANA_RENDER_ALL_BASE(snap);
@@ -1117,187 +1039,5 @@ renderAll=function(snap){
 
 document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();renderAfdSelectorHybrid();const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;});
 </script>
-
-<script>
-/* FINAL SURGICAL FIX: Close & Lock only.
-   Does not alter dataset calculation, Book 21–20 logic, or existing storage migration.
-   Uses the same AFD key as the hybrid history and guards malformed localStorage. */
-(function(){
-  window.closeDataset = function(){
-    try{
-      if(!window.STAGED){
-        const m=document.getElementById('uploadMsg');
-        if(m) m.innerHTML += '<br><b>LOCK FAILED:</b> No staged dataset.';
-        return;
-      }
-
-      const staged=window.STAGED;
-      const afd=staged.afd || window.ACTIVE_AFD || 'OC';
-      const date=String(staged.date||'').trim();
-
-      if(!date){
-        const m=document.getElementById('uploadMsg');
-        if(m) m.innerHTML += '<br><b>LOCK FAILED:</b> Dataset date is empty.';
-        return;
-      }
-
-      const key=(typeof window.afdKeyHybrid==='function')
-        ? window.afdKeyHybrid(date,afd)
-        : ('adriana_daily_'+afd+'_'+date);
-
-      let existing=null;
-      try{
-        const raw=localStorage.getItem(key);
-        existing=raw ? JSON.parse(raw) : null;
-      }catch(e){
-        existing=null;
-      }
-
-      const closingId=(existing && existing.closingId)
-        ? existing.closingId
-        : ('CLOSE-'+afd+'-'+date);
-
-      const snap=Object.assign({},staged,{
-        afd:afd,
-        afdLabel:(typeof AFD_LABEL!=='undefined' ? (AFD_LABEL[afd]||afd) : afd),
-        closingId:closingId,
-        status:'LOCKED',
-        lockedAt:new Date().toISOString(),
-        versionNumber:(existing && existing.versionNumber) || 1
-      });
-
-      localStorage.setItem(key,JSON.stringify(snap));
-
-      let idx=[];
-      try{
-        const rawIdx=localStorage.getItem('adriana_afd_index');
-        const parsed=rawIdx ? JSON.parse(rawIdx) : [];
-        idx=Array.isArray(parsed) ? parsed : [];
-      }catch(e){ idx=[]; }
-
-      idx=idx.filter(x=>!(String(x.date)===date && String(x.afd)===String(afd)));
-      idx.push({date:date,afd:afd});
-      idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-      localStorage.setItem('adriana_afd_index',JSON.stringify(idx));
-
-      /* Keep OC legacy history intact for existing ADRIANA history readers. */
-      if(afd==='OC'){
-        localStorage.setItem('adriana_daily_'+date,JSON.stringify(snap));
-        let legacy=[];
-        try{
-          const rawLegacy=localStorage.getItem('adriana_daily_index');
-          const parsedLegacy=rawLegacy ? JSON.parse(rawLegacy) : [];
-          legacy=Array.isArray(parsedLegacy) ? parsedLegacy : [];
-        }catch(e){ legacy=[]; }
-        if(!legacy.includes(date)) legacy.push(date);
-        legacy.sort().reverse();
-        localStorage.setItem('adriana_daily_index',JSON.stringify(legacy));
-      }
-
-      window.ACTIVE=snap;
-      window.STAGED=null;
-      window.ADRIANA_DATA=buildData(snap);
-      renderAll(snap);
-
-      const lockState=document.getElementById('lockState');
-      if(lockState) lockState.textContent='● DATA LOCKED · VALIDATED';
-
-      const uploadMsg=document.getElementById('uploadMsg');
-      if(uploadMsg) uploadMsg.innerHTML += '<br><b>LOCKED:</b> '+fmtDate(date)+' · '+closingId;
-
-      if(typeof renderHistory==='function') renderHistory();
-
-      const lockBtn=document.getElementById('lockBtn');
-      if(lockBtn) lockBtn.disabled=true;
-
-      alert('Dataset '+fmtDate(date)+' berhasil di-CLOSE & LOCK.');
-    }catch(err){
-      const msg='LOCK FAILED: '+(err && err.message ? err.message : String(err));
-      const box=document.getElementById('uploadMsg');
-      if(box) box.innerHTML += '<br><b>'+html.escape(msg)+'</b>';
-      console.error('[ADRIANA Close & Lock]',err);
-    }
-  };
-})();
-</script>
-
-<script>
-/* V24 INFIELD CONTROL
-   Source of truth:
-   - KODEUNIT/KODE ALAT -> nama penginfield (ABSENSI)
-   - TR_NOC_DETAIL.TOTALJJG -> JJG TAP real per KODEALAT + BLOK
-   - TR_LANGSIR_TRANSPORT.JJG -> explicit JJG langsir deduction only
-   - TR_TBS_TRANSPORT -> BJR aktual = net weight / total JJG
-*/
-(function(){
-  function idx(h,n){return (h||[]).findIndex(x=>String(x||'').trim().toUpperCase()===n);}
-  function norm(v){return String(v??'').trim().toUpperCase();}
-  function renderInfieldControl(d){
-    const body=document.getElementById('infieldBody'); if(!body)return;
-    const sec=d?.sections||{};
-    const abs=sec.ABSENSI, noc=sec.TR_NOC_DETAIL, lt=sec.TR_LANGSIR_TRANSPORT, tr=sec.TR_TBS_TRANSPORT;
-    const toolName={};
-    if(abs){
-      const h=abs.header||[], ni=idx(h,'NAMA'), ki=idx(h,'KODEUNIT'), pti=idx(h,'PT_UNIT'), npi=idx(h,'NPK');
-      for(const r of abs.rows||[]){
-        const code=String(r[ki]??'').trim();
-        if(!code || code==='-' || code==='null')continue;
-        const pt=pti>=0?norm(r[pti]):'';
-        const name=String(r[ni]??'').trim();
-        if(code && name && (pt==='SYM'||pt==='SYM1'||/^W\d+/i.test(code))) toolName[norm(code)]={name,npk:String(r[npi]??'').trim()};
-      }
-    }
-    // Some AMANTA exports identify the four active infield units in ABSENSI with KODEUNIT.
-    // Do not infer a tool/person relationship from LANGSIR alone.
-    const gross={};
-    if(noc){
-      const h=noc.header||[], bi=idx(h,'BLOCKCODE'), ai=idx(h,'KODEALAT'), ji=idx(h,'TOTALJJG');
-      if(bi>=0&&ai>=0&&ji>=0) for(const r of noc.rows||[]){
-        const code=String(r[ai]??'').trim(), block=String(r[bi]??'').trim();
-        const jj=num(r[ji]);
-        if(!code || !block || jj<=0 || !/^W\w+/i.test(code))continue;
-        const k=norm(code)+'|'+norm(block); gross[k]??={code,block,jjg:0}; gross[k].jjg+=jj;
-      }
-    }
-    const langsir={};
-    if(lt){
-      const h=lt.header||[], bi=idx(h,'BLOK'), ai=idx(h,'ALAT'), ji=idx(h,'JJG');
-      if(bi>=0&&ji>=0) for(const r of lt.rows||[]){
-        const block=String(r[bi]??'').trim(), jj=num(r[ji]), alat=ai>=0?String(r[ai]??'').trim():'';
-        if(!block||jj<=0)continue;
-        // Explicit transport langsir JJG is a deduction. ALAT is intentionally not required.
-        const k=norm(alat)+'|'+norm(block);
-        langsir[k]=(langsir[k]||0)+jj;
-      }
-    }
-    // Actual BJR from transport scale weights. Use all valid net scale weight in the locked dataset.
-    let netKg=0;
-    if(tr){
-      const h=tr.header||[], wi=idx(h,'WEIGHTIN'), wo=idx(h,'WEIGHTOUT');
-      if(wi>=0&&wo>=0) for(const r of tr.rows||[]){const a=parseFloat(String(r[wi]??'').replace(/,/g,'')),b=parseFloat(String(r[wo]??'').replace(/,/g,''));if(Number.isFinite(a)&&Number.isFinite(b)&&a>b)netKg+=a-b;}
-    }
-    const rows=Object.values(gross).map(x=>{
-      const meta=toolName[norm(x.code)]||{};
-      const lang=(langsir[norm(x.code)+'|'+norm(x.block)]||langsir['|'+norm(x.block)]||0);
-      const net=Math.max(0,x.jjg-lang);
-      return {...x,name:meta.name||'Penginfield '+x.code,npk:meta.npk||'—',lang,net};
-    });
-    const totalGross=rows.reduce((a,x)=>a+x.jjg,0),totalLang=rows.reduce((a,x)=>a+x.lang,0),totalNet=rows.reduce((a,x)=>a+x.net,0);
-    const bjr=Number(d?.jjg)>0 && netKg>0 ? netKg/Number(d.jjg) : (Number(d?.bjrKgPerJjg)||0);
-    const totalT= bjr>0 ? totalNet*bjr/1000 : 0;
-    const names=new Set(rows.map(x=>x.name)); const blocks=new Set(rows.map(x=>x.block));
-    const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-    set('infieldCount',names.size.toLocaleString()); set('infieldBlockCount',blocks.size.toLocaleString());
-    set('infieldGrossJjg',totalGross.toLocaleString()); set('infieldLangsirJjg',totalLang.toLocaleString()); set('infieldNetJjg',totalNet.toLocaleString());
-    set('infieldTonnage',bjr>0?totalT.toFixed(2)+' T':'—');
-    rows.sort((a,b)=>a.net-b.net);
-    body.innerHTML=rows.map((x,i)=>`<tr><td><span class="rankBadge ${i===0?'low':''}">#${i+1}</span></td><td><b>${html.escape(x.name)}</b><div class="small">${html.escape(x.npk)}</div></td><td>${html.escape(x.code)}</td><td>${html.escape(x.block)}</td><td>${x.jjg.toLocaleString()}</td><td>${x.lang?'-'+x.lang.toLocaleString():'0'}</td><td><b>${x.net.toLocaleString()}</b></td><td>${bjr>0?bjr.toFixed(2)+' kg/JJG':'—'}</td><td>${bjr>0?(x.net*bjr/1000).toFixed(2)+' T':'—'}</td></tr>`).join('')||'<tr><td colspan="9" class="small">Tidak ada record JJG TAP dengan KODEALAT Infield pada dataset ini.</td></tr>';
-  }
-  window.renderInfieldControl=renderInfieldControl;
-  const oldRenderAll=window.renderAll||renderAll;
-  window.renderAll=function(snap){oldRenderAll(snap);try{renderInfieldControl(window.ADRIANA_DATA||buildData(snap));}catch(e){console.warn('Infield Control render:',e)}};
-  // Also expose a safe recalculation hook for future modules.
-  window.ADRIANA_INFIELD_LOGIC='KODEALAT→PENGINFIELD; TR_NOC_DETAIL.TOTALJJG→GROSS; TR_LANGSIR_TRANSPORT.JJG→DEDUCTION; TRANSPORT NET/BJR→TONNAGE';
-})();
-</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('SW:',e)));}</script>
 </body></html>
