@@ -116,6 +116,11 @@ body{background:#f4f7f3}
 <div class="panel quickPanel"><div class="panelHead"><h2>⚡ &nbsp;Quick Actions</h2></div><div class="quickGrid"><button onclick="show('rotation')">⟳ &nbsp; View Rotation</button><button onclick="show('transport')">▰ &nbsp; Check Transport</button><button onclick="show('ai')">♧ &nbsp; Open AI Analysis</button><button onclick="show('pdca')">▤ &nbsp; Create PDCA</button></div></div>
 </div></div>
 
+<div class="panel" id="kkpDashboardPanel" style="margin-top:14px">
+  <div class="panelHead"><h2>KKP Harvest Production</h2><span>OC PN 1 + OC PN 2 · 6 KKP</span></div>
+  <div id="kkpDashboardSummary" class="notice">Upload &amp; lock AMANTA OCYM untuk menghitung output KKP.</div>
+  <div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Wilayah</th><th>KKP</th><th>Pemanen</th><th>JJG</th><th>Total JJG</th><th>Status</th></tr></thead><tbody id="kkpDashboardBody"><tr><td colspan="7" class="small">Belum ada dataset OCYM aktif.</td></tr></tbody></table></div>
+</div>
 <div class="panel peopleDashPanel">
   <div class="panelHead"><h2>People Performance &amp; Premi</h2><span id="dashPeoplePeriod">Book Period —</span></div>
   <div class="peopleKpis">
@@ -278,8 +283,18 @@ body{background:#f4f7f3}
         <b>Catatan:</b> JJG/HK digunakan untuk performance, bukan untuk menghitung premi. Tidak ada premi negatif.
       </div>
     </div>
+
+    <div class="panel" style="margin-top:14px">
+      <div class="panelHead"><h2>KKP Harvest Production Ranking</h2><span>OC PN 1 + OC PN 2 · total JJG</span></div>
+      <div id="kkpProductionSummary" class="notice">Upload &amp; lock AMANTA OCYM untuk menghitung output produksi KKP.</div>
+      <div style="display:flex;justify-content:flex-end;margin:10px 0"><button class="btn" type="button" onclick="downloadKKPProductionCSV()">Download KKP Production CSV</button></div>
+      <div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Wilayah</th><th>KKP</th><th>Pemanen</th><th>JJG per Pemanen</th><th>Total JJG</th><th>Status</th></tr></thead><tbody id="kkpProductionBody"><tr><td colspan="7" class="small">Belum ada dataset OCYM aktif.</td></tr></tbody></table></div>
+      <div class="peopleNote"><b>Master KKP:</b> OC PN 1 — KKP 1–3 · OC PN 2 — KKP 1–3. Total 6 KKP / 24 roster pemanen. Produksi diambil dari JJG aktual AMANTA berdasarkan NPK; Agus 05 menggunakan nama sebagai fallback. Ranking berdasarkan total JJG KKP tertinggi → terendah.</div>
+    </div>
   </div>
 </section>
+
+
 
 <section id="ai" class="section">
 <div class="top"><div><div class="eyebrow">ENGINE 08</div><div class="title">AI-Assisted Analysis</div><div class="meta">AI reads the locked dataset, exceptions and evidence. It does not invent unavailable data.</div></div></div>
@@ -363,7 +378,7 @@ function mergeSections(a,b){const out=JSON.parse(JSON.stringify(a));const report
 async function processAMANTA(){const files=[...document.getElementById('amantaFiles').files];if(!files.length)return;const parsed=[];for(const f of files.slice(0,2))parsed.push({name:f.name,sections:parseCSV(await f.text()),size:f.size});const metas=parsed.map(x=>detectMeta(x.sections));const dates=[...new Set(metas.map(x=>x.date).filter(Boolean))];const unresolved=metas.map((m,i)=>m.date?null:`File ${i+1}: tanggal tidak terdeteksi`).filter(Boolean);const inconsistent=metas.some(m=>m.dates.length>1);const sites=[...new Set(parsed.map(x=>secGet(x.sections,'PRODUKSIBLOK','SITECODE').find(Boolean)).filter(Boolean))];if(unresolved.length||dates.length!==1||inconsistent){const detail=metas.map((m,i)=>`File ${i+1}: ${m.dates.length?m.dates.join(', '):'UNAVAILABLE'}`).join(' · ');document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> tanggal antar file tidak sama/tidak terdeteksi. '+html.escape(detail);return}let merged=parsed[0].sections,report=[];if(parsed[1]){const m=mergeSections(merged,parsed[1].sections);merged=m.sections;report=m.report}else{report=Object.entries(merged).map(([k,v])=>({section:k,file1:v.rows.length,file2:0,duplicates:0,final:v.rows.length}))}STAGED={date:dates[0],site:sites[0]||'—',version:'3.2.8.9',files:parsed.map(x=>x.name),sections:merged,recon:report,processedAt:new Date().toISOString()};document.getElementById('uploadMsg').innerHTML='<b>Parsed:</b> '+parsed.length+' file(s) · '+html.escape(parsed.map(x=>x.name).join(' + '));const dup=report.reduce((a,x)=>a+x.duplicates,0),raw=parsed.reduce((a,x)=>a+Object.values(x.sections).reduce((n,s)=>n+s.rows.length,0),0),fin=Object.values(merged).reduce((n,s)=>n+s.rows.length,0);document.getElementById('reconBox').innerHTML=`<b>READY TO CLOSE</b><br>Tanggal: <b>${fmtDate(STAGED.date)}</b> · Site: ${html.escape(STAGED.site)} · ${parsed.length} file<br>Raw rows: ${raw.toLocaleString()} · Duplicate rows removed: ${dup.toLocaleString()} · Final reconciled rows: ${fin.toLocaleString()}<br><span class="small">Identical rows are deduplicated; records are not blindly summed across files.</span>`;document.getElementById('lockBtn').disabled=false;renderStagedPreview(STAGED)}
 function fmtDate(iso){if(!iso)return 'No dataset';const d=new Date(iso+'T00:00:00');return isNaN(d)?iso:d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}
 function lockKey(date){return 'adriana_daily_'+date}
-function closeDataset(){if(!STAGED)return;const existing=JSON.parse(localStorage.getItem(lockKey(STAGED.date))||'null');const closingId=existing?.closingId||('CLOSE-'+STAGED.date);const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};localStorage.setItem(lockKey(STAGED.date),JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(STAGED.date))dates.push(STAGED.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));ACTIVE=snap;window.ADRIANA_DATA=buildData(snap);renderAll(ACTIVE);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');}
+function legacyCloseDataset(){if(!STAGED)return;const existing=JSON.parse(localStorage.getItem(lockKey(STAGED.date))||'null');const closingId=existing?.closingId||('CLOSE-'+STAGED.date);const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};localStorage.setItem(lockKey(STAGED.date),JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(STAGED.date))dates.push(STAGED.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));ACTIVE=snap;window.ADRIANA_DATA=buildData(snap);renderAll(ACTIVE);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');}
 function buildData(snap){const sections=snap.sections,prod=sections.PRODUKSIBLOK;let jjg=0;const npks=new Set(),mand=new Set(),blocks={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{jjg+=num(r[ji]);if(r[ni])npks.add(r[ni]);if(r[mi])mand.add(r[mi]);const b=r[bi]||'—';blocks[b]=(blocks[b]||0)+num(r[ji])})}let net=0,trips=0;const tr=sections.TR_TBS_TRANSPORT;if(tr){const wi=tr.header.indexOf('WEIGHTIN'),wo=tr.header.indexOf('WEIGHTOUT');tr.rows.forEach(r=>{const x=num(r[wi])-num(r[wo]);if(x>0){net+=x;trips++}})}const harvesters={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),namei=h.indexOf('NAMA'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{const npk=cleanCell(r[ni]);if(npk==='—')return;const name=cleanCell(r[namei]);const key=npk;harvesters[key]??={npk,name,j:0,blocks:new Set(),mandorans:new Set()};harvesters[key].j+=num(r[ji]);const b=cleanCell(r[bi]),m=cleanCell(r[mi]);if(b!=='—')harvesters[key].blocks.add(b);if(m!=='—')harvesters[key].mandorans.add(m)});}const bjrKgPerJjg=jjg>0&&net>0?net/jjg:null;return {...snap,jjg,producingHK:npks.size,mandorans:[...mand],blocks,netTransportKg:net,trips,bjrKgPerJjg,harvesters:Object.values(harvesters).map(x=>({...x,blocks:[...x.blocks],mandorans:[...x.mandorans],jjgPerHK:x.j}))}}
 function renderStagedPreview(s){const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent='—';vals[1].textContent='—';vals[2].textContent='—';}
 function renderAll(snap){const d=buildData(snap);ACTIVE=snap;window.ADRIANA_DATA=d;document.getElementById('activeDate').textContent=fmtDate(snap.date);document.getElementById('activeMeta').textContent=`${snap.site} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent=d.jjg.toLocaleString();vals[1].textContent=d.producingHK.toLocaleString();vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';const bjrNotice=document.getElementById('bjrNotice');if(bjrNotice)bjrNotice.innerHTML=d.bjrKgPerJjg?`<b>BJR:</b> ${d.bjrKgPerJjg.toFixed(2)} kg/JJG · ${d.netTransportKg.toLocaleString()} kg net ÷ ${d.jjg.toLocaleString()} JJG`:'<b>BJR:</b> unavailable because net transport or JJG is unavailable.';const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();renderProduction(d);renderQuality(d);renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d)}
@@ -552,7 +567,7 @@ function saveDecision(){if(!ACTIVE){document.getElementById('decisionMsg').textC
 function nextDate(d){const x=new Date(d+'T00:00:00');x.setDate(x.getDate()+1);return x.toISOString().slice(0,10)}
 function renderDecisionHistory(){const el=document.getElementById('decisionHistory');if(!el)return;const h=JSON.parse(localStorage.getItem('adriana_decisions')||'[]').filter(x=>!x.afd||ACTIVE_AFD==='ALL'||x.afd===ACTIVE_AFD);el.innerHTML=h.length?'<h2>Decision History</h2>'+h.map(x=>`<div class="notice" style="margin-top:8px"><b>${fmtDate(x.date)} · ${html.escape(x.decision)}</b><br>${html.escape(x.action)}<br><span class="small">Closing: ${html.escape(x.closingId)} · H+1: ${fmtDate(x.nextCheck)}</span></div>`).join(''):'<div class="small">Belum ada decision.</div>'}
 function renderPDCA(d){const top=attentionRank(d)[0];document.getElementById('pdcaIssue').textContent=top?top.b+' gap':'—';document.getElementById('pdcaIssueSub').textContent=top?'low production + quality/inspection cross-check':'No active signal'}
-function renderHistory(){
+function legacyRenderHistory(){
  const idx=getAfdSnapshotsHybrid(ACTIVE_AFD==='ALL'?'':ACTIVE_AFD),host=document.getElementById('evalHistory');if(!host)return;
  const rows=idx.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(s=>`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)}</b> · ${html.escape(s.closingId)} · ${html.escape(AFD_LABEL[s.afd]||s.afd||'—')}<br>${Number(s.jjg||0).toLocaleString()} JJG · ${s.producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadDate('${s.date}','${s.afd||''}')">LOAD THIS DATE</button></div>`).join('');
  host.innerHTML='<h2>Daily Closing History</h2>'+(rows||'<div class="small">Belum ada closing.</div>');renderDecisionHistory();
@@ -1081,33 +1096,166 @@ renderAll=function(snap){
   try{renderPeoplePerformance(window.ADRIANA_DATA||buildData(snap));renderPeopleAI(window.ADRIANA_DATA||buildData(snap));}catch(e){console.warn('People Performance render:',e)}
 };
 
-
-/* FINAL LOCK-ONLY PATCH: preserve legacy history, store new full snapshots in IndexedDB, and render both stores. */
-const ADRIANA_LOCK_IDB_NAME='adriana_v24_lock_store_v2',ADRIANA_LOCK_IDB_STORE='snapshots';
-function lockIdbOpen(){return new Promise((resolve,reject)=>{try{const r=indexedDB.open(ADRIANA_LOCK_IDB_NAME,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(ADRIANA_LOCK_IDB_STORE))r.result.createObjectStore(ADRIANA_LOCK_IDB_STORE,{keyPath:'key'})};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error||new Error('IndexedDB open failed'));}catch(e){reject(e)}})}
-async function lockIdbPut(snap){const db=await lockIdbOpen();return new Promise((resolve,reject)=>{const tx=db.transaction(ADRIANA_LOCK_IDB_STORE,'readwrite');tx.objectStore(ADRIANA_LOCK_IDB_STORE).put({...snap,key:(snap.afd||'OC')+'|'+snap.date});tx.oncomplete=()=>{db.close();resolve(true)};tx.onerror=()=>{db.close();reject(tx.error||new Error('IndexedDB write failed'))};tx.onabort=()=>{db.close();reject(tx.error||new Error('IndexedDB transaction aborted'))}})}
-async function lockIdbAll(){const db=await lockIdbOpen();return new Promise((resolve,reject)=>{const tx=db.transaction(ADRIANA_LOCK_IDB_STORE,'readonly'),req=tx.objectStore(ADRIANA_LOCK_IDB_STORE).getAll();req.onsuccess=()=>{const rows=req.result||[];db.close();resolve(rows)};req.onerror=()=>{db.close();reject(req.error||new Error('IndexedDB read failed'))}})}
-function legacyHybridSnapshots(){let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}if(!Array.isArray(idx))idx=[];const out=[];for(const x of idx){try{const s=JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null');if(s)out.push(s)}catch(e){}}return out}
-function legacyDailySnapshots(){let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){}if(!Array.isArray(idx))idx=[];const out=[];for(const date of idx){try{const s=JSON.parse(localStorage.getItem('adriana_daily_'+date)||'null');if(s)out.push(s)}catch(e){}}return out}
-function combinedLockedSnapshots(){const map=new Map();for(const s of legacyDailySnapshots()){const afd=detectAFDHybrid(s.sections||{},s.files?.[0]||'')||s.afd||'OC';map.set((afd)+'|'+s.date,{...s,afd,afdLabel:AFD_LABEL[afd]||afd})}for(const s of legacyHybridSnapshots()){const afd=s.afd||'OC';map.set(afd+'|'+s.date,s)}for(const s of Object.values(window.ADRIANA_LOCK_IDB_CACHE||{})){if(s?.date)map.set((s.afd||'OC')+'|'+s.date,s)}return [...map.values()]}
-window.ADRIANA_LOCK_IDB_CACHE=window.ADRIANA_LOCK_IDB_CACHE||{};
-async function refreshLockIdbCache(){try{const rows=await lockIdbAll();for(const s of rows){if(s?.date)window.ADRIANA_LOCK_IDB_CACHE[s.key||((s.afd||'OC')+'|'+s.date)]=s}renderHistory()}catch(e){console.warn('ADRIANA IDB history:',e)}}
-/* Disable the old migration: it duplicated large legacy snapshots and could exhaust browser storage. */
-function migrateLegacyHistoryHybrid(){return;}
-function getAfdSnapshotsHybrid(afd){return combinedLockedSnapshots().filter(x=>!afd||afd==='ALL'||x.afd===afd).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
-async function closeDataset(){
- if(!STAGED){document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> belum ada dataset READY TO CLOSE.';return;}
- const snap={...STAGED,closingId:'CLOSE-'+(STAGED.afd||'OC')+'-'+STAGED.date,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:1};
- try{await lockIdbPut(snap);window.ADRIANA_LOCK_IDB_CACHE[(snap.afd||'OC')+'|'+snap.date]=snap}catch(e){document.getElementById('reconBox').innerHTML='<b>LOCK FAILED:</b> IndexedDB browser storage tidak tersedia. Dataset belum dinyatakan LOCKED.';console.error('ADRIANA LOCK:',e);return}
- ACTIVE=snap;STAGED=null;window.ADRIANA_DATA=buildData(snap);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;
- try{renderAll(snap)}catch(e){console.warn('Post-lock render:',e)} try{renderHistory()}catch(e){console.warn('Post-lock history:',e)}
- alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');
-}
-function renderHistory(){const host=document.getElementById('evalHistory');if(!host)return;const all=combinedLockedSnapshots();const rows=all.filter(s=>!s||!s.afd||ACTIVE_AFD==='ALL'||s.afd===ACTIVE_AFD).sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(s=>`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)}</b> · ${html.escape(s.closingId||'LOCKED')} · ${html.escape(AFD_LABEL[s.afd]||s.afd||'—')}<br>${Number(s.jjg||buildData(s).jjg||0).toLocaleString()} JJG · ${s.producingHK||buildData(s).producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadDate('${s.date}','${s.afd||''}')">LOAD THIS DATE</button></div>`).join('');host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>');if(typeof renderDecisionHistory==='function')renderDecisionHistory()}
-async function loadAfdDateHybrid(date,afd){const key=(afd||'OC')+'|'+date;let s=window.ADRIANA_LOCK_IDB_CACHE[key];if(!s){try{const rows=await lockIdbAll();s=rows.find(x=>x.key===key)}catch(e){}if(!s){try{s=JSON.parse(localStorage.getItem(afdKeyHybrid(date,afd))||'null')}catch(e){}}}if(!s)return;window.ADRIANA_LOCK_IDB_CACHE[key]=s;ACTIVE_AFD=s.afd||afd||'OC';try{localStorage.setItem('adriana_active_afd',ACTIVE_AFD)}catch(e){}const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;ACTIVE=s;renderAll(s);show('dashboard')}
-async function loadDate(date,afd){return loadAfdDateHybrid(date,afd||ACTIVE_AFD||'OC')}
-
-document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();renderAfdSelectorHybrid();const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;refreshLockIdbCache();});
+document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();renderAfdSelectorHybrid();const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;});
 </script>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('SW:',e)));}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('SW:',e)));}
+
+/* V26 FINAL — OEYM LOCK/HISTORY + KKP PRODUCTION / PEOPLE PERFORMANCE
+   Additive patch: existing AMANTA calculations remain unchanged.
+   Full locked snapshots use IndexedDB; localStorage keeps only indexes/legacy snapshots.
+   KKP roster is the supplied OC PN1 / OC PN2 master. */
+(function(){
+  const IDB_NAME='adriana_v26_lock_store';
+  const IDB_STORE='snapshots';
+  let dbPromise=null;
+  const openDB=()=>dbPromise||(dbPromise=new Promise((resolve,reject)=>{
+    if(!window.indexedDB)return reject(new Error('IndexedDB unavailable'));
+    const req=indexedDB.open(IDB_NAME,1);
+    req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(IDB_STORE))db.createObjectStore(IDB_STORE,{keyPath:'id'});};
+    req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error||new Error('IndexedDB open failed'));
+  }));
+  const idbPut=async(snap)=>{const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(IDB_STORE,'readwrite');tx.objectStore(IDB_STORE).put({...snap,id:`${snap.afd||'OC'}_${snap.date}`});tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error||new Error('IndexedDB write failed'));});};
+  const idbAll=async()=>{try{const db=await openDB();return await new Promise((resolve,reject)=>{const tx=db.transaction(IDB_STORE,'readonly'),r=tx.objectStore(IDB_STORE).getAll();r.onsuccess=()=>resolve(r.result||[]);r.onerror=()=>reject(r.error);});}catch(e){console.warn('ADRIANA IDB:',e);return[];}};
+  const parseLS=(k,def)=>{try{const x=JSON.parse(localStorage.getItem(k)||JSON.stringify(def));return x;}catch(e){return def;}};
+  const legacy=()=>{
+    const out=[]; const idx=parseLS('adriana_afd_index',[]);
+    if(Array.isArray(idx))idx.forEach(x=>{try{const s=JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null');if(s)out.push(s);}catch(e){}});
+    const dates=parseLS('adriana_daily_index',[]);
+    if(Array.isArray(dates))dates.forEach(date=>{try{const s=JSON.parse(localStorage.getItem('adriana_daily_'+date)||'null');if(s)out.push(s);}catch(e){}});
+    return out;
+  };
+  const merged=async(afd)=>{
+    const all=[...legacy(),...(await idbAll())],m=new Map();
+    all.forEach(s=>{if(!s||!s.date)return;const a=s.afd||'OC';if(!afd||afd==='ALL'||a===afd)m.set(`${a}_${s.date}`,s);});
+    return [...m.values()].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  };
+  // Keep a small in-memory cache of IndexedDB snapshots so all existing synchronous
+  // dashboard functions (selector, rotation, People Performance, etc.) can continue
+  // to work without changing their calculation logic.
+  window.ADRIANA_LOCK_IDB_CACHE=[];
+  const refreshLockIdbCache=async()=>{
+    window.ADRIANA_LOCK_IDB_CACHE=await idbAll();
+    try{
+      if(typeof renderAfdSelectorHybrid==='function') renderAfdSelectorHybrid();
+      if(typeof renderHistory==='function') renderHistory();
+      const afd=ACTIVE_AFD||'OC',arr=getAfdSnapshotsHybrid(afd==='ALL'?'':afd);
+      if(!ACTIVE && arr.length){ACTIVE=arr[arr.length-1];window.ADRIANA_DATA=buildData(ACTIVE);renderAll(ACTIVE);}
+    }catch(e){console.warn('ADRIANA IDB refresh:',e)}
+  };
+  window.ADRIANA_LOCK_IDB_READY=openDB().then(async()=>{await refreshLockIdbCache();return true;}).catch(e=>{console.warn('ADRIANA IDB:',e);return false;});
+  // Never migrate/duplicate old full snapshots into another localStorage key.
+  migrateLegacyHistoryHybrid=function(){};
+  getAfdSnapshotsHybrid=function(afd){
+    const all=[...legacy(),...(window.ADRIANA_LOCK_IDB_CACHE||[])],m=new Map();
+    all.forEach(s=>{if(!s||!s.date)return;const a=s.afd||'OC';if(!afd||afd==='ALL'||a===afd)m.set(`${a}_${s.date}`,s);});
+    return [...m.values()].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  };
+  getLockedSnapshots=function(){return getAfdSnapshotsHybrid(ACTIVE_AFD==='ALL'?'':ACTIVE_AFD);};
+
+  closeDataset=async function(){
+    if(!STAGED)return;
+    const snap={...STAGED,closingId:`CLOSE-${STAGED.afd}-${STAGED.date}`,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:1};
+    try{
+      const existing=(await merged(snap.afd)).find(x=>x.date===snap.date);
+      if(existing){snap.closingId=existing.closingId||snap.closingId;snap.versionNumber=existing.versionNumber||1;}
+      await idbPut(snap);
+      // Update the in-memory cache immediately so OC and OEYM remain visible as
+      // separate afdeling datasets in the existing multi-AFD UI.
+      const c=window.ADRIANA_LOCK_IDB_CACHE||[];
+      const ci=c.findIndex(x=>(x.afd||'OC')===(snap.afd||'OC')&&x.date===snap.date);
+      if(ci>=0)c[ci]=snap;else c.push(snap);
+      window.ADRIANA_LOCK_IDB_CACHE=c;
+      let idx=parseLS('adriana_afd_index',[]);if(!Array.isArray(idx))idx=[];
+      idx=idx.filter(x=>!(x.date===snap.date&&x.afd===snap.afd));idx.push({date:snap.date,afd:snap.afd});idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));localStorage.setItem('adriana_afd_index',JSON.stringify(idx));
+      // Keep only the legacy OC mirror when one already exists; do not create another large snapshot.
+      ACTIVE=snap;STAGED=null;window.ADRIANA_DATA=buildData(snap);renderAll(snap);
+      document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';
+      document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;
+      await renderHistory();
+      alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');
+    }catch(e){console.error(e);alert('Gagal menyimpan CLOSE & LOCK: '+(e?.message||e));}
+  };
+  renderHistory=async function(){
+    const host=document.getElementById('evalHistory');if(!host)return;
+    const idx=await merged(ACTIVE_AFD==='ALL'?'':ACTIVE_AFD);
+    const rows=idx.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(s=>`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)} · ${html.escape(s.closingId||'—')}</b> · ${html.escape(AFD_LABEL[s.afd]||s.afd||'—')}<br>${Number(s.jjg||buildData(s).jjg||0).toLocaleString()} JJG · ${(s.producingHK??buildData(s).producingHK??0)} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadDate('${s.date}','${s.afd||''}')">LOAD THIS DATE</button></div>`).join('');
+    host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>');
+    if(typeof renderDecisionHistory==='function')renderDecisionHistory();
+  };
+  loadAfdDateHybrid=async function(date,afd){const arr=await merged(afd||ACTIVE_AFD||'OC'),s=arr.find(x=>x.date===date);if(!s)return;ACTIVE_AFD=s.afd||afd;localStorage.setItem('adriana_active_afd',ACTIVE_AFD);const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;ACTIVE=s;renderAll(s);show('dashboard');};
+  loadDate=function(date,afd){loadAfdDateHybrid(date,afd||ACTIVE_AFD||'OC');};
+
+  /* Supplied KKP master — NPK is primary key; name is fallback for Agus 05. */
+  const KKP_MASTER=[
+    {wilayah:'OC PN 1',kkp:'KKP 1',members:[['58','Parin'],['545','Herianto'],['455','Amir'],['505','Sarif Hubat']]},
+    {wilayah:'OC PN 1',kkp:'KKP 2',members:[['537','Solehudin'],['494','Teodorikus'],['544','Iman T'],['507','Sudarsono']]},
+    {wilayah:'OC PN 1',kkp:'KKP 3',members:[['538','Rudi'],['453','Kowangid'],['443','Mujiono'],['454','Eko R']]},
+    {wilayah:'OC PN 2',kkp:'KKP 1',members:[['478','Udi Waluyo'],['498','Heribertus'],['488','Arif Pujianto'],['452','Safrudin']]},
+    {wilayah:'OC PN 2',kkp:'KKP 2',members:[['508','Fransiskus Kas'],['496','Arifansius'],['497','Ponsianus'],['548','Aventus']]},
+    {wilayah:'OC PN 2',kkp:'KKP 3',members:[['543','Bariji'],['480','Selvianus'],['546','Mardavin'],['','Agus 05']]}
+  ];
+  const norm=v=>String(v??'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  const rosterMap=()=>{const m=new Map();KKP_MASTER.forEach(g=>g.members.forEach(([npk,name])=>{if(npk)m.set('N:'+norm(npk),{wilayah:g.wilayah,kkp:g.kkp,npk,name});m.set('N:'+norm(npk)+'|'+norm(name),{wilayah:g.wilayah,kkp:g.kkp,npk,name});m.set('M:'+norm(name),{wilayah:g.wilayah,kkp:g.kkp,npk,name});}));return m;};
+  const kkpHeaderIndex=(h,aliases)=>{
+    const H=(h||[]).map(x=>norm(x));
+    for(const a of aliases){const i=H.indexOf(norm(a));if(i>=0)return i;}
+    return -1;
+  };
+  const kkpRows=(snap)=>{
+    const p=snap?.sections?.PRODUKSIBLOK,h=p?.header||[];
+    const ni=kkpHeaderIndex(h,['NPK','NPKPEMANEN','NPKPEMANENAN','NPKPEMANEN']);
+    const namei=kkpHeaderIndex(h,['NAMA','NAMAPEMANEN','NAMA PEMANEN','PEMANEN']);
+    const ji=kkpHeaderIndex(h,['JJG','TOTALJJG','JUMLAHJJG','JJG PANEN']);
+    const empty=()=>KKP_MASTER.map(g=>({...g,people:g.members.map(([npk,name])=>({npk,name,jjg:0})),totalJjg:0}));
+    if(!p||ni<0||ji<0)return empty();
+    const map=rosterMap(),groups=empty();
+    (p.rows||[]).forEach(r=>{
+      const npk=String(r[ni]??'').trim(),name=namei>=0?String(r[namei]??'').trim():'';
+      let hit=npk?map.get('N:'+norm(npk)):null;
+      if(!hit&&name)hit=map.get('M:'+norm(name));
+      if(!hit)return;
+      const gi=groups.findIndex(g=>g.wilayah===hit.wilayah&&g.kkp===hit.kkp);
+      if(gi<0)return;
+      const mi=groups[gi].members.findIndex(([n,nm])=>(n&&norm(n)===norm(npk))||norm(nm)===norm(name));
+      if(mi<0)return;
+      const j=num(r[ji]);
+      if(j>0){groups[gi].people[mi].jjg+=j;groups[gi].totalJjg+=j;}
+    });
+    return groups;
+  };
+  window.ADRIANA_KKP_MASTER=KKP_MASTER;
+  window.ADRIANA_BUILD_KKP=kkpRows;
+  const renderKKP=(d)=>{
+    const host=document.getElementById('kkpProductionBody');if(!host)return;
+    if(!d?.date||((ACTIVE_AFD==='OE')&&d.afd!=='OC')){host.innerHTML='<tr><td colspan="7" class="small">Pilih OCYM / load dataset OC untuk melihat produksi KKP OC PN 1 dan OC PN 2.</td></tr>';const dh0=document.getElementById('kkpDashboardBody');if(dh0)dh0.innerHTML='<tr><td colspan="7" class="small">Pilih OCYM / load dataset OC untuk melihat produksi KKP OC PN 1 dan OC PN 2.</td></tr>';return;}
+    const rows=kkpRows(d).sort((a,b)=>b.totalJjg-a.totalJjg);
+    host.innerHTML=rows.map((g,i)=>`<tr><td><span class="rankBadge ${i===rows.length-1?'low':''}">#${i+1}</span></td><td><b>${html.escape(g.wilayah)}</b></td><td><b>${html.escape(g.kkp)}</b></td><td>${g.people.map(x=>html.escape(x.name)+(x.npk?` <span class="small">(${html.escape(x.npk)})</span>`:'')).join('<br>')}</td><td>${g.people.map(x=>x.jjg.toLocaleString('id-ID')).join('<br>')}</td><td><b>${g.totalJjg.toLocaleString('id-ID')} JJG</b></td><td>${i===0?'TERTINGGI':(i===rows.length-1?'TERENDAH':'')}</td></tr>`).join('');
+    const total=rows.reduce((a,g)=>a+g.totalJjg,0), hi=rows[0],lo=rows[rows.length-1];
+    const el=document.getElementById('kkpProductionSummary');if(el)el.innerHTML=`Total roster: <b>${KKP_MASTER.reduce((a,g)=>a+g.members.length,0)} pemanen</b> · Total JJG roster: <b>${total.toLocaleString('id-ID')}</b> · KKP tertinggi: <b>${html.escape(hi?.wilayah||'—')} / ${html.escape(hi?.kkp||'—')}</b> (${(hi?.totalJjg||0).toLocaleString('id-ID')} JJG) · KKP terendah: <b>${html.escape(lo?.wilayah||'—')} / ${html.escape(lo?.kkp||'—')}</b> (${(lo?.totalJjg||0).toLocaleString('id-ID')} JJG).`;
+    const dh=document.getElementById('kkpDashboardBody');
+    const ds=document.getElementById('kkpDashboardSummary');
+    if(dh){
+      dh.innerHTML=rows.map((g,i)=>`<tr><td><span class="rankBadge ${i===rows.length-1?'low':''}">#${i+1}</span></td><td><b>${html.escape(g.wilayah)}</b></td><td><b>${html.escape(g.kkp)}</b></td><td>${g.people.map(x=>html.escape(x.name)).join('<br>')}</td><td>${g.people.map(x=>x.jjg.toLocaleString('id-ID')).join('<br>')}</td><td><b>${g.totalJjg.toLocaleString('id-ID')}</b></td><td>${i===0?'TERTINGGI':(i===rows.length-1?'TERENDAH':'')}</td></tr>`).join('');
+    }
+    if(ds)ds.innerHTML=`<b>KKP Production:</b> ${total.toLocaleString('id-ID')} JJG dari ${KKP_MASTER.length} KKP / ${KKP_MASTER.reduce((a,g)=>a+g.members.length,0)} pemanen roster. Tertinggi: <b>${html.escape(hi?.wilayah||'—')} / ${html.escape(hi?.kkp||'—')}</b> · Terendah: <b>${html.escape(lo?.wilayah||'—')} / ${html.escape(lo?.kkp||'—')}</b>.`;
+
+  };
+  const basePeopleRows=peopleProductionRows;
+  peopleProductionRows=function(snap){
+    const rows=basePeopleRows(snap),map=rosterMap();
+    return rows.filter(r=>{let hit=map.get('N:'+norm(r.npk));if(!hit)hit=map.get('M:'+norm(r.name));return !!hit;});
+  };
+  const prevRenderAll=renderAll;
+  renderAll=function(snap){prevRenderAll(snap);try{renderKKP(snap);renderHistory();}catch(e){console.warn('KKP:',e)}};
+  const oldExport=typeof downloadProductionCSV==='function'?downloadProductionCSV:null;
+  window.downloadKKPProductionCSV=function(){
+    if(!ACTIVE||!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
+    const rows=kkpRows(window.ADRIANA_DATA).sort((a,b)=>b.totalJjg-a.totalJjg),out=[['ADRIANA KKP HARVEST PRODUCTION'],['AFD','OCYM'],['Tanggal',ACTIVE.date],[],['Rank','Wilayah','KKP','Pemanen','NPK','JJG']];
+    rows.forEach((g,i)=>g.people.forEach(x=>out.push([i+1,g.wilayah,g.kkp,x.name,x.npk,x.jjg])));out.push([]);out.push(['KKP RANKING','Wilayah','KKP','Total JJG']);rows.forEach((g,i)=>out.push([i+1,g.wilayah,g.kkp,g.totalJjg]));downloadCSV(`ADRIANA_KKP_Production_${ACTIVE.date}.csv`,out);
+  };
+  window.addEventListener('load',()=>{renderHistory();});
+  document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(ACTIVE)renderKKP(ACTIVE);renderHistory();},150);});
+})();
+
+</script>
 </body></html>
