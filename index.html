@@ -152,7 +152,7 @@ body{background:#f4f7f3}
 <div class="panel">
     <div class="notice">
     <b>Rotation Source: AMANTA history</b><br>
-    Rotation is calculated automatically from <b>BLOK + HARVDATE</b> recorded in locked AMANTA daily datasets. No separate rotation CSV is required.
+    Rotation is calculated automatically from <b>BLOK + HARVDATE</b> across AMANTA daily datasets starting <b>18 Aug 2026</b>. The current Daily Operational View is included so the chain continues even before the latest date is locked. No separate rotation CSV is required.
   </div>
   <div id="rotationResult" class="notice" style="margin-top:12px">
     <b>Rotation history belum tersedia.</b><br>
@@ -488,12 +488,26 @@ function rotationDatesForView(activeDate){
  return out;
 }
 function rotationVisibleSnapshots(afd,activeDate){
+ // Rotation follows the same continuity principle as Premi: use all locked daily
+ // snapshots from 18 Aug onward, and always include the current Daily Operational
+ // View snapshot even when that latest date has not yet been locked.
  let snaps=[];
  try{if(typeof getAfdSnapshotsHybrid==='function') snaps=getAfdSnapshotsHybrid(afd||'OC')||[];}catch(e){}
  if(!snaps.length){try{snaps=getLockedSnapshots()||[];}catch(e){}}
- return (snaps||[]).filter(x=>x&&x.date&&x.date>=ROTATION_START_DATE&&x.date<=String(activeDate))
-   .filter(x=>!afd||afd==='ALL'||x.afd===afd)
-   .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+ const current=window.ADRIANA_DATA||ACTIVE;
+ if(current?.date){
+   const a=current.afd||afd||'OC';
+   if(current.date>=ROTATION_START_DATE&&current.date<=String(activeDate||current.date) && (!afd||afd==='ALL'||a===afd)){
+     snaps=[...snaps,current];
+   }
+ }
+ const byDate=new Map();
+ (snaps||[]).forEach(x=>{
+   if(!x?.date||x.date<ROTATION_START_DATE||x.date>String(activeDate||'9999-12-31'))return;
+   if(afd&&afd!=='ALL'&&(x.afd||'OC')!==afd)return;
+   byDate.set(`${x.afd||afd||'OC'}|${x.date}`,x);
+ });
+ return [...byDate.values()].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
 }
 function harvestHistoryFromSnapshots(afd=ACTIVE_AFD,activeDate=null){
  const snaps=rotationVisibleSnapshots(afd,activeDate||'9999-12-31');
