@@ -140,7 +140,7 @@ body{background:#f4f7f3}
   <div class="peopleNote">Premi dihitung harian per pemanen: seluruh JJG pemanen dari blok yang benar-benar dipanen dikurangi rata-rata basis blok yang dipanen pemanen tersebut. More Basis dan Premi Periode diakumulasi berdasarkan Open Book–Closing Book. Periode payroll: tanggal 21 sampai tanggal 20 bulan berikutnya. Minggu: Rp2.500/JJG.</div>
 </div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
-<div class="footer">ADRIANA v22.13 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
+<div class="footer">ADRIANA v37 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
 </section>
 <section id="closing" class="section"><div class="top"><div><div class="eyebrow">CONTROL</div><div class="title">Daily Closing</div><div class="meta">AMANTA as source of truth · one dashboard for all SYM afdeling.</div></div></div>
 <div class="panel"><h2>AMANTA Upload — 1 Daily Dataset</h2><div class="upload">Pilih AMANTA sesuai afdeling · OCYM maksimal 2 file · OEYM maksimal 3 file<br><input id="amantaFiles" type="file" accept=".csv" multiple><div id="uploadMsg" class="small">Belum ada file.</div></div><div id="reconBox" class="notice">Menunggu upload. Sistem akan mendeteksi tanggal, site, versi, overlap dan melakukan reconciliation tanpa double-count.</div><button class="btn" id="processBtn" onclick="processAMANTA()" disabled>UPLOAD &amp; PROCESS</button><button class="btn" id="lockBtn" onclick="closeDataset()" disabled>CLOSE & LOCK DATASET</button>
@@ -268,7 +268,7 @@ body{background:#f4f7f3}
         </table>
       </div>
       <div class="notice periodLogicNote">
-        <b>Book logic:</b> khusus awal periode ini, 18 Agustus–20 September 2026. Mulai 21 September 2026 sampai akhir 2027, satu periode selalu dibuka tanggal 21 dan ditutup tanggal 20 bulan berikutnya.
+        <b>Book logic:</b> satu periode selalu dibuka tanggal 21 dan ditutup tanggal 20 bulan berikutnya.
         Data aktual hanya dihitung sampai tanggal aktif; setelah tanggal 20, periode menjadi <b>Closed</b>.
         Jadi Book September 2026 = <b>21 Agustus 2026–20 September 2026</b>.
       </div>
@@ -465,7 +465,7 @@ function rotationSection(block,afd=ACTIVE_AFD){
  return null;
 }
 function harvestHistoryFromSnapshots(afd=ACTIVE_AFD){
- const snaps=getLockedSnapshots().filter(x=>(!afd||afd==='ALL'||x.afd===afd) && x.date>=ROTATION_SYNC_START);
+ const snaps=getLockedSnapshots().filter(x=>!afd||afd==='ALL'||x.afd===afd);
  const map={};
  for(const snap of snaps){
   const p=snap.sections?.PRODUKSIBLOK;if(!p)continue;
@@ -482,10 +482,11 @@ function renderRotation(d){
  const afd=ACTIVE_AFD==='ALL'?(d?.afd||'OC'):ACTIVE_AFD;
  const hist=harvestHistoryFromSnapshots(afd),activeDate=d?.date;
  if(!activeDate){host.innerHTML='<b>Active report date unavailable.</b>';return;}
+ const ROTATION_START_DATE='2026-08-31';
+ const startDate=activeDate<ROTATION_START_DATE?activeDate:ROTATION_START_DATE;
  const locked=getLockedSnapshots(afd).filter(x=>x.date<=activeDate);
- const date0=new Date(activeDate+'T00:00:00'), y=date0.getFullYear(), m=date0.getMonth();
- const monthStart=new Date(y,m,1), monthEnd=new Date(y,m+1,0), dates=[];
- for(let dt=new Date(monthStart);dt<=monthEnd;dt.setDate(dt.getDate()+1)) dates.push(dt.toISOString().slice(0,10));
+ const date0=new Date(activeDate+'T00:00:00');
+ const dates=[];for(let dt=new Date(startDate+'T00:00:00');dt<=date0;dt.setDate(dt.getDate()+1))dates.push(dt.toISOString().slice(0,10));
  const master=rotationMasterForAfd(afd),prefix=afd==='OE'?'OE':'OC';
  const sections=rotationSectionsForAfd(afd);
  const allBlocks=new Set(Object.keys(master).map(k=>prefix+k));
@@ -518,10 +519,10 @@ function renderRotation(d){
  });
  rows.filter(r=>!used.has(r.block)).forEach(r=>{matrixBody+=`<tr><td><b>${html.escape(r.block)}</b></td>${dates.map(dt=>`<td>${cell(r.dates,dt)}</td>`).join('')}</tr>`;});
  const headers=dates.map(dt=>{const day=new Date(dt+'T00:00:00').getDate();return `<th>${day}</th>`;}).join('');
- host.innerHTML=`<div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION — OCYM</b><br><span class="small">${locked.length} locked date(s) · Active date ${fmtDate(activeDate)} · Source: AMANTA BLOK + HARVDATE · Sync ${fmtDate(ROTATION_SYNC_START)} → ${fmtDate(activeDate)}</span></div><div class="small">AMANTA historical sync</div></div>
+ host.innerHTML=`<div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION — OCYM</b><br><span class="small">${locked.length} locked date(s) · Active date ${fmtDate(activeDate)} · Source: AMANTA BLOK + HARVDATE · Sync ${fmtDate(ROTATION_START_DATE)} → ${fmtDate(activeDate)}</span></div><div class="small">AMANTA historical sync</div></div>
  <div class="rotationMetaCompact"><span class="tag green">≤7 · ${summary.Hijau}</span><span class="tag yellow">8–10 · ${summary.Kuning}</span><span class="tag red">11–15 · ${summary.Merah}</span><span class="tag black">≥16 · ${summary.Hitam}</span>${summary.Unavailable?`<span class="tag">Unavailable · ${summary.Unavailable}</span>`:''}</div>
  <div class="rotationToday"><div class="rotationTodayHead"><b>ROTATION TODAY — OCYM</b><span class="small">Last harvest → current age</span></div><div style="overflow:auto"><table class="rotationTodayTable"><thead><tr><th>BLOCK</th><th>LAST HARVEST</th><th>AGE</th><th>STATUS</th></tr></thead><tbody>${todayBody}</tbody></table></div></div>
- <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:12px 0 8px;flex-wrap:wrap"><button class="btn" type="button" onclick="downloadRotationCalendarCSV()">Download Rotation Calendar CSV</button></div><details class="rotationMatrixDetails" open><summary>View full OCYM rotation calendar</summary><div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION MATRIX — OCYM</b></div><div class="small">Harvest date = 0 · Age increases daily · AMANTA synced from 31 August; calendar follows the active month from day 1</div></div><div class="rotationLegend"><span class="tag green">≤7 Hijau</span><span class="tag yellow">8–10 Kuning</span><span class="tag red">11–15 Merah</span><span class="tag black">≥16 Hitam</span></div><div style="overflow:auto;margin-top:10px"><table class="rotationMatrix"><thead><tr><th>BLOCK</th>${headers}</tr></thead><tbody>${matrixBody}</tbody></table></div></div></details>
+ <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:12px 0 8px;flex-wrap:wrap"><button class="btn" type="button" onclick="downloadRotationCalendarCSV()">Download Rotation Calendar CSV</button></div><details class="rotationMatrixDetails" open><summary>View full OCYM rotation calendar</summary><div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION MATRIX — OCYM</b></div><div class="small">Harvest date = 0 · Age increases daily · AMANTA synced from 31 August</div></div><div class="rotationLegend"><span class="tag green">≤7 Hijau</span><span class="tag yellow">8–10 Kuning</span><span class="tag red">11–15 Merah</span><span class="tag black">≥16 Hitam</span></div><div style="overflow:auto;margin-top:10px"><table class="rotationMatrix"><thead><tr><th>BLOCK</th>${headers}</tr></thead><tbody>${matrixBody}</tbody></table></div></div></details>
  <div class="small" style="margin-top:10px">Urutan Block mengikuti master Rotation SYM per Seksi. Nilai dihitung langsung dari histori AMANTA yang sudah di-CLOSE &amp; LOCK; tidak ada data rotasi manual terpisah.</div></div>`;
 }
 
@@ -529,9 +530,10 @@ function downloadRotationCalendarCSV(){
  if(!ACTIVE||!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
  const d=window.ADRIANA_DATA,afd=ACTIVE_AFD==='ALL'?(d?.afd||'OC'):ACTIVE_AFD,activeDate=d?.date||ACTIVE.date;
  if(!activeDate){alert('Tanggal aktif belum tersedia.');return;}
- const date0=new Date(activeDate+'T00:00:00'),y=date0.getFullYear(),m=date0.getMonth();
+ const ROTATION_START_DATE='2026-08-31';
+ const startDate=activeDate<ROTATION_START_DATE?activeDate:ROTATION_START_DATE;
  const hist=harvestHistoryFromSnapshots(afd),master=rotationMasterForAfd(afd),prefix=afd==='OE'?'OE':'OC',sections=rotationSectionsForAfd(afd);
- const dates=[];for(let dt=new Date(y,m,1),end=new Date(y,m+1,0);dt<=end;dt.setDate(dt.getDate()+1))dates.push(dt.toISOString().slice(0,10));
+ const dates=[];for(let dt=new Date(startDate+'T00:00:00'),end=new Date(activeDate+'T00:00:00');dt<=end;dt.setDate(dt.getDate()+1))dates.push(dt.toISOString().slice(0,10));
  const allBlocks=new Set(Object.keys(master).map(k=>prefix+k));Object.keys(hist).forEach(b=>allBlocks.add(b));
  const byKey=new Map([...allBlocks].map(block=>[block.replace(/^(OC|OE)/,''),block]));
  const ordered=[];const used=new Set();
@@ -633,12 +635,8 @@ function renderAll(snap){const d=buildData(snap);ACTIVE=snap;window.ADRIANA_DATA
 
 /* V24 People Performance + Premi engine
    Additive feature: does not alter Production / Rotation / Quality / Transport / Exception / PDCA calculations.
-   People Performance starts at 2026-08-18. Special Book: 18 Aug–20 Sep 2026. From 21 Sep 2026 through 2027, Book follows 21–20. */
+   People Performance starts at 2026-08-18. */
 const PEOPLE_START_DATE='2026-08-18';
-const PEOPLE_SPECIAL_CLOSE='2026-09-20';
-const PEOPLE_STANDARD_START='2026-09-21';
-const PEOPLE_STANDARD_END='2027-12-31';
-const ROTATION_SYNC_START='2026-08-31';
 const OC_PREMIUM_BASIS={
  "2":90,"5":90,"8":90,"6":90,"3":90,"1":90,"1A":90,"10":90,"10A":90,"14":90,"18":90,"22":90,
  "4":70,"7":70,"9":70,"11":70,"12":70,"13":70,"15":70,"16":70,"17":70,"19":70,"20":70,"21":70,
@@ -851,7 +849,7 @@ function renderPeopleAI(d){
    Every daily premi transaction remains deterministic; aggregation is by Open Book–Closing Book.
 */
 (function(){
-  const PERIOD_MIN_DATE=PEOPLE_START_DATE;
+  const PERIOD_MIN_DATE='2026-08-18';
 
   function isoDate(d){
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -862,12 +860,9 @@ function renderPeopleAI(d){
 
   function bookPeriod(activeDate){
     const d=localDate(activeDate);
-    if(d>=localDate(PEOPLE_START_DATE) && d<=localDate(PEOPLE_SPECIAL_CLOSE)) return {open:PEOPLE_START_DATE,close:PEOPLE_SPECIAL_CLOSE,bookMonth:'2026-09'};
+    if(d>=localDate('2026-08-18') && d<=localDate('2026-09-20')) return {open:'2026-08-18',close:'2026-09-20',bookMonth:'2026-09'};
     let open, close, bookMonth;
-    const standardBook = d>=localDate(PEOPLE_STANDARD_START) && d<=localDate(PEOPLE_STANDARD_END);
-    // From 21 Sep 2026 through end-2027, the Book window remains fixed at 21–20.
-    // Outside that range, the same 21–20 rule is retained for continuity.
-    if(standardBook && d.getDate()>=21){
+    if(d.getDate()>=21){
       open=new Date(d.getFullYear(),d.getMonth(),21);
       close=new Date(d.getFullYear(),d.getMonth()+1,20);
       bookMonth=new Date(d.getFullYear(),d.getMonth()+1,1);
