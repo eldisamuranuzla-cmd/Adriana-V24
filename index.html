@@ -628,16 +628,28 @@ function closeDataset(){
  ACTIVE=snap;STAGED=null;window.ADRIANA_DATA=buildData(snap);renderAll(snap);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');
 }
 function renderAfdSelectorHybrid(){const el=document.getElementById('afdFilter');if(!el)return;el.value=ACTIVE_AFD;el.onchange=()=>{ACTIVE_AFD=el.value;localStorage.setItem('adriana_active_afd',ACTIVE_AFD);const snaps=getAfdSnapshotsHybrid(ACTIVE_AFD);if(snaps.length){renderAll(snaps[snaps.length-1]);}else{document.getElementById('activeDate').textContent='No dataset';document.getElementById('activeMeta').textContent=(AFD_LABEL[ACTIVE_AFD]||'Semua Afdeling')+' · Belum ada dataset';document.getElementById('lockState').textContent='● NO DATASET';document.getElementById('dashboardSignals').innerHTML='<div class="notice">Belum ada dataset untuk afdeling ini.</div>';document.getElementById('dashboardDecision').textContent='—';document.getElementById('dashboardDecisionText').textContent='Upload AMANTA untuk afdeling yang dipilih.';renderHarvestDensitySummary({blocks:{}});renderHistory();renderDecisionHistory();}}}
-function renderHistory(){const host=document.getElementById('evalHistory');if(!host)return;migrateLegacyHistoryHybrid();const idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');const rows=idx.map(x=>{const s=JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null');return s?`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)} · ${html.escape(s.afdLabel||s.afd)}</b><br>${s.jjg?Number(s.jjg).toLocaleString():'—'} JJG · ${s.producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadAfdDateHybrid('${s.date}','${s.afd}')">LOAD THIS DATE</button></div>`:''}).join('');host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>');if(typeof renderDecisionHistory==='function')renderDecisionHistory();}
-function loadAfdDateHybrid(date,afd){const s=JSON.parse(localStorage.getItem(afdKeyHybrid(date,afd))||'null');if(!s)return;ACTIVE_AFD=afd;localStorage.setItem('adriana_active_afd',afd);const f=document.getElementById('afdFilter');if(f)f.value=afd;ACTIVE=s;renderAll(s);show('dashboard');}
+function renderHistory(){
+ const host=document.getElementById('evalHistory');if(!host)return;
+ let snaps=[];try{snaps=getAfdSnapshotsHybrid(ACTIVE_AFD==='ALL'?'':ACTIVE_AFD)||[];}catch(e){}
+ const rows=snaps.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(s=>`<div class="notice" style="margin-top:8px"><b>${fmtDate(s.date)} · ${html.escape(s.afdLabel||s.afd)}</b><br>${s.jjg?Number(s.jjg).toLocaleString():'—'} JJG · ${s.producingHK||0} HK · ${s.files?.length||0} AMANTA file(s)<br><button class="btn" onclick="loadAfdDateHybrid('${s.date}','${s.afd}')">LOAD THIS DATE</button></div>`).join('');
+ host.innerHTML='<h2>Daily Data History</h2>'+(rows||'<div class="small">Belum ada data.</div>');
+ if(typeof renderDecisionHistory==='function')renderDecisionHistory();
+}
+function loadAfdDateHybrid(date,afd){
+ let s=null;try{s=(getAfdSnapshotsHybrid(afd||'')||[]).find(x=>x&&x.date===date)||null;}catch(e){}
+ if(!s)return;
+ ACTIVE_AFD=afd||s.afd||'OC';localStorage.setItem('adriana_active_afd',ACTIVE_AFD);
+ const f=document.getElementById('afdFilter');if(f)f.value=ACTIVE_AFD;
+ ACTIVE=s;window.ADRIANA_DATA=buildData(s);renderAll(s);show('dashboard');
+}
 function loadDate(date){const afd=ACTIVE_AFD==='ALL'?'OC':ACTIVE_AFD;loadAfdDateHybrid(date,afd)}
 function renderAll(snap){const d=buildData(snap);ACTIVE=snap;window.ADRIANA_DATA=d;document.getElementById('activeDate').textContent=fmtDate(snap.date);document.getElementById('activeMeta').textContent=`${snap.site} · ${AFD_LABEL[snap.afd]||snap.afd||'OCYM'} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';const vals=document.querySelectorAll('#dashboard .card .value');if(vals[0])vals[0].textContent=d.jjg.toLocaleString();if(vals[1])vals[1].textContent=d.producingHK.toLocaleString();if(vals[2])vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';if(vals[3])vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();renderProduction(d);renderHarvestDensitySummary(d);renderJJGContribution(d);renderQuality(d);renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d);}
 
 
 /* V24 People Performance + Premi engine
    Additive feature: does not alter Production / Rotation / Quality / Transport / Exception / PDCA calculations.
-   People Performance starts at 2026-09-01. */
-const PEOPLE_START_DATE='2026-09-01';
+   People Performance starts at 2026-08-18. */
+const PEOPLE_START_DATE='2026-08-18';
 const OC_PREMIUM_BASIS={
  "2":90,"5":90,"8":90,"6":90,"3":90,"1":90,"1A":90,"10":90,"10A":90,"14":90,"18":90,"22":90,
  "4":70,"7":70,"9":70,"11":70,"12":70,"13":70,"15":70,"16":70,"17":70,"19":70,"20":70,"21":70,
@@ -1192,44 +1204,60 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
     {wilayah:'OC PN 1',kkp:'KKP 3',members:[['538','Rudi'],['453','Kowangid'],['443','Mujiono'],['454','Eko R']]},
     {wilayah:'OC PN 2',kkp:'KKP 1',members:[['478','Udi Waluyo'],['498','Heribertus'],['488','Arif Pujianto'],['452','Safrudin']]},
     {wilayah:'OC PN 2',kkp:'KKP 2',members:[['508','Fransiskus Kas'],['496','Arifansius'],['497','Ponsianus'],['548','Aventus']]},
-    {wilayah:'OC PN 2',kkp:'KKP 3',members:[['543','Bariji'],['480','Selvianus'],['546','Mardavin'],['','Agus 05']]}
+    {wilayah:'OC PN 2',kkp:'KKP 3',members:[['543','Bariji'],['480','Selvianus'],['546','Mardavin'],['05','Agus 05']]}
   ];
   const norm=v=>String(v??'').toUpperCase().replace(/[^A-Z0-9]/g,'');
-  const npkKey=v=>{
+  /* KKP uses KODEKARY from PRODUKSIBLOK as the roster key.
+     AMANTA's NPK is the employee master number (e.g. 2102211),
+     while the supplied KKP roster uses the harvester code (e.g. 443).
+     KEMANDORAN determines the harvest wilayah: OCPN1 / OCPN2. */
+  const kkpCode=v=>{
     const s=String(v??'').trim().toUpperCase();
-    if(!s)return '';
-    const compact=s.replace(/[^0-9]/g,'');
-    if(compact)return String(parseInt(compact,10));
-    return norm(s);
+    const m=s.match(/^0*([0-9]+)(?:[A-Z].*)?$/);
+    return m?String(parseInt(m[1],10)):norm(s);
   };
-  const rosterMap=()=>{const m=new Map();KKP_MASTER.forEach(g=>g.members.forEach(([npk,name])=>{
-    if(npk)m.set('N:'+npkKey(npk),{wilayah:g.wilayah,kkp:g.kkp,npk,name});
-    m.set('M:'+norm(name),{wilayah:g.wilayah,kkp:g.kkp,npk,name});
-  }));return m;};
-  const kkpHeaderIndex=(h,aliases)=>{
-    const H=(h||[]).map(x=>norm(x));
-    for(const a of aliases){const i=H.indexOf(norm(a));if(i>=0)return i;}
-    return -1;
+  const kkpWilayah=v=>{
+    const s=norm(v);
+    if(s==='OCPN1')return 'OC PN 1';
+    if(s==='OCPN2')return 'OC PN 2';
+    return null;
+  };
+  const rosterMap=()=>{
+    const m=new Map();
+    KKP_MASTER.forEach(g=>g.members.forEach(([code,name])=>{
+      m.set(`${g.wilayah}|${kkpCode(code)}`,{wilayah:g.wilayah,kkp:g.kkp,code,name});
+      m.set(`${g.wilayah}|M:${norm(name)}`,{wilayah:g.wilayah,kkp:g.kkp,code,name});
+    }));
+    return m;
   };
   const kkpRows=(snap)=>{
     const p=snap?.sections?.PRODUKSIBLOK,h=p?.header||[];
-    const ni=kkpHeaderIndex(h,['NPK','NPKPEMANEN','NPKPEMANENAN','NPKPEMANEN']);
-    const namei=kkpHeaderIndex(h,['NAMA','NAMAPEMANEN','NAMA PEMANEN','PEMANEN']);
-    const ji=kkpHeaderIndex(h,['JJG','TOTALJJG','JUMLAHJJG','JJG PANEN']);
-    const empty=()=>KKP_MASTER.map(g=>({...g,people:g.members.map(([npk,name])=>({npk,name,jjg:0})),totalJjg:0}));
-    if(!p||ni<0||ji<0)return empty();
+    const ci=h.indexOf('KODEKARY'),ni=h.indexOf('NPK'),namei=h.indexOf('NAMA'),mi=h.indexOf('KEMANDORAN'),ji=h.indexOf('JJG');
+    const empty=()=>KKP_MASTER.map(g=>({...g,people:g.members.map(([code,name])=>({npk:'',code,name,jjg:0})),totalJjg:0}));
+    if(!p||ci<0||ji<0)return empty();
+
     const map=rosterMap(),groups=empty();
     (p.rows||[]).forEach(r=>{
-      const npk=String(r[ni]??'').trim(),name=namei>=0?String(r[namei]??'').trim():'';
-      let hit=npk?map.get('N:'+npkKey(npk)):null;
-      if(!hit&&name)hit=map.get('M:'+norm(name));
-      if(!hit)return;
-      const gi=groups.findIndex(g=>g.wilayah===hit.wilayah&&g.kkp===hit.kkp);
+      const code=kkpCode(r[ci]);
+      const wilayah=kkpWilayah(mi>=0?r[mi]:'');
+      const npk=ni>=0?String(r[ni]??'').trim():'';
+      const name=namei>=0?String(r[namei]??'').trim():'';
+      const hit=(wilayah&&code)?map.get(`${wilayah}|${code}`):null;
+      const nameHit=wilayah?map.get(`${wilayah}|M:${norm(name)}`):null;
+      const roster=nameHit||hit;
+      if(!roster)return;
+
+      const gi=groups.findIndex(g=>g.wilayah===roster.wilayah&&g.kkp===roster.kkp);
       if(gi<0)return;
-      const mi=groups[gi].members.findIndex(([n,nm])=>(n&&npkKey(n)===npkKey(npk))||norm(nm)===norm(name));
-      if(mi<0)return;
+      const miRoster=groups[gi].members.findIndex(([c,nm])=>kkpCode(c)===kkpCode(roster.code));
+      if(miRoster<0)return;
+
       const j=num(r[ji]);
-      if(j>0){groups[gi].people[mi].jjg+=j;groups[gi].totalJjg+=j;}
+      if(j>0){
+        groups[gi].people[miRoster].npk=npk;
+        groups[gi].people[miRoster].jjg+=j;
+        groups[gi].totalJjg+=j;
+      }
     });
     return groups;
   };
@@ -1240,8 +1268,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
     if(!d?.date||((ACTIVE_AFD==='OE')&&d.afd!=='OC')){host.innerHTML='<tr><td colspan="7" class="small">Pilih OCYM / load dataset OC untuk melihat produksi KKP OC PN 1 dan OC PN 2.</td></tr>';const dh0=document.getElementById('kkpDashboardBody');if(dh0)dh0.innerHTML='<tr><td colspan="7" class="small">Pilih OCYM / load dataset OC untuk melihat produksi KKP OC PN 1 dan OC PN 2.</td></tr>';return;}
     const rows=kkpRows(d).sort((a,b)=>b.totalJjg-a.totalJjg);
     host.innerHTML=rows.map((g,i)=>`<tr><td><span class="rankBadge ${i===rows.length-1?'low':''}">#${i+1}</span></td><td><b>${html.escape(g.wilayah)}</b></td><td><b>${html.escape(g.kkp)}</b></td><td>${g.people.map(x=>html.escape(x.name)+(x.npk?` <span class="small">(${html.escape(x.npk)})</span>`:'')).join('<br>')}</td><td>${g.people.map(x=>x.jjg.toLocaleString('id-ID')).join('<br>')}</td><td><b>${g.totalJjg.toLocaleString('id-ID')} JJG</b></td><td>${i===0?'TERTINGGI':(i===rows.length-1?'TERENDAH':'')}</td></tr>`).join('');
-    const total=rows.reduce((a,g)=>a+g.totalJjg,0), amantaTotal=num(d?.jjg);
-    const gap=amantaTotal-total;
+    const total=rows.reduce((a,g)=>a+g.totalJjg,0), amantaTotal=num(d?.jjg), gap=amantaTotal-total;
     const hi=rows[0],lo=rows[rows.length-1];
     const el=document.getElementById('kkpProductionSummary');if(el)el.innerHTML=`Total roster: <b>${KKP_MASTER.reduce((a,g)=>a+g.members.length,0)} pemanen</b> · Total JJG KKP: <b>${total.toLocaleString('id-ID')}</b> · AMANTA total: <b>${amantaTotal.toLocaleString('id-ID')}</b> · Reconcile: <b>${gap===0?'BALANCE':gap.toLocaleString('id-ID')+' JJG belum terpetakan'}</b> · KKP tertinggi: <b>${html.escape(hi?.wilayah||'—')} / ${html.escape(hi?.kkp||'—')}</b> (${(hi?.totalJjg||0).toLocaleString('id-ID')} JJG) · KKP terendah: <b>${html.escape(lo?.wilayah||'—')} / ${html.escape(lo?.kkp||'—')}</b> (${(lo?.totalJjg||0).toLocaleString('id-ID')} JJG).`;
     const dh=document.getElementById('kkpDashboardBody');
@@ -1262,8 +1289,8 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   const oldExport=typeof downloadProductionCSV==='function'?downloadProductionCSV:null;
   window.downloadKKPProductionCSV=function(){
     if(!ACTIVE||!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
-    const rows=kkpRows(window.ADRIANA_DATA).sort((a,b)=>b.totalJjg-a.totalJjg),out=[['ADRIANA KKP HARVEST PRODUCTION'],['AFD','OCYM'],['Tanggal',ACTIVE.date],[],['Rank','Wilayah','KKP','Pemanen','NPK','JJG']];
-    rows.forEach((g,i)=>g.people.forEach(x=>out.push([i+1,g.wilayah,g.kkp,x.name,x.npk,x.jjg])));out.push([]);out.push(['KKP RANKING','Wilayah','KKP','Total JJG']);rows.forEach((g,i)=>out.push([i+1,g.wilayah,g.kkp,g.totalJjg]));downloadCSV(`ADRIANA_KKP_Production_${ACTIVE.date}.csv`,out);
+    const rows=kkpRows(window.ADRIANA_DATA).sort((a,b)=>b.totalJjg-a.totalJjg),out=[['ADRIANA KKP HARVEST PRODUCTION'],['AFD','OCYM'],['Tanggal',ACTIVE.date],[],['Rank','Wilayah','KKP','Pemanen','KKP Code','NPK AMANTA','JJG']];
+    rows.forEach((g,i)=>g.people.forEach(x=>out.push([i+1,g.wilayah,g.kkp,x.name,x.code,x.npk,x.jjg])));out.push([]);out.push(['KKP RANKING','Wilayah','KKP','Total JJG']);rows.forEach((g,i)=>out.push([i+1,g.wilayah,g.kkp,g.totalJjg]));downloadCSV(`ADRIANA_KKP_Production_${ACTIVE.date}.csv`,out);
   };
   window.addEventListener('load',()=>{renderHistory();});
   document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(ACTIVE)renderKKP(ACTIVE);renderHistory();},150);});
