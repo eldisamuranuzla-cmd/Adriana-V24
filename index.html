@@ -1195,7 +1195,17 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
     {wilayah:'OC PN 2',kkp:'KKP 3',members:[['543','Bariji'],['480','Selvianus'],['546','Mardavin'],['','Agus 05']]}
   ];
   const norm=v=>String(v??'').toUpperCase().replace(/[^A-Z0-9]/g,'');
-  const rosterMap=()=>{const m=new Map();KKP_MASTER.forEach(g=>g.members.forEach(([npk,name])=>{if(npk)m.set('N:'+norm(npk),{wilayah:g.wilayah,kkp:g.kkp,npk,name});m.set('N:'+norm(npk)+'|'+norm(name),{wilayah:g.wilayah,kkp:g.kkp,npk,name});m.set('M:'+norm(name),{wilayah:g.wilayah,kkp:g.kkp,npk,name});}));return m;};
+  const npkKey=v=>{
+    const s=String(v??'').trim().toUpperCase();
+    if(!s)return '';
+    const compact=s.replace(/[^0-9]/g,'');
+    if(compact)return String(parseInt(compact,10));
+    return norm(s);
+  };
+  const rosterMap=()=>{const m=new Map();KKP_MASTER.forEach(g=>g.members.forEach(([npk,name])=>{
+    if(npk)m.set('N:'+npkKey(npk),{wilayah:g.wilayah,kkp:g.kkp,npk,name});
+    m.set('M:'+norm(name),{wilayah:g.wilayah,kkp:g.kkp,npk,name});
+  }));return m;};
   const kkpHeaderIndex=(h,aliases)=>{
     const H=(h||[]).map(x=>norm(x));
     for(const a of aliases){const i=H.indexOf(norm(a));if(i>=0)return i;}
@@ -1211,12 +1221,12 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
     const map=rosterMap(),groups=empty();
     (p.rows||[]).forEach(r=>{
       const npk=String(r[ni]??'').trim(),name=namei>=0?String(r[namei]??'').trim():'';
-      let hit=npk?map.get('N:'+norm(npk)):null;
+      let hit=npk?map.get('N:'+npkKey(npk)):null;
       if(!hit&&name)hit=map.get('M:'+norm(name));
       if(!hit)return;
       const gi=groups.findIndex(g=>g.wilayah===hit.wilayah&&g.kkp===hit.kkp);
       if(gi<0)return;
-      const mi=groups[gi].members.findIndex(([n,nm])=>(n&&norm(n)===norm(npk))||norm(nm)===norm(name));
+      const mi=groups[gi].members.findIndex(([n,nm])=>(n&&npkKey(n)===npkKey(npk))||norm(nm)===norm(name));
       if(mi<0)return;
       const j=num(r[ji]);
       if(j>0){groups[gi].people[mi].jjg+=j;groups[gi].totalJjg+=j;}
@@ -1230,8 +1240,10 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
     if(!d?.date||((ACTIVE_AFD==='OE')&&d.afd!=='OC')){host.innerHTML='<tr><td colspan="7" class="small">Pilih OCYM / load dataset OC untuk melihat produksi KKP OC PN 1 dan OC PN 2.</td></tr>';const dh0=document.getElementById('kkpDashboardBody');if(dh0)dh0.innerHTML='<tr><td colspan="7" class="small">Pilih OCYM / load dataset OC untuk melihat produksi KKP OC PN 1 dan OC PN 2.</td></tr>';return;}
     const rows=kkpRows(d).sort((a,b)=>b.totalJjg-a.totalJjg);
     host.innerHTML=rows.map((g,i)=>`<tr><td><span class="rankBadge ${i===rows.length-1?'low':''}">#${i+1}</span></td><td><b>${html.escape(g.wilayah)}</b></td><td><b>${html.escape(g.kkp)}</b></td><td>${g.people.map(x=>html.escape(x.name)+(x.npk?` <span class="small">(${html.escape(x.npk)})</span>`:'')).join('<br>')}</td><td>${g.people.map(x=>x.jjg.toLocaleString('id-ID')).join('<br>')}</td><td><b>${g.totalJjg.toLocaleString('id-ID')} JJG</b></td><td>${i===0?'TERTINGGI':(i===rows.length-1?'TERENDAH':'')}</td></tr>`).join('');
-    const total=rows.reduce((a,g)=>a+g.totalJjg,0), hi=rows[0],lo=rows[rows.length-1];
-    const el=document.getElementById('kkpProductionSummary');if(el)el.innerHTML=`Total roster: <b>${KKP_MASTER.reduce((a,g)=>a+g.members.length,0)} pemanen</b> · Total JJG roster: <b>${total.toLocaleString('id-ID')}</b> · KKP tertinggi: <b>${html.escape(hi?.wilayah||'—')} / ${html.escape(hi?.kkp||'—')}</b> (${(hi?.totalJjg||0).toLocaleString('id-ID')} JJG) · KKP terendah: <b>${html.escape(lo?.wilayah||'—')} / ${html.escape(lo?.kkp||'—')}</b> (${(lo?.totalJjg||0).toLocaleString('id-ID')} JJG).`;
+    const total=rows.reduce((a,g)=>a+g.totalJjg,0), amantaTotal=num(d?.jjg);
+    const gap=amantaTotal-total;
+    const hi=rows[0],lo=rows[rows.length-1];
+    const el=document.getElementById('kkpProductionSummary');if(el)el.innerHTML=`Total roster: <b>${KKP_MASTER.reduce((a,g)=>a+g.members.length,0)} pemanen</b> · Total JJG KKP: <b>${total.toLocaleString('id-ID')}</b> · AMANTA total: <b>${amantaTotal.toLocaleString('id-ID')}</b> · Reconcile: <b>${gap===0?'BALANCE':gap.toLocaleString('id-ID')+' JJG belum terpetakan'}</b> · KKP tertinggi: <b>${html.escape(hi?.wilayah||'—')} / ${html.escape(hi?.kkp||'—')}</b> (${(hi?.totalJjg||0).toLocaleString('id-ID')} JJG) · KKP terendah: <b>${html.escape(lo?.wilayah||'—')} / ${html.escape(lo?.kkp||'—')}</b> (${(lo?.totalJjg||0).toLocaleString('id-ID')} JJG).`;
     const dh=document.getElementById('kkpDashboardBody');
     const ds=document.getElementById('kkpDashboardSummary');
     if(dh){
@@ -1243,7 +1255,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   const basePeopleRows=peopleProductionRows;
   peopleProductionRows=function(snap){
     const rows=basePeopleRows(snap),map=rosterMap();
-    return rows.filter(r=>{let hit=map.get('N:'+norm(r.npk));if(!hit)hit=map.get('M:'+norm(r.name));return !!hit;});
+    return rows.filter(r=>{let hit=map.get('N:'+npkKey(r.npk));if(!hit)hit=map.get('M:'+norm(r.name));return !!hit;});
   };
   const prevRenderAll=renderAll;
   renderAll=function(snap){prevRenderAll(snap);try{renderKKP(snap);renderHistory();}catch(e){console.warn('KKP:',e)}};
