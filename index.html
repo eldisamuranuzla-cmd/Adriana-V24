@@ -464,27 +464,68 @@ function rotationSection(block,afd=ACTIVE_AFD){
  for(const [sec,blocks] of Object.entries(rotationSectionsForAfd(afd))){if(blocks.includes(key))return sec;}
  return null;
 }
-function harvestHistoryFromSnapshots(afd=ACTIVE_AFD){
- const snaps=getLockedSnapshots().filter(x=>!afd||afd==='ALL'||x.afd===afd);
+const ROTATION_START_DATE='2026-08-18';
+let ROTATION_VIEW_MONTH=localStorage.getItem('adriana_rotation_view_month')||'';
+function rotationMonthKey(date){return String(date||'').slice(0,7);}
+function rotationMonthStart(key){const [y,m]=String(key).split('-').map(Number);return new Date(y,m-1,1);}
+function rotationMonthEnd(key){const [y,m]=String(key).split('-').map(Number);return new Date(y,m,0);}
+function rotationDateISO(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function rotationAddMonths(key,n){const d=rotationMonthStart(key);d.setMonth(d.getMonth()+n);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
+function rotationMonthLabel(key){const d=rotationMonthStart(key);return d.toLocaleDateString('id-ID',{month:'long',year:'numeric'});}
+function rotationDatesForView(activeDate){
+ const activeKey=rotationMonthKey(activeDate);
+ let key=ROTATION_VIEW_MONTH||activeKey;
+ if(key>activeKey) key=activeKey;
+ if(key<'2026-08') key='2026-08';
+ ROTATION_VIEW_MONTH=key;
+ localStorage.setItem('adriana_rotation_view_month',key);
+ const start=rotationMonthStart(key),end=rotationMonthEnd(key);
+ let from=rotationDateISO(start),to=rotationDateISO(end);
+ if(key==='2026-08') from=ROTATION_START_DATE;
+ if(key===activeKey) to=activeDate;
+ if(from>to) return [];
+ const out=[];for(let d=new Date(from+'T00:00:00');rotationDateISO(d)<=to;d.setDate(d.getDate()+1)) out.push(rotationDateISO(d));
+ return out;
+}
+function rotationVisibleSnapshots(afd,activeDate){
+ let snaps=[];
+ try{if(typeof getAfdSnapshotsHybrid==='function') snaps=getAfdSnapshotsHybrid(afd||'OC')||[];}catch(e){}
+ if(!snaps.length){try{snaps=getLockedSnapshots()||[];}catch(e){}}
+ return (snaps||[]).filter(x=>x&&x.date&&x.date>=ROTATION_START_DATE&&x.date<=String(activeDate))
+   .filter(x=>!afd||afd==='ALL'||x.afd===afd)
+   .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+}
+function harvestHistoryFromSnapshots(afd=ACTIVE_AFD,activeDate=null){
+ const snaps=rotationVisibleSnapshots(afd,activeDate||'9999-12-31');
  const map={};
  for(const snap of snaps){
   const p=snap.sections?.PRODUKSIBLOK;if(!p)continue;
   const h=p.header||[],bi=h.indexOf('BLOK'),hi=h.indexOf('HARVDATE');if(bi<0||hi<0)continue;
   for(const r of p.rows||[]){
    const block=normalizeRotationBlock(r[bi],afd),date=normalizeAmantaDate(r[hi]);
-   if(!block||!date)continue;(map[block]??=new Set()).add(date);
+   if(!block||!date||date<ROTATION_START_DATE||date>String(activeDate||'9999-12-31'))continue;
+   (map[block]??=new Set()).add(date);
   }
  }
  return Object.fromEntries(Object.entries(map).map(([b,set])=>[b,[...set].sort()]));
 }
+function renderRotationMonth(offset){
+ const d=window.ADRIANA_DATA;if(!d?.date)return;
+ const activeKey=rotationMonthKey(d.date);
+ let current=ROTATION_VIEW_MONTH||activeKey;
+ const next=rotationAddMonths(current,offset);
+ if(next<'2026-08'||next>activeKey)return;
+ ROTATION_VIEW_MONTH=next;localStorage.setItem('adriana_rotation_view_month',next);renderRotation(d);
+}
 function renderRotation(d){
  const host=document.getElementById('rotationResult');if(!host)return;
  const afd=ACTIVE_AFD==='ALL'?(d?.afd||'OC'):ACTIVE_AFD;
- const hist=harvestHistoryFromSnapshots(afd),activeDate=d?.date;
- if(!activeDate){host.innerHTML='<b>Active report date unavailable.</b>';return;}
- const locked=getLockedSnapshots(afd).filter(x=>x.date<=activeDate);
- const date0=new Date(activeDate+'T00:00:00'),y=date0.getFullYear(),m=date0.getMonth();
- const daysInMonth=new Date(y,m+1,0).getDate(),dates=Array.from({length:daysInMonth},(_,i)=>`${y}-${String(m+1).padStart(2,'0')}-${String(i+1).padStart(2,'0')}`);
+ const activeDate=d?.date;if(!activeDate){host.innerHTML='<b>Active report date unavailable.</b>';return;}
+ const hist=harvestHistoryFromSnapshots(afd,activeDate);
+ const locked=rotationVisibleSnapshots(afd,activeDate);
+ const dates=rotationDatesForView(activeDate);
+ const viewMonth=ROTATION_VIEW_MONTH||rotationMonthKey(activeDate);
+
  const sections=rotationSectionsForAfd(afd),prefix=afd==='OE'?'OE':'OC',allBlocks=new Set(Object.keys(hist)),rows=[];
  for(const [sec,blocks] of Object.entries(sections)){for(const key of blocks){const block=prefix+key;allBlocks.add(block);rows.push({sec,block,dates:hist[block]||[]});}}
  const extra=[...allBlocks].filter(b=>!rotationSection(b,afd)).sort();
@@ -504,7 +545,7 @@ function renderRotation(d){
  let matrixBody='',lastSec=null;
  activeRows.forEach(r=>{if(r.sec!==lastSec){matrixBody+=`<tr class="secRow"><td colspan="${1+dates.length}"><b>SEKSI ${html.escape(r.sec)}</b></td></tr>`;lastSec=r.sec;}matrixBody+=`<tr><td><b>${html.escape(r.block)}</b></td>${dates.map(dt=>`<td>${cell(r.dates,dt)}</td>`).join('')}</tr>`});
  const headers=dates.map((dt,i)=>`<th>${i+1}</th>`).join('');
- host.innerHTML=`<div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION — ${afd}YM</b><br><span class="small">${locked.length} locked date(s) · Active date ${fmtDate(activeDate)} · Source: AMANTA BLOK + HARVDATE</span></div><div class="small">Today-first view</div></div>
+ host.innerHTML=`<div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION — ${afd}YM</b><br><span class="small">AMANTA sync ${fmtDate(ROTATION_START_DATE)} → ${fmtDate(activeDate)} · ${locked.length} locked date(s) · Source: AMANTA BLOK + HARVDATE</span></div><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><button class="btn" type="button" style="margin-top:0" onclick="renderRotationMonth(-1)" ${viewMonth<='2026-08'?'disabled':''}>‹</button><span class="small" style="min-width:130px;text-align:center"><b>${html.escape(rotationMonthLabel(viewMonth))}</b></span><button class="btn" type="button" style="margin-top:0" onclick="renderRotationMonth(1)" ${viewMonth>=rotationMonthKey(activeDate)?'disabled':''}>›</button></div></div>
  <div class="rotationMetaCompact"><span class="tag green">≤7 · ${summary.Hijau}</span><span class="tag yellow">8–10 · ${summary.Kuning}</span><span class="tag red">11–15 · ${summary.Merah}</span><span class="tag black">≥16 · ${summary.Hitam}</span>${summary.Unavailable?`<span class="tag">Unavailable · ${summary.Unavailable}</span>`:''}</div>
  <div class="rotationToday"><div class="rotationTodayHead"><b>ROTATION TODAY</b><span class="small">Last harvest → current age</span></div><div style="overflow:auto"><table class="rotationTodayTable"><thead><tr><th>BLOCK</th><th>LAST HARVEST</th><th>AGE</th><th>STATUS</th></tr></thead><tbody>${todayBody}</tbody></table></div></div>
  <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:12px 0 8px;flex-wrap:wrap"><button class="btn" type="button" onclick="downloadRotationCalendarCSV()">Download Rotation Calendar CSV</button></div><details class="rotationMatrixDetails"><summary>View full ${html.escape(afd)}YM rotation calendar</summary><div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION MATRIX — ${afd}YM</b></div><div class="small">Harvest date = 0 · Age increases daily</div></div><div class="rotationLegend"><span class="tag green">≤7 Hijau</span><span class="tag yellow">8–10 Kuning</span><span class="tag red">11–15 Merah</span><span class="tag black">≥16 Hitam</span></div><div class="rotationMatrixScroller"><table class="rotationMatrix"><thead><tr><th>BLOCK</th>${headers}</tr></thead><tbody>${matrixBody}</tbody></table></div></div></details>
@@ -547,14 +588,14 @@ function downloadRotationCalendarCSV(){
  if(!ACTIVE||!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
  const d=window.ADRIANA_DATA,afd=ACTIVE_AFD==='ALL'?(d?.afd||'OC'):ACTIVE_AFD,activeDate=d?.date||ACTIVE.date;
  if(!activeDate){alert('Tanggal aktif belum tersedia.');return;}
- const hist=harvestHistoryFromSnapshots(afd),sections=rotationSectionsForAfd(afd),prefix=afd==='OE'?'OE':'OC';
- const date0=new Date(activeDate+'T00:00:00'),y=date0.getFullYear(),m=date0.getMonth();
- const daysInMonth=new Date(y,m+1,0).getDate(),dates=Array.from({length:daysInMonth},(_,i)=>`${y}-${String(m+1).padStart(2,'0')}-${String(i+1).padStart(2,'0')}`);
+ const hist=harvestHistoryFromSnapshots(afd,activeDate),sections=rotationSectionsForAfd(afd),prefix=afd==='OE'?'OE':'OC';
+ const dates=rotationDatesForView(activeDate);
+ const y=Number(String(dates[0]||activeDate).slice(0,4)),m=Number(String(dates[0]||activeDate).slice(5,7));
  const rows=[];
  for(const [sec,blocks] of Object.entries(sections)) for(const key of blocks) rows.push({sec,block:prefix+key,dates:hist[prefix+key]||[]});
  const all=new Set(Object.keys(hist));[...all].filter(b=>!rotationSection(b,afd)).sort().forEach(block=>rows.push({sec:'Other',block,dates:hist[block]||[]}));
- const out=[['AFD',afd,'Month',`${y}-${String(m+1).padStart(2,'0')}`],[],['Seksi','Block','AFD',...dates]];
- rows.forEach(r=>{out.push([r.sec,r.block,afd,...dates.map(dt=>{const prior=r.dates.filter(x=>x<=dt);if(!prior.length)return '';return Math.max(0,daysBetween(prior[prior.length-1],dt));})]);});
+ const out=[['AFD',afd,'Month',ROTATION_VIEW_MONTH],[],['Seksi','Block',...dates]];
+ rows.forEach(r=>{out.push([r.sec,r.block,...dates.map(dt=>{const prior=r.dates.filter(x=>x<=dt);if(!prior.length)return '';return Math.max(0,daysBetween(prior[prior.length-1],dt));})]);});
  downloadCSV(`ADRIANA_Rotation_Calendar_${afd}_${y}-${String(m+1).padStart(2,'0')}.csv`,out);
 }
 function renderTransport(d){const tr=d.sections.TR_TBS_TRANSPORT;if(!tr){document.getElementById('transportBody').innerHTML='<tr><td colspan="7">Transport data unavailable.</td></tr>';return}const h=tr.header,ri=h.indexOf('RITNUMBER'),wi=h.indexOf('WEIGHTIN'),wo=h.indexOf('WEIGHTOUT'),ready=h.indexOf('TBSREADY'),go=h.indexOf('DT_GO'),kb=h.indexOf('KABNUMBER');const groups={};tr.rows.forEach((r,i)=>{const kab=kb>=0?cleanCell(r[kb]):'—';(groups[kab]??=[]).push({r,i})});let rows=[];Object.entries(groups).forEach(([kab,items])=>items.forEach(({r,i})=>{const rawIn=cleanCell(r[wi]),rawOut=cleanCell(r[wo]);const a=parseFloat(rawIn.replace(/,/g,'')),b=parseFloat(rawOut.replace(/,/g,''));const net=Number.isFinite(a)&&Number.isFinite(b)?a-b:null;const av=parseAmantaDateTime(r[ready]),bv=parseAmantaDateTime(r[go]);let duration='—',readyTime='—',goTime='—';if(av)readyTime=av.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});if(bv)goTime=bv.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});if(av&&bv&&bv>=av)duration=Math.round((bv-av)/60000)+' min';const rit=cleanCell(r[ri]);rows.push(`<tr><td><b>${html.escape(kab)}</b></td><td><b>Rit ${html.escape(rit==='—'?String(i+1):rit)}</b></td><td class="small">${readyTime} → ${goTime}</td><td>${html.escape(rawIn)}</td><td>${html.escape(rawOut)}</td><td>${net!==null&&net>0?net.toLocaleString():'—'}</td><td><b>${duration}</b></td></tr>`)}));document.getElementById('transportBody').innerHTML=rows.join('')||'<tr><td colspan="7">No transport data.</td></tr>';document.getElementById('restanNotice').innerHTML='<b>Restan:</b> unavailable unless an explicit confirmed field exists in the active AMANTA dataset. <b>BJR:</b> calculated automatically from net TBS weight (kg) ÷ JJG.'}
