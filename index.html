@@ -440,6 +440,7 @@ function getLockedSnapshots(){const idx=JSON.parse(localStorage.getItem('adriana
 function harvestHistoryFromSnapshots(){const snaps=getLockedSnapshots();const map={};for(const snap of snaps){const p=snap.sections?.PRODUKSIBLOK;if(!p)continue;const h=p.header||[],bi=h.indexOf('BLOK'),hi=h.indexOf('HARVDATE');if(bi<0||hi<0)continue;for(const r of p.rows||[]){const block=cleanCell(r[bi]);const date=normalizeAmantaDate(r[hi]);if(block==='—'||!date)continue;(map[block]??=new Set()).add(date);}}return Object.fromEntries(Object.entries(map).map(([b,set])=>[b,[...set].sort()]));}
 function rotationStatus(days){if(days<=7)return {label:'Hijau',cls:'green'};if(days<=10)return {label:'Kuning',cls:'yellow'};if(days<=15)return {label:'Merah',cls:'red'};return {label:'Hitam',cls:'black'};}
 function daysBetween(a,b){const x=new Date(a+'T00:00:00'),y=new Date(b+'T00:00:00');return Math.round((y-x)/86400000);}
+function rotationLocalISO(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 const OC_ROTATION_SECTIONS={"A":["27","23","19","15","11"],"B":["7","4","2","5","8","12"],"C":["13","9","6","3","1","1A"],"D":["10A","10","14","18","22","26"],"E":["30","29","25","21"],"F":["17","16","20","24","28"]};
 const OE_ROTATION_SECTIONS={"A":["27","29","31","30","28"],"B":["26","24","22","20","17"],"C":["19","16","13","10","7","4","4A"],"D":["2","5","8","11","14"],"E":["12","1","3","6","9"],"F":["15","18","21","23","25"]};
 const ROTATION_MASTER_OC={"27":{"ha":30.1},"23":{"ha":30.9},"19":{"ha":28.4},"15":{"ha":30.4},"11":{"ha":28.7},"7":{"ha":30.6},"4":{"ha":28.1},"2":{"ha":28.18},"5":{"ha":12.81},"8":{"ha":15.0},"12":{"ha":24.2},"13":{"ha":25.0},"9":{"ha":25.0},"6":{"ha":20.03},"3":{"ha":29.03},"1":{"ha":25.81},"1A":{"ha":13.01},"10A":{"ha":25.88},"10":{"ha":23.11},"14":{"ha":26.19},"18":{"ha":24.94},"22":{"ha":21.36},"26":{"ha":18.7},"30":{"ha":22.55},"29":{"ha":25.3},"25":{"ha":20.7},"21":{"ha":24.6},"17":{"ha":21.8},"16":{"ha":25.5},"20":{"ha":27.9},"24":{"ha":29.1},"28":{"ha":29.4}};
@@ -483,10 +484,24 @@ function renderRotation(d){
  const hist=harvestHistoryFromSnapshots(afd),activeDate=d?.date;
  if(!activeDate){host.innerHTML='<b>Active report date unavailable.</b>';return;}
  const ROTATION_START_DATE='2026-08-31';
- const startDate=activeDate<ROTATION_START_DATE?activeDate:ROTATION_START_DATE;
  const locked=getLockedSnapshots(afd).filter(x=>x.date<=activeDate);
- const date0=new Date(activeDate+'T00:00:00');
- const dates=[];for(let dt=new Date(startDate+'T00:00:00');dt<=date0;dt.setDate(dt.getDate()+1))dates.push(dt.toISOString().slice(0,10));
+ // Calendar view follows the selected month. Rotation history still syncs from 31 Aug 2026.
+ // Date-only values are handled locally to prevent timezone day-shifts.
+ const activeMonth=activeDate.slice(0,7);
+ if(!window.ADRIANA_ROTATION_VIEW_MONTH || window.ADRIANA_ROTATION_VIEW_MONTH<ROTATION_START_DATE.slice(0,7) || window.ADRIANA_ROTATION_VIEW_MONTH>activeMonth){
+   window.ADRIANA_ROTATION_VIEW_MONTH=activeMonth;
+ }
+ const viewMonth=window.ADRIANA_ROTATION_VIEW_MONTH;
+ const [vy,vm]=viewMonth.split('-').map(Number);
+ const monthStartISO=`${viewMonth}-01`;
+ const monthEndDate=new Date(Date.UTC(vy,vm,0));
+ const monthEndISO=rotationLocalISO(monthEndDate);
+ const lastVisible=viewMonth===activeMonth?activeDate:(viewMonth<activeMonth?monthEndISO:null);
+ const firstVisible=viewMonth===ROTATION_START_DATE.slice(0,7)?ROTATION_START_DATE:monthStartISO;
+ const dates=[];
+ if(lastVisible && firstVisible<=lastVisible){
+   for(let dt=new Date(firstVisible+'T00:00:00');rotationLocalISO(dt)<=lastVisible;dt.setDate(dt.getDate()+1))dates.push(rotationLocalISO(dt));
+ }
  const master=rotationMasterForAfd(afd),prefix=afd==='OE'?'OE':'OC';
  const sections=rotationSectionsForAfd(afd);
  const allBlocks=new Set(Object.keys(master).map(k=>prefix+k));
@@ -522,8 +537,21 @@ function renderRotation(d){
  host.innerHTML=`<div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION — OCYM</b><br><span class="small">${locked.length} locked date(s) · Active date ${fmtDate(activeDate)} · Source: AMANTA BLOK + HARVDATE · Sync ${fmtDate(ROTATION_START_DATE)} → ${fmtDate(activeDate)}</span></div><div class="small">AMANTA historical sync</div></div>
  <div class="rotationMetaCompact"><span class="tag green">≤7 · ${summary.Hijau}</span><span class="tag yellow">8–10 · ${summary.Kuning}</span><span class="tag red">11–15 · ${summary.Merah}</span><span class="tag black">≥16 · ${summary.Hitam}</span>${summary.Unavailable?`<span class="tag">Unavailable · ${summary.Unavailable}</span>`:''}</div>
  <div class="rotationToday"><div class="rotationTodayHead"><b>ROTATION TODAY — OCYM</b><span class="small">Last harvest → current age</span></div><div style="overflow:auto"><table class="rotationTodayTable"><thead><tr><th>BLOCK</th><th>LAST HARVEST</th><th>AGE</th><th>STATUS</th></tr></thead><tbody>${todayBody}</tbody></table></div></div>
- <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:12px 0 8px;flex-wrap:wrap"><button class="btn" type="button" onclick="downloadRotationCalendarCSV()">Download Rotation Calendar CSV</button></div><details class="rotationMatrixDetails" open><summary>View full OCYM rotation calendar</summary><div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION MATRIX — OCYM</b></div><div class="small">Harvest date = 0 · Age increases daily · AMANTA synced from 31 August</div></div><div class="rotationLegend"><span class="tag green">≤7 Hijau</span><span class="tag yellow">8–10 Kuning</span><span class="tag red">11–15 Merah</span><span class="tag black">≥16 Hitam</span></div><div style="overflow:auto;margin-top:10px"><table class="rotationMatrix"><thead><tr><th>BLOCK</th>${headers}</tr></thead><tbody>${matrixBody}</tbody></table></div></div></details>
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin:12px 0 8px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:6px"><button class="btn" type="button" onclick="rotationMonthPrev()">‹</button><b>${viewMonth.slice(0,4)}-${viewMonth.slice(5,7)}</b><button class="btn" type="button" onclick="rotationMonthNext()">›</button></div><button class="btn" type="button" onclick="downloadRotationCalendarCSV()">Download Rotation Calendar CSV</button></div><details class="rotationMatrixDetails" open><summary>View full OCYM rotation calendar</summary><div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION MATRIX — OCYM</b></div><div class="small">Harvest date = 0 · Age increases daily · AMANTA synced from 31 August</div></div><div class="rotationLegend"><span class="tag green">≤7 Hijau</span><span class="tag yellow">8–10 Kuning</span><span class="tag red">11–15 Merah</span><span class="tag black">≥16 Hitam</span></div><div style="overflow:auto;margin-top:10px"><table class="rotationMatrix"><thead><tr><th>BLOCK</th>${headers}</tr></thead><tbody>${matrixBody}</tbody></table></div></div></details>
  <div class="small" style="margin-top:10px">Urutan Block mengikuti master Rotation SYM per Seksi. Nilai dihitung langsung dari histori AMANTA yang sudah di-CLOSE &amp; LOCK; tidak ada data rotasi manual terpisah.</div></div>`;
+}
+
+function rotationMonthPrev(){
+ const active=ACTIVE?.date||''; if(!active)return;
+ const min='2026-08'; const cur=window.ADRIANA_ROTATION_VIEW_MONTH||active.slice(0,7);
+ const [y,m]=cur.split('-').map(Number); const d=new Date(Date.UTC(y,m-2,1)); const next=`${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}`;
+ if(next>=min){window.ADRIANA_ROTATION_VIEW_MONTH=next;renderRotation(ACTIVE);}
+}
+function rotationMonthNext(){
+ const active=ACTIVE?.date||''; if(!active)return;
+ const max=active.slice(0,7); const cur=window.ADRIANA_ROTATION_VIEW_MONTH||max;
+ const [y,m]=cur.split('-').map(Number); const d=new Date(Date.UTC(y,m,1)); const next=`${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}`;
+ if(next<=max){window.ADRIANA_ROTATION_VIEW_MONTH=next;renderRotation(ACTIVE);}
 }
 
 function downloadRotationCalendarCSV(){
@@ -533,7 +561,7 @@ function downloadRotationCalendarCSV(){
  const ROTATION_START_DATE='2026-08-31';
  const startDate=activeDate<ROTATION_START_DATE?activeDate:ROTATION_START_DATE;
  const hist=harvestHistoryFromSnapshots(afd),master=rotationMasterForAfd(afd),prefix=afd==='OE'?'OE':'OC',sections=rotationSectionsForAfd(afd);
- const dates=[];for(let dt=new Date(startDate+'T00:00:00'),end=new Date(activeDate+'T00:00:00');dt<=end;dt.setDate(dt.getDate()+1))dates.push(dt.toISOString().slice(0,10));
+ const dates=[];for(let dt=new Date(startDate+'T00:00:00'),end=new Date(activeDate+'T00:00:00');dt<=end;dt.setDate(dt.getDate()+1))dates.push(rotationLocalISO(dt));
  const allBlocks=new Set(Object.keys(master).map(k=>prefix+k));Object.keys(hist).forEach(b=>allBlocks.add(b));
  const byKey=new Map([...allBlocks].map(block=>[block.replace(/^(OC|OE)/,''),block]));
  const ordered=[];const used=new Set();
