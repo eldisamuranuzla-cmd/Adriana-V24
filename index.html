@@ -515,92 +515,135 @@ body,html{padding-bottom:0!important}
   .v3AdrianaLogo small{font-size:9px!important}
 }
 
-</style>
 
-/* ADRIANA CLEAN HEADER — local palm-only asset; visual only */
+/* =========================================================
+   ADRIANA HEADER — FINAL CLEAN / VISUAL ONLY
+   Astra Agro Lestari + ADRIANA + palm plantation
+   No dashboard capture / no corporate promo panels.
+   ========================================================= */
 .v3Hero{
-  height:250px!important;
+  position:relative!important;
+  height:225px!important;
+  margin:-1px -26px 0!important;
   overflow:hidden!important;
-  background:#dceee4!important;
+  color:#123b2b!important;
+  background:#dfeee5!important;
 }
 .v3HeroBg{
+  position:absolute!important;
+  inset:0!important;
   background-image:
-    linear-gradient(180deg,rgba(247,252,249,.08) 0%,rgba(247,252,249,.02) 35%,rgba(4,61,39,.16) 72%,rgba(3,52,33,.42) 100%),
-    url("adriana-header.jpg") !important;
+    linear-gradient(180deg,rgba(247,252,249,.12) 0%,rgba(247,252,249,.03) 34%,rgba(8,71,45,.08) 66%,rgba(3,54,35,.38) 100%),
+    url("adriana-header.jpg")!important;
   background-size:cover!important;
   background-position:center center!important;
   filter:saturate(1.02)!important;
 }
 .v3HeroBg:after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,45,27,.10));
-  opacity:.45;
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,45,27,.12))!important;
+  opacity:.45!important;
 }
+
+/* Astra logo: simple, clean, top-left */
 .v3HeroTop{
-  z-index:5!important;
+  position:relative!important;
+  z-index:10!important;
+  display:flex!important;
+  align-items:flex-start!important;
   justify-content:flex-start!important;
   padding:12px 14px 0!important;
 }
-.v3Hero .v3BrandBlock{
+.v3BrandBlock{
   display:flex!important;
   align-items:center!important;
   gap:8px!important;
+  padding:7px 10px 7px 7px!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.82)!important;
+  box-shadow:0 5px 18px rgba(20,65,45,.10)!important;
+  backdrop-filter:blur(5px)!important;
 }
-.v3Hero .v3AstraLogo{
-  width:48px!important;
-  height:48px!important;
+.v3AstraLogo{
+  width:45px!important;
+  height:45px!important;
   object-fit:contain!important;
 }
-.v3Hero .v3AstraText{
-  text-shadow:0 1px 3px rgba(255,255,255,.85);
-}
-.v3Hero .v3AstraText b{
+.v3AstraText b{
   font-size:10px!important;
   line-height:1.02!important;
   display:block!important;
 }
-.v3Hero .v3AstraText small{
+.v3AstraText small{
   font-size:7px!important;
   display:block!important;
+  margin-top:2px!important;
 }
-.v3AAL50,.astra50Logo,.v3User{
-  display:none!important;
-}
+
+/* ADRIANA wordmark: dominant but contained */
 .v3AdrianaLogo{
-  left:14px!important;
-  top:78px!important;
-  width:min(285px,62vw)!important;
-  z-index:6!important;
+  position:absolute!important;
+  z-index:8!important;
+  left:18px!important;
+  top:84px!important;
+  width:245px!important;
+  max-width:72vw!important;
+  color:#075a3b!important;
+  filter:drop-shadow(0 2px 2px rgba(255,255,255,.40))!important;
+}
+.v3AdrianaLogo svg{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
 }
 .v3AdrianaLogo small{
   display:none!important;
 }
+
+/* Remove all unwanted legacy header overlays */
+.v3AAL50,
+.astra50Logo,
+.v3User,
+.v3Planting,
+.astraHead{
+  display:none!important;
+}
+
 @media(max-width:760px){
-  .v3Hero{height:245px!important}
+  .v3Hero{
+    height:225px!important;
+  }
+  .v3HeroTop{
+    padding:10px 12px 0!important;
+  }
+  .v3BrandBlock{
+    padding:6px 9px 6px 6px!important;
+  }
+  .v3AstraLogo{
+    width:42px!important;
+    height:42px!important;
+  }
   .v3AdrianaLogo{
     left:14px!important;
+    top:78px!important;
+    width:205px!important;
+  }
+}
+@media(max-width:480px){
+  .v3Hero{
+    height:220px!important;
+  }
+  .v3AdrianaLogo{
+    left:12px!important;
     top:78px!important;
     width:190px!important;
   }
 }
-@media(max-width:480px){
-  .v3Hero{height:235px!important}
-  .v3Hero .v3AstraLogo{
-    width:44px!important;
-    height:44px!important;
-  }
-  .v3AdrianaLogo{
-    left:12px!important;
-    top:76px!important;
-    width:185px!important;
-  }
-}
 
+</style>
 </head>
-
-<!-- Header photo: palm-only crop prepared from a clean plantation image. Original reference: Wikimedia Commons, Oil palm plantation in Indonesia, Rasyid Ridha, CC BY-SA 4.0. -->
 <body>
 <div class="app">
 <aside class="side">
