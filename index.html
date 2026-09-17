@@ -526,6 +526,44 @@ body,html{padding-bottom:0!important}
 }
 
 </style>
+<style>
+/* Final hero cleanup: no duplicated tagline; branding is HTML-only */
+.v3Planting{display:none!important}
+</style>
+<style>
+.v3AAL50,.astra50Logo{display:none!important}
+.v3Hero .v3BrandBlock{display:flex!important}
+.v3Hero .v3Adriana{display:block!important}
+.v3Hero .v3User{display:flex!important}
+
+/* FINAL HEADER — reference image supplied by user; visual only */
+.main > .astraHead{display:block}
+main:has(#dashboard.active) > .astraHead{display:none}
+.v3dash{padding-bottom:95px!important}
+.v3Hero{
+  height:clamp(190px,26vw,360px)!important;
+  margin:0 -26px 14px!important;
+  border-radius:0 0 18px 18px;
+  overflow:hidden;
+  background:#dceee4;
+}
+.v3HeroBg{
+  inset:0!important;
+  background-image:url("adriana-header-reference.jpg")!important;
+  background-size:100% 100%!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+}
+.v3HeroTop,.v3AdrianaLogo{display:none!important}
+.sectionExport{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.sectionExport .btn{margin-top:0}
+.sectionExportBtn{margin-top:0!important;white-space:nowrap}
+@media(max-width:760px){
+  .v3Hero{margin:0 -14px 12px!important;height:clamp(185px,30vw,240px)!important;border-radius:0 0 14px 14px}
+  .sectionExport span{display:none}
+  .sectionExport .btn{font-size:10px;padding:8px 10px}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -1995,42 +2033,3 @@ function downloadPeoplePerformanceCSV(){
 }
 </script>
 </body></html>
-<style>
-/* Final hero cleanup: no duplicated tagline; branding is HTML-only */
-.v3Planting{display:none!important}
-</style>
-
-<style>
-.v3AAL50,.astra50Logo{display:none!important}
-.v3Hero .v3BrandBlock{display:flex!important}
-.v3Hero .v3Adriana{display:block!important}
-.v3Hero .v3User{display:flex!important}
-
-/* FINAL HEADER — reference image supplied by user; visual only */
-.main > .astraHead{display:block}
-main:has(#dashboard.active) > .astraHead{display:none}
-.v3dash{padding-bottom:95px!important}
-.v3Hero{
-  height:clamp(190px,26vw,360px)!important;
-  margin:0 -26px 14px!important;
-  border-radius:0 0 18px 18px;
-  overflow:hidden;
-  background:#dceee4;
-}
-.v3HeroBg{
-  inset:0!important;
-  background-image:url("adriana-header-reference.jpg")!important;
-  background-size:100% 100%!important;
-  background-position:center!important;
-  background-repeat:no-repeat!important;
-}
-.v3HeroTop,.v3AdrianaLogo{display:none!important}
-.sectionExport{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
-.sectionExport .btn{margin-top:0}
-.sectionExportBtn{margin-top:0!important;white-space:nowrap}
-@media(max-width:760px){
-  .v3Hero{margin:0 -14px 12px!important;height:clamp(185px,30vw,240px)!important;border-radius:0 0 14px 14px}
-  .sectionExport span{display:none}
-  .sectionExport .btn{font-size:10px;padding:8px 10px}
-}
-</style>
