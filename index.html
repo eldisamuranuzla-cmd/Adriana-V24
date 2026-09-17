@@ -726,8 +726,6 @@ function getAfdSnapshotsHybrid(afd){
       }catch(e){}
     }
   }
-
-  // Compatibility fallback: also read the original daily historical store.
   let dailyIdx=[];
   try{dailyIdx=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){}
   if(Array.isArray(dailyIdx)){
@@ -742,9 +740,8 @@ function getAfdSnapshotsHybrid(afd){
       }catch(e){}
     }
   }
-
   return Object.values(out).filter(Boolean).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-}catch(e){}return idx.map(x=>{try{return JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null')}catch(e){return null}}).filter(x=>x&&(!afd||afd==='ALL'||x.afd===afd)).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
+}
 function getLockedSnapshots(){return getAfdSnapshotsHybrid(ACTIVE_AFD==='ALL'?'':ACTIVE_AFD)}
 async function processAMANTA(){
  const files=[...document.getElementById('amantaFiles').files];if(!files.length)return;
