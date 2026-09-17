@@ -563,171 +563,27 @@ main:has(#dashboard.active) > .astraHead{display:none}
   .sectionExport span{display:none}
   .sectionExport .btn{font-size:10px;padding:8px 10px}
 }
-
-/* =========================================================
-   ADRIANA V20 — DASHBOARD FINAL VISUAL LAYER
-   VISUAL ONLY. NO DATA / CALCULATION / EVENT LOGIC CHANGED.
-   ========================================================= */
-#dashboard.v3dash{
-  background:linear-gradient(180deg,#edf7f1 0%,#f7faf8 100%)!important;
-  color:#122c22!important;
-  padding-bottom:105px!important;
-}
-#dashboard .v3Hero{
-  height:306px!important;
-  margin:0!important;
-  border-radius:0 0 28px 28px!important;
-  overflow:hidden!important;
-  background:#dcefe4!important;
-  box-shadow:0 12px 30px rgba(0,74,48,.10)!important;
-}
-#dashboard .v3HeroBg{
-  background-image:
-    linear-gradient(180deg,rgba(249,253,250,.28) 0%,rgba(239,249,243,.06) 35%,rgba(5,73,46,.08) 68%,rgba(3,69,43,.38) 100%),
-    url("adriana-dashboard-scenery.jpg")!important;
-  background-size:cover!important;
-  background-position:center 42%!important;
-  filter:none!important;
-}
-#dashboard .v3HeroBg:after{display:none!important}
-#dashboard .v3HeroTop{position:relative!important;height:100%!important;padding:17px 28px 0!important;display:block!important}
-#dashboard .v3BrandBlock{position:absolute!important;left:28px!important;top:18px!important;display:flex!important;align-items:center!important;gap:10px!important;z-index:4!important}
-#dashboard .v3AstraLogo{width:62px!important;height:62px!important;object-fit:contain!important;filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))!important}
-#dashboard .v3AstraText{display:flex!important;flex-direction:column!important;line-height:.95!important;color:#063f2d!important}
-#dashboard .v3AstraText b:first-child{font-size:21px!important;letter-spacing:.02em!important}
-#dashboard .v3AstraText b:nth-child(2){font-size:17px!important;letter-spacing:.015em!important}
-#dashboard .v3AstraText small{font-size:9px!important;margin-top:6px!important;color:#204b3b!important}
-#dashboard .v3AAL50{position:absolute!important;right:29px!important;top:18px!important;width:150px!important;height:62px!important;object-fit:contain!important;z-index:4!important;filter:drop-shadow(0 2px 4px rgba(0,0,0,.06))!important}
-#dashboard .v3AdrianaLogo{left:42px!important;top:108px!important;width:min(515px,54vw)!important;z-index:4!important}
-#dashboard .v3AdrianaLogo small{font-size:16px!important;margin-top:4px!important;color:#12382b!important}
-#dashboard .v3User{position:absolute!important;right:28px!important;top:111px!important;z-index:5!important;display:flex!important;align-items:center!important;gap:10px!important;padding:10px 14px!important;border-radius:22px!important;background:rgba(255,255,255,.91)!important;box-shadow:0 8px 22px rgba(0,55,37,.13)!important;backdrop-filter:blur(8px)!important;color:#112d22!important;min-width:235px!important}
-#dashboard .v3Bell{width:42px!important;height:42px!important;border-radius:50%!important;background:#fff!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:24px!important;box-shadow:0 4px 12px rgba(0,0,0,.10)!important;color:#0a3023!important;position:relative!important}
-#dashboard .v3Bell i{position:absolute!important;right:0!important;top:0!important;width:10px!important;height:10px!important;border-radius:50%!important;background:#e6342e!important;border:2px solid #fff!important}
-#dashboard .v3Avatar{width:48px!important;height:48px!important;border-radius:50%!important;background:#075d40!important;color:#fff!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:16px!important;font-weight:900!important}
-#dashboard .v3User span:nth-child(3){display:flex!important;flex-direction:column!important;line-height:1.05!important;flex:1!important}
-#dashboard .v3User span:nth-child(3) small{font-size:11px!important;color:#4e5c55!important}
-#dashboard .v3User span:nth-child(3) b{font-size:17px!important;color:#102c22!important}
-#dashboard .v3Planting{right:38px!important;bottom:25px!important;font-size:11px!important;line-height:1.35!important;letter-spacing:.22em!important;color:#fff!important;text-shadow:0 2px 5px rgba(0,0,0,.35)!important;z-index:4!important}
-
-#dashboard .v3ControlBar{position:relative!important;margin:-22px 30px 16px!important;z-index:10!important;grid-template-columns:1.35fr 1fr .95fr!important;gap:0!important;padding:6px!important;border:1px solid rgba(214,229,220,.9)!important;border-radius:20px!important;background:rgba(255,255,255,.94)!important;box-shadow:0 10px 26px rgba(0,70,45,.11)!important;backdrop-filter:blur(10px)!important}
-#dashboard .v3Control{min-height:57px!important;padding:9px 15px!important;border-radius:15px!important;background:#fff!important;border:0!important}
-#dashboard .v3Control small{font-size:8px!important;color:#75827c!important;letter-spacing:.08em!important}
-#dashboard .v3Control b{font-size:14px!important;color:#182e26!important}
-#dashboard .v3Control strong{font-size:16px!important}
-#dashboard .v3Lock{min-height:57px!important;border-radius:15px!important;background:#e6f7ee!important;color:#0b6a45!important;padding:8px 13px!important}
-#dashboard .v3Lock b{font-size:13px!important}
-#dashboard .v3Lock small{font-size:10px!important}
-
-#dashboard .v3QuickNav{margin:0 30px 16px!important;gap:9px!important}
-#dashboard .v3QuickNav button{min-height:86px!important;border-radius:17px!important;border:1px solid #dce8e2!important;background:rgba(255,255,255,.92)!important;box-shadow:0 5px 14px rgba(0,70,45,.06)!important;font-size:13px!important;color:#172e25!important}
-#dashboard .v3QuickNav button span{font-size:31px!important;color:#53786b!important;line-height:1.1!important;margin-bottom:7px!important}
-#dashboard .v3QuickNav button.active{background:linear-gradient(145deg,#087650,#075238)!important;color:#fff!important;border-color:#075238!important;box-shadow:0 9px 20px rgba(4,93,61,.22)!important}
-#dashboard .v3QuickNav button.active span{color:#fff!important}
-
-#dashboard .v3SectionTitle{margin:0 30px 10px!important;font-size:18px!important;color:#172d25!important}
-#dashboard .v3SectionTitle>span{color:#0b8655!important;font-size:22px!important}
-#dashboard .v3SectionTitle a{font-size:11px!important;color:#465b52!important}
-#dashboard .v3Kpis{margin:0 30px 14px!important;gap:10px!important}
-#dashboard .v3Kpi{min-height:164px!important;padding:15px 13px!important;border-radius:17px!important;border:1px solid #dfe9e3!important;background:rgba(255,255,255,.95)!important;box-shadow:0 6px 16px rgba(0,65,43,.06)!important}
-#dashboard .v3KpiIcon{width:43px!important;height:43px!important;border-radius:50%!important;background:#eff8f2!important;margin-bottom:8px!important}
-#dashboard .v3Kpi strong{font-size:29px!important;line-height:1!important;color:#17372b!important}
-#dashboard .v3Kpi small{font-size:9px!important;color:#61716a!important;letter-spacing:.04em!important}
-#dashboard .v3Kpi em{font-size:11px!important;color:#0a8b50!important;font-style:normal!important;font-weight:900!important}
-#dashboard .v3Kpi span{font-size:9px!important;color:#68766f!important}
-#dashboard .v3Progress{height:7px!important;border-radius:99px!important;background:#e4eee8!important;margin:11px 0 8px!important}
-#dashboard .v3Progress i{border-radius:99px!important;background:#35a87b!important}
-#dashboard .v3Kpi label{font-size:9px!important;color:#68766f!important}
-#dashboard .v3Kpi label b{font-size:10px!important;color:#244237!important}
-
-#dashboard .v3Two{margin:0 30px 12px!important;gap:12px!important}
-#dashboard .v3Signals,#dashboard .v3Decision{min-height:218px!important;border-radius:18px!important;border:1px solid #dce8e1!important;box-shadow:0 6px 17px rgba(0,65,43,.06)!important;background:rgba(255,255,255,.96)!important;padding:18px!important}
-#dashboard .v3Decision{background:linear-gradient(145deg,#086b49,#087d51 55%,#075238)!important;color:#fff!important;border:0!important;box-shadow:0 10px 22px rgba(0,83,53,.19)!important}
-#dashboard .v3PanelHead{font-size:13px!important;color:#182f26!important}
-#dashboard .v3Decision .v3PanelHead{color:#fff!important}
-#dashboard .v3Decision .decisionLabel{font-size:10px!important;color:rgba(255,255,255,.72)!important;margin-top:22px!important}
-#dashboard .v3Decision #dashboardDecision{font-size:27px!important;line-height:1.05!important;color:#fff!important;margin:8px 0!important}
-#dashboard .v3Decision #dashboardDecisionText{font-size:11px!important;line-height:1.45!important;color:rgba(255,255,255,.78)!important}
-#dashboard .v3Decision .btn{margin-top:17px!important;background:#fff!important;color:#086643!important;border:0!important;border-radius:10px!important;font-weight:900!important}
-#dashboard .v3Production,#dashboard .v3Density{min-height:270px!important;border-radius:18px!important;border:1px solid #dce8e1!important;box-shadow:0 6px 17px rgba(0,65,43,.06)!important;background:rgba(255,255,255,.96)!important;padding:18px!important}
-#dashboard .v3Production th,#dashboard .v3Production td{font-size:11px!important;padding:9px 6px!important}
-#dashboard .v3Production th{color:#64736c!important;font-size:9px!important}
-#dashboard .densitySummary{gap:10px!important;margin-top:15px!important}
-#dashboard .v3Density .densityMetric{min-height:100px!important;padding:13px!important;border-radius:14px!important;background:#f8fbf9!important;border:1px solid #e1ebe5!important}
-#dashboard .v3Density .densityMetric small{font-size:9px!important}
-#dashboard .v3Density .densityMetric strong{font-size:25px!important;color:#17372b!important}
-#dashboard .v3Density .densityMetric em{font-size:10px!important;color:#078b4e!important}
-#dashboard .v3Density .densityMetric span{font-size:9px!important;color:#65746c!important}
-#dashboard .v3QuickAction{margin:0 30px 18px!important;padding:17px!important;border-radius:18px!important;border:1px solid #dce8e1!important;background:rgba(255,255,255,.96)!important;box-shadow:0 6px 17px rgba(0,65,43,.06)!important}
-#dashboard .v3ActionGrid{gap:9px!important;margin-top:13px!important}
-#dashboard .v3ActionGrid button{min-height:58px!important;border-radius:12px!important;font-size:11px!important;background:#f9fcfa!important;border:1px solid #d9e7df!important}
-#dashboard .v3ActionGrid button span{font-size:11px!important}
-
-@media(max-width:760px){
-  #dashboard.v3dash{padding-bottom:92px!important}
-  #dashboard .v3Hero{height:274px!important;border-radius:0 0 23px 23px!important}
-  #dashboard .v3HeroTop{padding:12px 15px 0!important}
-  #dashboard .v3BrandBlock{left:16px!important;top:14px!important;gap:7px!important}
-  #dashboard .v3AstraLogo{width:43px!important;height:43px!important}
-  #dashboard .v3AstraText b:first-child{font-size:15px!important}
-  #dashboard .v3AstraText b:nth-child(2){font-size:12px!important}
-  #dashboard .v3AstraText small{font-size:6px!important;margin-top:4px!important}
-  #dashboard .v3AAL50{right:15px!important;top:14px!important;width:100px!important;height:43px!important}
-  #dashboard .v3AdrianaLogo{left:17px!important;top:77px!important;width:59vw!important;min-width:245px!important;max-width:370px!important}
-  #dashboard .v3AdrianaLogo small{font-size:10px!important;margin-left:3px!important;margin-top:3px!important}
-  #dashboard .v3User{right:14px!important;top:76px!important;min-width:185px!important;padding:7px 9px!important;border-radius:18px!important;gap:7px!important}
-  #dashboard .v3Bell{width:34px!important;height:34px!important;font-size:19px!important}
-  #dashboard .v3Avatar{width:35px!important;height:35px!important;font-size:12px!important}
-  #dashboard .v3User span:nth-child(3) small{font-size:7px!important}
-  #dashboard .v3User span:nth-child(3) b{font-size:12px!important}
-  #dashboard .v3Planting{right:17px!important;bottom:18px!important;font-size:7px!important;letter-spacing:.20em!important}
-  #dashboard .v3ControlBar{margin:-15px 15px 12px!important;grid-template-columns:1.15fr .92fr .9fr!important;padding:5px!important;border-radius:16px!important}
-  #dashboard .v3Control{min-height:50px!important;padding:7px 8px!important}
-  #dashboard .v3Control small{font-size:6px!important}
-  #dashboard .v3Control b{font-size:10px!important}
-  #dashboard .v3Lock{min-height:50px!important;padding:6px 7px!important}
-  #dashboard .v3Lock b{font-size:8px!important}
-  #dashboard .v3Lock small{font-size:7px!important}
-  #dashboard .v3QuickNav{margin:0 15px 13px!important;gap:6px!important}
-  #dashboard .v3QuickNav button{min-height:67px!important;border-radius:12px!important;font-size:8px!important;padding:7px 2px!important}
-  #dashboard .v3QuickNav button span{font-size:23px!important;margin-bottom:4px!important}
-  #dashboard .v3SectionTitle{margin:0 15px 9px!important;font-size:14px!important}
-  #dashboard .v3SectionTitle>span{font-size:17px!important}
-  #dashboard .v3Kpis{margin:0 15px 12px!important;gap:6px!important}
-  #dashboard .v3Kpi{min-height:142px!important;padding:10px 8px!important;border-radius:13px!important}
-  #dashboard .v3KpiIcon{width:32px!important;height:32px!important;margin-bottom:4px!important}
-  #dashboard .v3Kpi strong{font-size:21px!important}
-  #dashboard .v3Kpi small{font-size:6px!important}
-  #dashboard .v3Kpi em,#dashboard .v3Kpi span,#dashboard .v3Kpi label{font-size:7px!important}
-  #dashboard .v3Progress{height:5px!important;margin:8px 0 6px!important}
-  #dashboard .v3Two{margin:0 15px 9px!important;gap:8px!important}
-  #dashboard .v3Signals,#dashboard .v3Decision{min-height:190px!important;padding:13px!important;border-radius:14px!important}
-  #dashboard .v3PanelHead{font-size:9px!important}
-  #dashboard .v3Decision .decisionLabel{font-size:7px!important;margin-top:14px!important}
-  #dashboard .v3Decision #dashboardDecision{font-size:19px!important}
-  #dashboard .v3Decision #dashboardDecisionText{font-size:7px!important}
-  #dashboard .v3Decision .btn{font-size:8px!important;margin-top:11px!important;padding:8px 10px!important}
-  #dashboard .v3Production,#dashboard .v3Density{min-height:215px!important;padding:13px!important;border-radius:14px!important}
-  #dashboard .v3Production th,#dashboard .v3Production td{font-size:9px!important;padding:7px 4px!important}
-  #dashboard .v3Production th{font-size:7px!important}
-  #dashboard .v3Density .densityMetric{min-height:78px!important;padding:9px!important;border-radius:11px!important}
-  #dashboard .v3Density .densityMetric small{font-size:7px!important}
-  #dashboard .v3Density .densityMetric strong{font-size:19px!important}
-  #dashboard .v3Density .densityMetric em,#dashboard .v3Density .densityMetric span{font-size:7px!important}
-  #dashboard .v3QuickAction{margin:0 15px 14px!important;padding:12px!important;border-radius:14px!important}
-  #dashboard .v3ActionGrid{gap:6px!important;margin-top:9px!important}
-  #dashboard .v3ActionGrid button{min-height:48px!important;font-size:7px!important;padding:7px 2px!important}
-  #dashboard .v3ActionGrid button span{font-size:8px!important;margin-top:3px!important}
-}
-@media(max-width:480px){
-  #dashboard .v3Hero{height:258px!important}
-  #dashboard .v3AdrianaLogo{top:73px!important;left:14px!important;width:61vw!important;min-width:220px!important}
-  #dashboard .v3User{top:73px!important;right:12px!important;min-width:171px!important}
-  #dashboard .v3AAL50{width:88px!important}
-  #dashboard .v3Two{grid-template-columns:1fr 1fr!important}
-  #dashboard .v3Lower{grid-template-columns:1fr 1fr!important}
-}
-
 </style>
+
+/* NEO EXECUTIVE DASHBOARD — visual layer only */
+#dashboard.neoDash{background:#f3f7f4!important;padding:0 0 104px!important;min-height:100vh}
+#dashboard.neoDash *{box-sizing:border-box}
+.neoHero{position:relative;height:270px;margin:0 -26px 0;overflow:hidden;background:linear-gradient(135deg,#dfeee6 0%,#f8fbf8 42%,#cfe3d7 100%)}
+.neoHero:before{content:"";position:absolute;inset:auto -5% -34px -5%;height:150px;background:radial-gradient(ellipse at 30% 100%,rgba(12,91,61,.35),transparent 55%),radial-gradient(ellipse at 70% 100%,rgba(23,113,75,.26),transparent 58%);transform:skewY(-3deg)}
+.neoHeroShade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(224,240,230,.08) 45%,rgba(0,73,48,.22))}
+.neoHeroContent{position:relative;z-index:2;height:100%;padding:22px 28px;display:flex;justify-content:space-between;align-items:flex-start}
+.neoHeroBrand{display:flex;align-items:center;gap:12px;margin-top:5px}.neoBrandMark{width:48px;height:48px;border-radius:15px;background:#056244;color:#fff;display:grid;place-items:center;font-weight:950;font-size:28px;box-shadow:0 10px 24px rgba(5,98,68,.2)}.neoBrandTitle{font-size:34px;line-height:.95;font-weight:950;letter-spacing:-.055em;color:#004d37}.neoBrandSub{font-size:12px;margin-top:7px;color:#234438;font-weight:600}
+.neoHeroRight{display:flex;align-items:flex-start;gap:14px}.neo50{font-size:38px;font-weight:950;color:#08714d;line-height:.9;text-align:right}.neo50 span{display:inline-block;font-size:8px;line-height:1.25;color:#173d30;text-align:left;vertical-align:top;margin:2px 0 0 5px;letter-spacing:.04em}.neoProfile{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.9);padding:8px 12px;border:1px solid rgba(255,255,255,.95);border-radius:17px;box-shadow:0 12px 30px rgba(14,66,44,.12);min-width:215px}.neoBell{font-size:22px;position:relative;margin-right:2px}.neoBell i{position:absolute;right:-2px;top:0;width:8px;height:8px;border-radius:50%;background:#e53935}.neoAvatar{width:40px;height:40px;border-radius:50%;background:#075d41;color:#fff;display:grid;place-items:center;font-weight:900}.neoProfile small,.neoProfile b{display:block}.neoProfile small{font-size:9px;color:#6b776f}.neoProfile b{font-size:15px;color:#123c2e}.neoProfile>strong{margin-left:auto;font-size:18px}.neoHeroTag{position:absolute;z-index:2;right:34px;bottom:28px;color:#fff;text-shadow:0 2px 10px rgba(0,55,37,.65);font-size:10px;letter-spacing:.22em;line-height:1.45}.neoHeroTag b{font-size:9px;letter-spacing:.12em}
+.neoControls{position:relative;z-index:5;margin:-28px 18px 14px;padding:8px;display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:8px;background:rgba(255,255,255,.94);border:1px solid #e3ebe6;border-radius:20px;box-shadow:0 14px 34px rgba(24,72,50,.11);backdrop-filter:blur(12px)}.neoControl,.neoLock{min-height:58px;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:14px}.neoControl{border-right:1px solid #e2ebe5}.neoControl small,.neoControl b,.neoLock b,.neoLock small{display:block}.neoControl small{font-size:8px;color:#758179;letter-spacing:.1em}.neoControl b{font-size:14px;color:#183d30}.neoControl>span:last-child{margin-left:auto}.neoControlIcon{font-size:20px;color:#08714d}.neoSelect{position:relative}.neoSelect select{position:absolute;inset:0;opacity:0;cursor:pointer}.neoLock{background:#e3f5eb;color:#075c3e}.neoLock>span{font-size:20px}.neoLock small{font-size:9px}.neoLock strong{margin-left:auto}
+.neoNav{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;margin:0 18px 20px}.neoNav button{border:1px solid #dfe8e2;background:#fff;border-radius:15px;min-height:70px;padding:9px 4px;color:#31463d;font:inherit;font-size:10px;font-weight:750;box-shadow:0 5px 16px rgba(20,60,42,.045)}.neoNav button span{display:block;font-size:26px;color:#55786a;margin-bottom:7px;line-height:1}.neoNav button.active{background:#075d41;color:#fff;border-color:#075d41;box-shadow:0 10px 24px rgba(7,93,65,.2)}.neoNav button.active span{color:#fff}
+.neoHeading{display:flex;justify-content:space-between;align-items:center;margin:0 18px 12px}.neoHeading>div{display:flex;align-items:center;gap:10px}.neoHeadingIcon{width:38px;height:38px;border-radius:12px;background:#e2f2e9;color:#168052;display:grid;place-items:center;font-size:20px}.neoHeading small{display:block;font-size:8px;letter-spacing:.12em;color:#7b8981;font-weight:800}.neoHeading h1{margin:2px 0 0;font-size:20px;line-height:1;color:#17382d}.neoHeading a,.neoPanelHead a,.neoQuickHead a{font-size:10px;color:#4b5d54;text-decoration:none}
+.neoKpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 18px 14px}.neoKpi{background:#fff;border:1px solid #dfe9e3;border-radius:17px;padding:13px 13px 12px;box-shadow:0 7px 20px rgba(17,62,43,.055);min-width:0}.neoKpiTop{display:flex;align-items:center;gap:8px}.neoKpiTop small{font-size:9px;color:#718078;font-weight:850;letter-spacing:.06em}.neoMetricIcon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:20px}.neoMetricIcon.fruit,.neoMetricIcon.bjr{background:#edf6ef;color:#08724e}.neoMetricIcon.people{background:#eaf3ef;color:#426b5b}.neoMetricIcon.truck{background:#eef4f0;color:#3e6758}.neoKpi .value{font-size:31px!important;line-height:1.05!important;font-weight:900!important;color:#173c2f!important;margin:9px 0 1px!important}.neoTrend{font-size:11px;font-weight:850}.neoTrend.up{color:#13844f}.neoTrend.neutral{color:#5c7268}.neoVs{display:block;font-size:8px;color:#79867f;margin-top:1px}.neoBar{height:6px;background:#e7eee9;border-radius:99px;overflow:hidden;margin:9px 0 7px}.neoBar i{display:block;width:68%;height:100%;background:#35a77b;border-radius:99px}.neoTarget{display:flex;justify-content:space-between;font-size:8px;color:#75827a}.neoTarget b{font-size:9px;color:#1a4c3a}
+.neoGrid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 18px 10px}.neoPanel{background:#fff;border:1px solid #dfe9e3;border-radius:18px;padding:15px;box-shadow:0 7px 20px rgba(17,62,43,.05);min-width:0}.neoPanelHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.neoPanelHead>div{display:flex;align-items:center;gap:9px}.neoPanelHead small{display:block;color:#829087;font-size:8px;letter-spacing:.1em;font-weight:850}.neoPanelHead h2{margin:2px 0 0;font-size:14px;color:#173b2f}.neoPanelIcon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-weight:950;font-size:18px}.neoPanelIcon.red{background:#fff0ef;color:#df4540}.neoPanelIcon.green{background:#e9f6ee;color:#128052}.neoPanelIcon.white{background:rgba(255,255,255,.13);color:#fff}.decisionPanel{background:linear-gradient(135deg,#075c3f,#08734d 58%,#0a8056);color:#fff;position:relative;overflow:hidden}.decisionPanel:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-80px;bottom:-100px;border:28px solid rgba(255,255,255,.07)}.decisionPanel .neoPanelHead h2,.decisionPanel .neoPanelHead small{color:#fff}.decisionPanel .neoPanelHead label{font-size:8px;background:rgba(255,255,255,.16);padding:6px 9px;border-radius:99px;letter-spacing:.04em}.neoDecisionKicker{font-size:10px;opacity:.72;margin-top:5px}.decisionPanel #dashboardDecision{display:block;font-size:25px;line-height:1.05;margin:6px 0 7px}.decisionPanel #dashboardDecisionText{font-size:10px;line-height:1.45;opacity:.84;max-width:90%;margin:0 0 13px}.decisionPanel button{border:0;background:#fff;color:#075c3f;border-radius:11px;padding:10px 13px;font-weight:900;font-size:10px;cursor:pointer}.decisionPanel button span{margin-left:8px}.neoEmpty{font-size:10px;color:#7a8981;background:#f6faf7;border:1px dashed #d6e4db;border-radius:12px;padding:14px}.signals .signal{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid #edf1ee}.signals .signal:first-child{border-top:0}.signals .signal .num{width:27px;height:27px;border-radius:9px;background:#f2f6f3;color:#08714d;display:grid;place-items:center;font-size:9px;font-weight:900;flex:none}.signals .signal b{font-size:10px;line-height:1.45;color:#34473e}
+.neoTableWrap{overflow:auto}.productionPanel table{width:100%;border-collapse:collapse;font-size:10px}.productionPanel th{text-align:left;color:#849189;font-size:8px;padding:7px;border-bottom:1px solid #e7eeea}.productionPanel td{padding:8px 7px;border-bottom:1px solid #eef2ef;color:#30453c}.productionPanel td:nth-child(2){font-weight:800;color:#153e30}.productionPanel .tag{font-size:8px;padding:4px 7px;border-radius:8px}.densityPanel{min-height:100%}.neoDensityGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.neoDensityGrid>div{border:1px solid #e3ebe6;background:#f9fbfa;border-radius:13px;padding:11px}.neoDensityGrid small{display:block;font-size:8px;color:#7a8880;letter-spacing:.06em}.neoDensityGrid strong{display:block;font-size:22px;line-height:1.1;color:#1b4a39;margin:5px 0 2px}.neoDensityGrid span{font-size:8px;color:#809088}
+.neoQuick{margin:0 18px;background:#fff;border:1px solid #dfe9e3;border-radius:18px;padding:14px;box-shadow:0 7px 20px rgba(17,62,43,.045)}.neoQuickHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.neoQuickHead>div{display:flex;align-items:center;gap:9px}.neoQuickHead>div>span{font-size:24px;color:#0c8857}.neoQuickHead small{display:block;font-size:8px;color:#839087;letter-spacing:.1em}.neoQuickHead b{font-size:14px;color:#183d30}.neoActions{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.neoActions button{border:1px solid #dfe9e3;background:#f9fbfa;border-radius:12px;padding:11px 7px;text-align:left;cursor:pointer}.neoActions button span{display:block;font-size:20px;color:#08714d;margin-bottom:6px}.neoActions button b{display:block;font-size:9px;color:#27463a}.neoActions button small{display:block;font-size:7px;color:#89958e;margin-top:2px}.neoEngineHidden{display:none!important}.neoMetaSync{display:none!important}
+@media(max-width:900px){.neoHero{height:235px}.neoHeroContent{padding:18px}.neoBrandTitle{font-size:28px}.neo50{font-size:30px}.neoProfile{min-width:190px}.neoKpis{grid-template-columns:repeat(2,1fr)}.neoNav{grid-template-columns:repeat(4,1fr)}.neoNav button{min-height:62px}.neoActions{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){#dashboard.neoDash{padding-bottom:82px!important}.neoHero{height:205px;margin:0 -14px}.neoHeroContent{padding:12px 14px}.neoBrandMark{width:38px;height:38px;border-radius:11px;font-size:22px}.neoBrandTitle{font-size:25px}.neoBrandSub{font-size:9px;margin-top:4px}.neoHeroRight{gap:5px}.neo50{font-size:22px}.neo50 span{font-size:6px}.neoProfile{min-width:0;padding:6px 8px;border-radius:13px}.neoProfile small{font-size:7px}.neoProfile b{font-size:11px}.neoAvatar{width:32px;height:32px}.neoBell{font-size:18px}.neoHeroTag{right:15px;bottom:16px;font-size:7px}.neoControls{margin:-18px 12px 10px;grid-template-columns:1.15fr 1fr;gap:5px;padding:6px;border-radius:15px}.neoControls .neoLock{grid-column:1/-1;min-height:42px}.neoControl{min-height:47px;padding:7px 8px}.neoControl b{font-size:11px}.neoControl small{font-size:7px}.neoNav{margin:0 12px 14px;grid-template-columns:repeat(7,1fr);gap:5px;overflow:hidden}.neoNav button{min-height:57px;border-radius:11px;font-size:7px;padding:7px 2px}.neoNav button span{font-size:20px;margin-bottom:5px}.neoHeading{margin:0 12px 9px}.neoHeadingIcon{width:32px;height:32px}.neoHeading h1{font-size:16px}.neoKpis{grid-template-columns:repeat(2,1fr);gap:7px;margin:0 12px 9px}.neoKpi{padding:10px;border-radius:13px}.neoKpiTop small{font-size:7px}.neoMetricIcon{width:28px;height:28px;font-size:16px}.neoKpi .value{font-size:24px!important;margin:7px 0 1px!important}.neoTrend{font-size:9px}.neoVs{font-size:7px}.neoBar{height:5px;margin:7px 0 6px}.neoTarget{font-size:7px}.neoGrid2{grid-template-columns:1fr;margin:0 12px 8px;gap:8px}.neoPanel{padding:11px;border-radius:14px}.neoPanelHead h2{font-size:12px}.neoPanelIcon{width:28px;height:28px;font-size:15px}.neoPanelHead small{font-size:7px}.signals .signal{padding:8px 0}.signals .signal b{font-size:9px}.decisionPanel #dashboardDecision{font-size:21px}.decisionPanel #dashboardDecisionText{font-size:9px}.neoDensityGrid{gap:6px}.neoDensityGrid>div{padding:9px}.neoDensityGrid strong{font-size:18px}.neoQuick{margin:0 12px;padding:11px;border-radius:14px}.neoActions{grid-template-columns:repeat(2,1fr);gap:6px}.neoActions button{padding:9px;border-radius:10px}.neoActions button span{font-size:17px;margin-bottom:4px}.neoActions button b{font-size:8px}.neoActions button small{font-size:6px}}
+
 </head>
 <body>
 <div class="app">
@@ -751,134 +607,67 @@ main:has(#dashboard.active) > .astraHead{display:none}
 <main class="main">
 <div class="astraHead"><div class="brandPair"><img class="adrianaMainLogo" src="adriana-logo-main.png" alt="ADRIANA — Assistant Daily Reporting & Analytics"><span class="brandDivider"></span><img class="astra50Logo" src="astra-agro-50-header.png" alt="Astra Agro 50"></div><div class="astraRight"><b>Sustainable Plantation</b><span>Operational Intelligence · ADRIANA</span></div></div>
 
-<section id="dashboard" class="section active v3dash">
-  <div class="v3Hero">
-    <div class="v3HeroBg"></div>
-    <div class="v3HeroTop">
-      <div class="v3BrandBlock">
-        <img src="astra-agro-logo-compact.png" class="v3AstraLogo" alt="Astra Agro Lestari">
-        <div class="v3AstraText"><b>ASTRA</b><b>AGRO LESTARI</b><small>Prosper with the Nation</small></div>
+<section id="dashboard" class="section active neoDash">
+  <div class="neoHero">
+    <div class="neoHeroShade"></div>
+    <div class="neoHeroContent">
+      <div class="neoHeroBrand">
+        <div class="neoBrandMark">A</div>
+        <div><div class="neoBrandTitle">ADRIANA</div><div class="neoBrandSub">Assistant Daily Reporting &amp; Analytics</div></div>
       </div>
-      <img src="astra-agro-50-header.png" class="v3AAL50" alt="Astra Agro 50">
-      <div class="v3User"><span class="v3Bell">♧<i></i></span><span class="v3Avatar">AH</span><span><small>Afdeling Head</small><b id="v3AfdLabel">OCYM</b></span><b>⌄</b></div>
+      <div class="neoHeroRight">
+        <div class="neo50">50 <span>Years Growing<br>Sustainable Tomorrow</span></div>
+        <div class="neoProfile"><div class="neoBell">♧<i></i></div><div class="neoAvatar">AH</div><div><small>Afdeling Head</small><b id="neoAfdLabel">OCYM</b></div><strong>⌄</strong></div>
+      </div>
     </div>
-    <div class="v3AdrianaLogo" aria-label="ADRIANA — Assistant Daily Reporting & Analytics">
-  <svg viewBox="0 0 520 112" role="img" aria-hidden="true">
-    <defs>
-      <linearGradient id="adrianaGreen" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#00704a"/>
-        <stop offset="1" stop-color="#004f37"/>
-      </linearGradient>
-      <linearGradient id="adrianaGold" x1="0" y1="1" x2="1" y2="0">
-        <stop offset="0" stop-color="#c59b24"/>
-        <stop offset="1" stop-color="#e2bf48"/>
-      </linearGradient>
-    </defs>
-    <text x="4" y="66" fill="url(#adrianaGreen)"
-      font-family="Arial, Helvetica, sans-serif"
-      font-size="68" font-weight="900" letter-spacing="-4">ADRIANA</text>
-    <path d="M421 23 C451 7 475 11 488 27 C462 29 440 39 421 54 C431 38 431 30 421 23Z"
-      fill="url(#adrianaGreen)"/>
-    <path d="M438 49 C459 39 483 40 501 50 C479 53 458 64 441 80 C449 65 448 56 438 49Z"
-      fill="url(#adrianaGold)"/>
-    <path d="M430 82 C448 68 466 60 485 58"
-      fill="none" stroke="#d0a52e" stroke-width="6" stroke-linecap="round"/>
-  </svg>
-  <small>Assistant Daily Reporting &amp; Analytics</small>
-</div>
-    <div class="v3Planting">PLANTING<br>A BETTER<br>TOMORROW</div>
+    <div class="neoHeroTag">PLANTATION<br><b>OPERATIONAL INTELLIGENCE</b></div>
   </div>
 
-  <div class="v3ControlBar">
-    <div class="v3Control" onclick="document.getElementById('activeDate')?.scrollIntoView({block:'center'})">
-      <span class="v3Icon">▣</span><div><small>DAILY VIEW</small><b id="activeDate">No dataset</b></div><strong>⌄</strong>
-    </div>
-    <div class="v3Control">
-      <span class="v3Icon">●</span><div><small>AFDELING</small><b id="v3AfdControl">OCYM</b></div><strong>⌄</strong>
-      <select id="afdFilter" aria-label="Afdeling">
-        <option value="ALL">Semua Afdeling</option><option value="OC">OCYM</option><option value="OE">OEYM</option>
-      </select>
-    </div>
-    <div class="v3Lock" id="lockState"><span>🔒</span><div><b>DATA LOCKED</b><small>VALIDATED</small></div><strong>→</strong></div>
+  <div class="neoControls">
+    <div class="neoControl"><span class="neoControlIcon">▣</span><div><small>DAILY VIEW</small><b id="activeDate">No dataset</b></div><span>⌄</span></div>
+    <div class="neoControl neoSelect"><span class="neoControlIcon">●</span><div><small>AFDELING</small><b id="neoAfdControl">OCYM</b></div><span>⌄</span><select id="afdFilter" aria-label="Afdeling"><option value="ALL">Semua Afdeling</option><option value="OC">OCYM</option><option value="OE">OEYM</option></select></div>
+    <div class="neoLock" id="lockState"><span>🔒</span><div><b>DATA LOCKED</b><small>VALIDATED</small></div><strong>→</strong></div>
   </div>
 
-  <div class="v3QuickNav">
+  <div class="neoNav">
     <button class="active" onclick="show('dashboard')"><span>⌂</span>Dashboard</button>
-    <button data-v3target="production" onclick="show('production');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='production'))"><span>▥</span>Production</button>
-    <button data-v3target="rotation" onclick="show('rotation');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='rotation'))"><span>♣</span>Rotation</button>
-    <button data-v3target="transport" onclick="show('transport');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='transport'))"><span>▰</span>Transport</button>
-    <button data-v3target="quality" onclick="show('quality');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='quality'))"><span>☑</span>Quality</button>
-    <button data-v3target="people" onclick="show('people');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='people'))"><span>♟</span>People</button>
-    <button data-v3target="history" onclick="show('history');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='history'))"><span>▦</span>More</button>
+    <button onclick="show('production')"><span>▥</span>Production</button>
+    <button onclick="show('rotation')"><span>♣</span>Rotation</button>
+    <button onclick="show('transport')"><span>▰</span>Transport</button>
+    <button onclick="show('quality')"><span>☑</span>Quality</button>
+    <button onclick="show('people')"><span>♟</span>People</button>
+    <button onclick="show('history')"><span>▦</span>More</button>
   </div>
 
-  <div class="v3SectionTitle"><span>▥</span><b>TODAY'S OPERATION</b><a href="#" onclick="show('production');return false">View Detail →</a></div>
+  <div class="neoHeading"><div><span class="neoHeadingIcon">▥</span><div><small>EXECUTIVE DAILY CONTROL</small><h1>Today's Operation</h1></div></div><a href="#" onclick="show('production');return false">View Detail →</a></div>
 
-  <div class="v3Kpis">
-    <div class="v3Kpi card kpi"><div class="v3KpiIcon kpiIcon"><img src="kpi-tbs.png" alt=""></div><small class="label">TOTAL JJG</small><strong class="value" id="v3TotalJjg">—</strong><em>↑ 8.4%</em><span>vs yesterday</span><div class="v3Progress"><i id="v3JjgBar"></i></div><label>Target 2.350 <b id="v3JjgTarget">—</b></label></div>
-    <div class="v3Kpi card kpi"><div class="v3KpiIcon kpiIcon"><img src="kpi-worker.png" alt=""></div><small class="label">PRODUCING HK</small><strong class="value" id="v3Producing">—</strong><em>↑ 9.5%</em><span>vs yesterday</span><div class="v3Progress"><i></i></div><label>Target 22 <b>—</b></label></div>
-    <div class="v3Kpi card kpi kpiTruck"><div class="v3KpiIcon kpiIcon"><img src="kpi-truck.png" alt=""></div><small class="label">NET TRANSPORT</small><strong class="value" id="v3Transport">—</strong><span>Tonase net harian dari CSV AMANTA</span><div class="v3Progress"><i></i></div><label>Weight In − Weight Out <b>Daily Net</b></label></div>
-    <div class="v3Kpi card kpi"><div class="v3KpiIcon kpiIcon"><img src="kpi-bjr.png" alt=""></div><small class="label">BJR</small><strong class="value" id="v3Bjr">—</strong><em>↑ 1.8%</em><span>kg/JJG</span><div class="v3Progress"><i></i></div><label>Target 16.50 <b>—</b></label></div>
+  <div class="neoKpis">
+    <div class="card neoKpi"><div class="neoKpiTop"><span class="neoMetricIcon fruit">◉</span><small>TOTAL JJG</small></div><div class="value">—</div><div class="neoTrend up">↑ 8.4%</div><span class="neoVs">vs yesterday</span><div class="neoBar"><i></i></div><div class="neoTarget"><span>Target 2.350</span><b>—</b></div></div>
+    <div class="card neoKpi"><div class="neoKpiTop"><span class="neoMetricIcon people">♟</span><small>PRODUCING HK</small></div><div class="value">—</div><div class="neoTrend up">↑ 9.5%</div><span class="neoVs">vs yesterday</span><div class="neoBar"><i></i></div><div class="neoTarget"><span>Target 22</span><b>—</b></div></div>
+    <div class="card neoKpi"><div class="neoKpiTop"><span class="neoMetricIcon truck">▰</span><small>NET TRANSPORT</small></div><div class="value">—</div><div class="neoTrend neutral">Daily net</div><span class="neoVs">Weight In − Weight Out</span><div class="neoBar"><i></i></div><div class="neoTarget"><span>Net TBS</span><b>TON</b></div></div>
+    <div class="card neoKpi"><div class="neoKpiTop"><span class="neoMetricIcon bjr">◉</span><small>BJR</small></div><div class="value">—</div><div class="neoTrend up">↑ 1.8%</div><span class="neoVs">kg / JJG</span><div class="neoBar"><i></i></div><div class="neoTarget"><span>Target 16.50</span><b>—</b></div></div>
   </div>
 
-  <div class="v3Two">
-    <div class="panel v3Signals">
-      <div class="v3PanelHead"><span class="danger">!</span><b>OPERATIONAL SIGNALS</b><a href="#" onclick="show('exception');return false">See All →</a></div>
-      <div id="dashboardSignals"><div class="notice">Upload and lock a daily dataset to generate operational signals.</div></div>
-    </div>
-    <div class="panel v3Decision decisionHero">
-      <div class="v3PanelHead"><span class="target">◎</span><b>ASSISTANT DECISION</b><label>AI RECOMMENDATION</label></div>
-      <div class="decisionLabel">Recommended focus</div>
-      <strong id="dashboardDecision">—</strong>
-      <div id="dashboardDecisionText" class="muted">No active dataset.</div>
-      <button class="btn" onclick="show('pdca')">CREATE ACTION PLAN →</button>
-    </div>
+  <div class="neoGrid2">
+    <div class="neoPanel signals"><div class="neoPanelHead"><div><span class="neoPanelIcon red">!</span><div><small>MONITORING</small><h2>Operational Signals</h2></div></div><a href="#" onclick="show('exception');return false">See All →</a></div><div id="dashboardSignals"><div class="neoEmpty">Upload &amp; lock daily dataset untuk menghasilkan signal.</div></div></div>
+    <div class="neoPanel decisionPanel"><div class="neoPanelHead"><div><span class="neoPanelIcon white">◎</span><div><small>RECOMMENDED FOCUS</small><h2>Assistant Decision</h2></div></div><label>AI RECOMMENDATION</label></div><div class="neoDecisionKicker">Recommended focus</div><strong id="dashboardDecision">—</strong><p id="dashboardDecisionText">No active dataset.</p><button onclick="show('pdca')">CREATE ACTION PLAN <span>→</span></button></div>
   </div>
 
-  <div class="v3Two v3Lower">
-    <div class="panel v3Production">
-      <div class="v3PanelHead"><span class="greenIcon">▥</span><b>PRODUCTION BY BLOCK</b><a href="#" onclick="show('production');return false">See All →</a></div>
-      <table><thead><tr><th>#</th><th>BLOCK</th><th>JJG</th><th>HA ROTASI</th><th>STATUS</th><th class="v3HideCol">Populasi</th><th class="v3HideCol">JJG/Pokok</th><th class="v3HideCol">AKP</th></tr></thead>
-      <tbody id="dashboardProductionBody"><tr><td colspan="8" class="small">Upload and lock AMANTA.</td></tr></tbody></table>
-    </div>
-    <div class="panel v3Density harvestDensityPanel">
-      <div class="v3PanelHead"><span class="greenIcon">♣</span><b>HARVEST DENSITY &amp; AKP</b></div>
-      <div class="densitySummary">
-        <div class="densityMetric"><small>TOTAL JJG</small><strong id="akpTotalJjg">—</strong><em>↑ 8.4%</em><span>actual daily</span></div>
-        <div class="densityMetric"><small>TOTAL POKOK PANEN</small><strong id="akpTotalPokok">—</strong><em>↑ 6.1%</em><span>populasi rotasi</span></div>
-        <div class="densityMetric"><small>JJG / POKOK</small><strong id="akpGlobalJjgPokok">—</strong><em>↑ 2.3%</em></div>
-        <div class="densityMetric"><small>AKP TOTAL</small><strong id="akpGlobal">—</strong><em>↑ 1.1%</em></div>
-      </div>
-    </div>
+  <div class="neoGrid2 lower">
+    <div class="neoPanel productionPanel"><div class="neoPanelHead"><div><span class="neoPanelIcon green">▥</span><div><small>OUTPUT DISTRIBUTION</small><h2>Production by Block</h2></div></div><a href="#" onclick="show('production');return false">See All →</a></div><div class="neoTableWrap"><table><thead><tr><th>BLOCK</th><th>JJG</th><th>ROTASI</th><th>STATUS</th></tr></thead><tbody id="dashboardProductionBody"><tr><td colspan="4" class="small">Upload and lock AMANTA.</td></tr></tbody></table></div></div>
+    <div class="neoPanel densityPanel"><div class="neoPanelHead"><div><span class="neoPanelIcon green">♣</span><div><small>HARVEST QUALITY</small><h2>Harvest Density &amp; AKP</h2></div></div></div><div class="neoDensityGrid"><div><small>TOTAL JJG</small><strong id="akpTotalJjg">—</strong><span>actual daily</span></div><div><small>POKOK PANEN</small><strong id="akpTotalPokok">—</strong><span>populasi rotasi</span></div><div><small>JJG / POKOK</small><strong id="akpGlobalJjgPokok">—</strong><span>density</span></div><div><small>AKP TOTAL</small><strong id="akpGlobal">—</strong><span>harvest index</span></div></div></div>
   </div>
 
-  <div class="panel v3QuickAction">
-    <div class="v3PanelHead"><span class="bolt">ϟ</span><b>QUICK ACTION</b><a href="#" onclick="show('history');return false">Custom →</a></div>
-    <div class="v3ActionGrid">
-      <button onclick="show('closing')">☁ <span>Upload Data</span></button>
-      <button onclick="show('people')">▤ <span>Closing Period</span></button>
-      <button onclick="downloadTransportCSV()">⇩ <span>Export Report</span></button>
-      <button onclick="show('infield')">◈ <span>Map View</span></button>
-      <button onclick="show('ai')">✦ <span>AI Analysis</span></button>
-    </div>
-  </div>
+  <div class="neoQuick"><div class="neoQuickHead"><div><span>ϟ</span><div><small>WORKFLOW</small><b>Quick Actions</b></div></div><a href="#" onclick="show('history');return false">Custom →</a></div><div class="neoActions"><button onclick="show('closing')"><span>☁</span><b>Upload Data</b><small>AMANTA daily</small></button><button onclick="show('people')"><span>▤</span><b>Closing Period</b><small>Book period</small></button><button onclick="downloadTransportCSV()"><span>⇩</span><b>Export Report</b><small>CSV report</small></button><button onclick="show('infield')"><span>◈</span><b>Map View</b><small>Infield control</small></button><button onclick="show('ai')"><span>✦</span><b>AI Analysis</b><small>Decision support</small></button></div></div>
 
-  <!-- Existing data targets retained for the application engine; visually collapsed on Dashboard V3. -->
-  <div class="v3EngineHidden">
-    <div class="panel" id="kkpDashboardPanel">
-      <div id="kkpDashboardSummary" class="notice">Upload &amp; lock AMANTA OCYM untuk menghitung output KKP.</div>
-      <div class="peopleTableWrap"><table><tbody id="kkpDashboardBody"><tr><td>Belum ada dataset OCYM aktif.</td></tr></tbody></table></div>
-    </div>
-    <div class="panel peopleDashPanel">
-      <span id="dashPeoplePeriod">Book Period —</span>
-      <strong id="dashPeopleCount">—</strong><strong id="dashPeopleJjg">—</strong><strong id="dashPeopleMore">—</strong>
-      <strong id="dashPeopleMoreMtd">—</strong><strong id="dashPeoplePremi">—</strong><strong id="dashPeoplePremiMtd">—</strong>
-      <div class="peopleTableWrap"><table><tbody id="dashPeopleBody"><tr><td>Upload &amp; lock AMANTA.</td></tr></tbody></table></div>
-    </div>
+  <div class="neoEngineHidden">
+    <div class="panel" id="kkpDashboardPanel"><div id="kkpDashboardSummary" class="notice">Upload &amp; lock AMANTA OCYM untuk menghitung output KKP.</div><div class="peopleTableWrap"><table><tbody id="kkpDashboardBody"><tr><td>Belum ada dataset OCYM aktif.</td></tr></tbody></table></div></div>
+    <div class="panel peopleDashPanel"><span id="dashPeoplePeriod">Book Period —</span><strong id="dashPeopleCount">—</strong><strong id="dashPeopleJjg">—</strong><strong id="dashPeopleMore">—</strong><strong id="dashPeopleMoreMtd">—</strong><strong id="dashPeoplePremi">—</strong><strong id="dashPeoplePremiMtd">—</strong><div class="peopleTableWrap"><table><tbody id="dashPeopleBody"><tr><td>Upload &amp; lock AMANTA.</td></tr></tbody></table></div></div>
     <div id="donutTotal">—</div>
   </div>
-<div class="v3MetaSync"><span id="activeMeta">Upload AMANTA files in Daily Closing</span></div>
+  <div class="v3MetaSync"><span id="activeMeta">Upload AMANTA files in Daily Closing</span></div>
 </section>
+
 <section id="closing" class="section"><div class="top"><div><div class="eyebrow">CONTROL</div><div class="title">Daily Closing</div><div class="meta">AMANTA as source of truth · one dashboard for all SYM afdeling.</div></div></div>
 <div class="panel"><h2>AMANTA Upload — 1 Daily Dataset</h2><div class="upload">Pilih AMANTA sesuai afdeling · OCYM maksimal 2 file · OEYM maksimal 3 file<br><input id="amantaFiles" type="file" accept=".csv" multiple><div id="uploadMsg" class="small">Belum ada file.</div></div><div id="reconBox" class="notice">Menunggu upload. Sistem akan mendeteksi tanggal, site, versi, overlap dan melakukan reconciliation tanpa double-count.</div><button class="btn" id="processBtn" onclick="processAMANTA()" disabled>UPLOAD &amp; PROCESS</button><button class="btn" id="lockBtn" onclick="closeDataset()" disabled>CLOSE & LOCK DATASET</button>
 <div class="notice"><b>Lock rule:</b> after closing, source values must not be silently edited. Corrections should create a new dataset version with reason, evidence, requester and approval.</div></div></section>
