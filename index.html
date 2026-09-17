@@ -526,67 +526,6 @@ body,html{padding-bottom:0!important}
 }
 
 </style>
-<style>
-/* Final hero cleanup: no duplicated tagline; branding is HTML-only */
-.v3Planting{display:none!important}
-</style>
-<style>
-.v3AAL50,.astra50Logo{display:none!important}
-.v3Hero .v3BrandBlock{display:flex!important}
-.v3Hero .v3Adriana{display:block!important}
-.v3Hero .v3User{display:flex!important}
-
-/* FINAL HEADER — reference image supplied by user; visual only */
-.main > .astraHead{display:block}
-main:has(#dashboard.active) > .astraHead{display:none}
-.v3dash{padding-bottom:95px!important}
-.v3Hero{
-  height:clamp(190px,26vw,360px)!important;
-  margin:0 -26px 14px!important;
-  border-radius:0 0 18px 18px;
-  overflow:hidden;
-  background:#dceee4;
-}
-.v3HeroBg{
-  inset:0!important;
-  background-image:url("adriana-header-reference.jpg")!important;
-  background-size:100% 100%!important;
-  background-position:center!important;
-  background-repeat:no-repeat!important;
-}
-.v3HeroTop,.v3AdrianaLogo{display:none!important}
-.sectionExport{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
-.sectionExport .btn{margin-top:0}
-.sectionExportBtn{margin-top:0!important;white-space:nowrap}
-@media(max-width:760px){
-  .v3Hero{margin:0 -14px 12px!important;height:clamp(185px,30vw,240px)!important;border-radius:0 0 14px 14px}
-  .sectionExport span{display:none}
-  .sectionExport .btn{font-size:10px;padding:8px 10px}
-}
-</style>
-
-<style id="neo-dashboard-ui">
-/* NEO EXECUTIVE DASHBOARD — visual layer only */
-#dashboard.neoDash{background:#f3f7f4!important;padding:0 0 104px!important;min-height:100vh}
-#dashboard.neoDash *{box-sizing:border-box}
-.neoHero{position:relative;height:270px;margin:0 -26px 0;overflow:hidden;background:linear-gradient(135deg,#dfeee6 0%,#f8fbf8 42%,#cfe3d7 100%)}
-.neoHero:before{content:"";position:absolute;inset:auto -5% -34px -5%;height:150px;background:radial-gradient(ellipse at 30% 100%,rgba(12,91,61,.35),transparent 55%),radial-gradient(ellipse at 70% 100%,rgba(23,113,75,.26),transparent 58%);transform:skewY(-3deg)}
-.neoHeroShade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(224,240,230,.08) 45%,rgba(0,73,48,.22))}
-.neoHeroContent{position:relative;z-index:2;height:100%;padding:22px 28px;display:flex;justify-content:space-between;align-items:flex-start}
-.neoHeroBrand{display:flex;align-items:center;gap:12px;margin-top:5px}.neoBrandMark{width:48px;height:48px;border-radius:15px;background:#056244;color:#fff;display:grid;place-items:center;font-weight:950;font-size:28px;box-shadow:0 10px 24px rgba(5,98,68,.2)}.neoBrandTitle{font-size:34px;line-height:.95;font-weight:950;letter-spacing:-.055em;color:#004d37}.neoBrandSub{font-size:12px;margin-top:7px;color:#234438;font-weight:600}
-.neoHeroRight{display:flex;align-items:flex-start;gap:14px}.neo50{font-size:38px;font-weight:950;color:#08714d;line-height:.9;text-align:right}.neo50 span{display:inline-block;font-size:8px;line-height:1.25;color:#173d30;text-align:left;vertical-align:top;margin:2px 0 0 5px;letter-spacing:.04em}.neoProfile{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.9);padding:8px 12px;border:1px solid rgba(255,255,255,.95);border-radius:17px;box-shadow:0 12px 30px rgba(14,66,44,.12);min-width:215px}.neoBell{font-size:22px;position:relative;margin-right:2px}.neoBell i{position:absolute;right:-2px;top:0;width:8px;height:8px;border-radius:50%;background:#e53935}.neoAvatar{width:40px;height:40px;border-radius:50%;background:#075d41;color:#fff;display:grid;place-items:center;font-weight:900}.neoProfile small,.neoProfile b{display:block}.neoProfile small{font-size:9px;color:#6b776f}.neoProfile b{font-size:15px;color:#123c2e}.neoProfile>strong{margin-left:auto;font-size:18px}.neoHeroTag{position:absolute;z-index:2;right:34px;bottom:28px;color:#fff;text-shadow:0 2px 10px rgba(0,55,37,.65);font-size:10px;letter-spacing:.22em;line-height:1.45}.neoHeroTag b{font-size:9px;letter-spacing:.12em}
-.neoControls{position:relative;z-index:5;margin:-28px 18px 14px;padding:8px;display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:8px;background:rgba(255,255,255,.94);border:1px solid #e3ebe6;border-radius:20px;box-shadow:0 14px 34px rgba(24,72,50,.11);backdrop-filter:blur(12px)}.neoControl,.neoLock{min-height:58px;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:14px}.neoControl{border-right:1px solid #e2ebe5}.neoControl small,.neoControl b,.neoLock b,.neoLock small{display:block}.neoControl small{font-size:8px;color:#758179;letter-spacing:.1em}.neoControl b{font-size:14px;color:#183d30}.neoControl>span:last-child{margin-left:auto}.neoControlIcon{font-size:20px;color:#08714d}.neoSelect{position:relative}.neoSelect select{position:absolute;inset:0;opacity:0;cursor:pointer}.neoLock{background:#e3f5eb;color:#075c3e}.neoLock>span{font-size:20px}.neoLock small{font-size:9px}.neoLock strong{margin-left:auto}
-.neoNav{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;margin:0 18px 20px}.neoNav button{border:1px solid #dfe8e2;background:#fff;border-radius:15px;min-height:70px;padding:9px 4px;color:#31463d;font:inherit;font-size:10px;font-weight:750;box-shadow:0 5px 16px rgba(20,60,42,.045)}.neoNav button span{display:block;font-size:26px;color:#55786a;margin-bottom:7px;line-height:1}.neoNav button.active{background:#075d41;color:#fff;border-color:#075d41;box-shadow:0 10px 24px rgba(7,93,65,.2)}.neoNav button.active span{color:#fff}
-.neoHeading{display:flex;justify-content:space-between;align-items:center;margin:0 18px 12px}.neoHeading>div{display:flex;align-items:center;gap:10px}.neoHeadingIcon{width:38px;height:38px;border-radius:12px;background:#e2f2e9;color:#168052;display:grid;place-items:center;font-size:20px}.neoHeading small{display:block;font-size:8px;letter-spacing:.12em;color:#7b8981;font-weight:800}.neoHeading h1{margin:2px 0 0;font-size:20px;line-height:1;color:#17382d}.neoHeading a,.neoPanelHead a,.neoQuickHead a{font-size:10px;color:#4b5d54;text-decoration:none}
-.neoKpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 18px 14px}.neoKpi{background:#fff;border:1px solid #dfe9e3;border-radius:17px;padding:13px 13px 12px;box-shadow:0 7px 20px rgba(17,62,43,.055);min-width:0}.neoKpiTop{display:flex;align-items:center;gap:8px}.neoKpiTop small{font-size:9px;color:#718078;font-weight:850;letter-spacing:.06em}.neoMetricIcon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:20px}.neoMetricIcon.fruit,.neoMetricIcon.bjr{background:#edf6ef;color:#08724e}.neoMetricIcon.people{background:#eaf3ef;color:#426b5b}.neoMetricIcon.truck{background:#eef4f0;color:#3e6758}.neoKpi .value{font-size:31px!important;line-height:1.05!important;font-weight:900!important;color:#173c2f!important;margin:9px 0 1px!important}.neoTrend{font-size:11px;font-weight:850}.neoTrend.up{color:#13844f}.neoTrend.neutral{color:#5c7268}.neoVs{display:block;font-size:8px;color:#79867f;margin-top:1px}.neoBar{height:6px;background:#e7eee9;border-radius:99px;overflow:hidden;margin:9px 0 7px}.neoBar i{display:block;width:68%;height:100%;background:#35a77b;border-radius:99px}.neoTarget{display:flex;justify-content:space-between;font-size:8px;color:#75827a}.neoTarget b{font-size:9px;color:#1a4c3a}
-.neoGrid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 18px 10px}.neoPanel{background:#fff;border:1px solid #dfe9e3;border-radius:18px;padding:15px;box-shadow:0 7px 20px rgba(17,62,43,.05);min-width:0}.neoPanelHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.neoPanelHead>div{display:flex;align-items:center;gap:9px}.neoPanelHead small{display:block;color:#829087;font-size:8px;letter-spacing:.1em;font-weight:850}.neoPanelHead h2{margin:2px 0 0;font-size:14px;color:#173b2f}.neoPanelIcon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-weight:950;font-size:18px}.neoPanelIcon.red{background:#fff0ef;color:#df4540}.neoPanelIcon.green{background:#e9f6ee;color:#128052}.neoPanelIcon.white{background:rgba(255,255,255,.13);color:#fff}.decisionPanel{background:linear-gradient(135deg,#075c3f,#08734d 58%,#0a8056);color:#fff;position:relative;overflow:hidden}.decisionPanel:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-80px;bottom:-100px;border:28px solid rgba(255,255,255,.07)}.decisionPanel .neoPanelHead h2,.decisionPanel .neoPanelHead small{color:#fff}.decisionPanel .neoPanelHead label{font-size:8px;background:rgba(255,255,255,.16);padding:6px 9px;border-radius:99px;letter-spacing:.04em}.neoDecisionKicker{font-size:10px;opacity:.72;margin-top:5px}.decisionPanel #dashboardDecision{display:block;font-size:25px;line-height:1.05;margin:6px 0 7px}.decisionPanel #dashboardDecisionText{font-size:10px;line-height:1.45;opacity:.84;max-width:90%;margin:0 0 13px}.decisionPanel button{border:0;background:#fff;color:#075c3f;border-radius:11px;padding:10px 13px;font-weight:900;font-size:10px;cursor:pointer}.decisionPanel button span{margin-left:8px}.neoEmpty{font-size:10px;color:#7a8981;background:#f6faf7;border:1px dashed #d6e4db;border-radius:12px;padding:14px}.signals .signal{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid #edf1ee}.signals .signal:first-child{border-top:0}.signals .signal .num{width:27px;height:27px;border-radius:9px;background:#f2f6f3;color:#08714d;display:grid;place-items:center;font-size:9px;font-weight:900;flex:none}.signals .signal b{font-size:10px;line-height:1.45;color:#34473e}
-.neoTableWrap{overflow:auto}.productionPanel table{width:100%;border-collapse:collapse;font-size:10px}.productionPanel th{text-align:left;color:#849189;font-size:8px;padding:7px;border-bottom:1px solid #e7eeea}.productionPanel td{padding:8px 7px;border-bottom:1px solid #eef2ef;color:#30453c}.productionPanel td:nth-child(2){font-weight:800;color:#153e30}.productionPanel .tag{font-size:8px;padding:4px 7px;border-radius:8px}.densityPanel{min-height:100%}.neoDensityGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.neoDensityGrid>div{border:1px solid #e3ebe6;background:#f9fbfa;border-radius:13px;padding:11px}.neoDensityGrid small{display:block;font-size:8px;color:#7a8880;letter-spacing:.06em}.neoDensityGrid strong{display:block;font-size:22px;line-height:1.1;color:#1b4a39;margin:5px 0 2px}.neoDensityGrid span{font-size:8px;color:#809088}
-.neoQuick{margin:0 18px;background:#fff;border:1px solid #dfe9e3;border-radius:18px;padding:14px;box-shadow:0 7px 20px rgba(17,62,43,.045)}.neoQuickHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.neoQuickHead>div{display:flex;align-items:center;gap:9px}.neoQuickHead>div>span{font-size:24px;color:#0c8857}.neoQuickHead small{display:block;font-size:8px;color:#839087;letter-spacing:.1em}.neoQuickHead b{font-size:14px;color:#183d30}.neoActions{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.neoActions button{border:1px solid #dfe9e3;background:#f9fbfa;border-radius:12px;padding:11px 7px;text-align:left;cursor:pointer}.neoActions button span{display:block;font-size:20px;color:#08714d;margin-bottom:6px}.neoActions button b{display:block;font-size:9px;color:#27463a}.neoActions button small{display:block;font-size:7px;color:#89958e;margin-top:2px}.neoEngineHidden{display:none!important}.neoMetaSync{display:none!important}
-@media(max-width:900px){.neoHero{height:235px}.neoHeroContent{padding:18px}.neoBrandTitle{font-size:28px}.neo50{font-size:30px}.neoProfile{min-width:190px}.neoKpis{grid-template-columns:repeat(2,1fr)}.neoNav{grid-template-columns:repeat(4,1fr)}.neoNav button{min-height:62px}.neoActions{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:600px){#dashboard.neoDash{padding-bottom:82px!important}.neoHero{height:205px;margin:0 -14px}.neoHeroContent{padding:12px 14px}.neoBrandMark{width:38px;height:38px;border-radius:11px;font-size:22px}.neoBrandTitle{font-size:25px}.neoBrandSub{font-size:9px;margin-top:4px}.neoHeroRight{gap:5px}.neo50{font-size:22px}.neo50 span{font-size:6px}.neoProfile{min-width:0;padding:6px 8px;border-radius:13px}.neoProfile small{font-size:7px}.neoProfile b{font-size:11px}.neoAvatar{width:32px;height:32px}.neoBell{font-size:18px}.neoHeroTag{right:15px;bottom:16px;font-size:7px}.neoControls{margin:-18px 12px 10px;grid-template-columns:1.15fr 1fr;gap:5px;padding:6px;border-radius:15px}.neoControls .neoLock{grid-column:1/-1;min-height:42px}.neoControl{min-height:47px;padding:7px 8px}.neoControl b{font-size:11px}.neoControl small{font-size:7px}.neoNav{margin:0 12px 14px;grid-template-columns:repeat(7,1fr);gap:5px;overflow:hidden}.neoNav button{min-height:57px;border-radius:11px;font-size:7px;padding:7px 2px}.neoNav button span{font-size:20px;margin-bottom:5px}.neoHeading{margin:0 12px 9px}.neoHeadingIcon{width:32px;height:32px}.neoHeading h1{font-size:16px}.neoKpis{grid-template-columns:repeat(2,1fr);gap:7px;margin:0 12px 9px}.neoKpi{padding:10px;border-radius:13px}.neoKpiTop small{font-size:7px}.neoMetricIcon{width:28px;height:28px;font-size:16px}.neoKpi .value{font-size:24px!important;margin:7px 0 1px!important}.neoTrend{font-size:9px}.neoVs{font-size:7px}.neoBar{height:5px;margin:7px 0 6px}.neoTarget{font-size:7px}.neoGrid2{grid-template-columns:1fr;margin:0 12px 8px;gap:8px}.neoPanel{padding:11px;border-radius:14px}.neoPanelHead h2{font-size:12px}.neoPanelIcon{width:28px;height:28px;font-size:15px}.neoPanelHead small{font-size:7px}.signals .signal{padding:8px 0}.signals .signal b{font-size:9px}.decisionPanel #dashboardDecision{font-size:21px}.decisionPanel #dashboardDecisionText{font-size:9px}.neoDensityGrid{gap:6px}.neoDensityGrid>div{padding:9px}.neoDensityGrid strong{font-size:18px}.neoQuick{margin:0 12px;padding:11px;border-radius:14px}.neoActions{grid-template-columns:repeat(2,1fr);gap:6px}.neoActions button{padding:9px;border-radius:10px}.neoActions button span{font-size:17px;margin-bottom:4px}.neoActions button b{font-size:8px}.neoActions button small{font-size:6px}}
-
-
-</style>
 </head>
 <body>
 <div class="app">
@@ -610,67 +549,134 @@ main:has(#dashboard.active) > .astraHead{display:none}
 <main class="main">
 <div class="astraHead"><div class="brandPair"><img class="adrianaMainLogo" src="adriana-logo-main.png" alt="ADRIANA — Assistant Daily Reporting & Analytics"><span class="brandDivider"></span><img class="astra50Logo" src="astra-agro-50-header.png" alt="Astra Agro 50"></div><div class="astraRight"><b>Sustainable Plantation</b><span>Operational Intelligence · ADRIANA</span></div></div>
 
-<section id="dashboard" class="section active neoDash">
-  <div class="neoHero">
-    <div class="neoHeroShade"></div>
-    <div class="neoHeroContent">
-      <div class="neoHeroBrand">
-        <div class="neoBrandMark">A</div>
-        <div><div class="neoBrandTitle">ADRIANA</div><div class="neoBrandSub">Assistant Daily Reporting &amp; Analytics</div></div>
+<section id="dashboard" class="section active v3dash">
+  <div class="v3Hero">
+    <div class="v3HeroBg"></div>
+    <div class="v3HeroTop">
+      <div class="v3BrandBlock">
+        <img src="astra-agro-logo-compact.png" class="v3AstraLogo" alt="Astra Agro Lestari">
+        <div class="v3AstraText"><b>ASTRA</b><b>AGRO LESTARI</b><small>Prosper with the Nation</small></div>
       </div>
-      <div class="neoHeroRight">
-        <div class="neo50">50 <span>Years Growing<br>Sustainable Tomorrow</span></div>
-        <div class="neoProfile"><div class="neoBell">♧<i></i></div><div class="neoAvatar">AH</div><div><small>Afdeling Head</small><b id="neoAfdLabel">OCYM</b></div><strong>⌄</strong></div>
+      <img src="astra-agro-50-header.png" class="v3AAL50" alt="Astra Agro 50">
+      <div class="v3User"><span class="v3Bell">♧<i></i></span><span class="v3Avatar">AH</span><span><small>Afdeling Head</small><b id="v3AfdLabel">OCYM</b></span><b>⌄</b></div>
+    </div>
+    <div class="v3AdrianaLogo" aria-label="ADRIANA — Assistant Daily Reporting & Analytics">
+  <svg viewBox="0 0 520 112" role="img" aria-hidden="true">
+    <defs>
+      <linearGradient id="adrianaGreen" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#00704a"/>
+        <stop offset="1" stop-color="#004f37"/>
+      </linearGradient>
+      <linearGradient id="adrianaGold" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="#c59b24"/>
+        <stop offset="1" stop-color="#e2bf48"/>
+      </linearGradient>
+    </defs>
+    <text x="4" y="66" fill="url(#adrianaGreen)"
+      font-family="Arial, Helvetica, sans-serif"
+      font-size="68" font-weight="900" letter-spacing="-4">ADRIANA</text>
+    <path d="M421 23 C451 7 475 11 488 27 C462 29 440 39 421 54 C431 38 431 30 421 23Z"
+      fill="url(#adrianaGreen)"/>
+    <path d="M438 49 C459 39 483 40 501 50 C479 53 458 64 441 80 C449 65 448 56 438 49Z"
+      fill="url(#adrianaGold)"/>
+    <path d="M430 82 C448 68 466 60 485 58"
+      fill="none" stroke="#d0a52e" stroke-width="6" stroke-linecap="round"/>
+  </svg>
+  <small>Assistant Daily Reporting &amp; Analytics</small>
+</div>
+    <div class="v3Planting">PLANTING<br>A BETTER<br>TOMORROW</div>
+  </div>
+
+  <div class="v3ControlBar">
+    <div class="v3Control" onclick="document.getElementById('activeDate')?.scrollIntoView({block:'center'})">
+      <span class="v3Icon">▣</span><div><small>DAILY VIEW</small><b id="activeDate">No dataset</b></div><strong>⌄</strong>
+    </div>
+    <div class="v3Control">
+      <span class="v3Icon">●</span><div><small>AFDELING</small><b id="v3AfdControl">OCYM</b></div><strong>⌄</strong>
+      <select id="afdFilter" aria-label="Afdeling">
+        <option value="ALL">Semua Afdeling</option><option value="OC">OCYM</option><option value="OE">OEYM</option>
+      </select>
+    </div>
+    <div class="v3Lock" id="lockState"><span>🔒</span><div><b>DATA LOCKED</b><small>VALIDATED</small></div><strong>→</strong></div>
+  </div>
+
+  <div class="v3QuickNav">
+    <button class="active" onclick="show('dashboard')"><span>⌂</span>Dashboard</button>
+    <button data-v3target="production" onclick="show('production');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='production'))"><span>▥</span>Production</button>
+    <button data-v3target="rotation" onclick="show('rotation');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='rotation'))"><span>♣</span>Rotation</button>
+    <button data-v3target="transport" onclick="show('transport');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='transport'))"><span>▰</span>Transport</button>
+    <button data-v3target="quality" onclick="show('quality');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='quality'))"><span>☑</span>Quality</button>
+    <button data-v3target="people" onclick="show('people');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='people'))"><span>♟</span>People</button>
+    <button data-v3target="history" onclick="show('history');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='history'))"><span>▦</span>More</button>
+  </div>
+
+  <div class="v3SectionTitle"><span>▥</span><b>TODAY'S OPERATION</b><a href="#" onclick="show('production');return false">View Detail →</a></div>
+
+  <div class="v3Kpis">
+    <div class="v3Kpi card kpi"><div class="v3KpiIcon kpiIcon"><img src="kpi-tbs.png" alt=""></div><small class="label">TOTAL JJG</small><strong class="value" id="v3TotalJjg">—</strong><em>↑ 8.4%</em><span>vs yesterday</span><div class="v3Progress"><i id="v3JjgBar"></i></div><label>Target 2.350 <b id="v3JjgTarget">—</b></label></div>
+    <div class="v3Kpi card kpi"><div class="v3KpiIcon kpiIcon"><img src="kpi-worker.png" alt=""></div><small class="label">PRODUCING HK</small><strong class="value" id="v3Producing">—</strong><em>↑ 9.5%</em><span>vs yesterday</span><div class="v3Progress"><i></i></div><label>Target 22 <b>—</b></label></div>
+    <div class="v3Kpi card kpi kpiTruck"><div class="v3KpiIcon kpiIcon"><img src="kpi-truck.png" alt=""></div><small class="label">NET TRANSPORT</small><strong class="value" id="v3Transport">—</strong><span>Tonase net harian dari CSV AMANTA</span><div class="v3Progress"><i></i></div><label>Weight In − Weight Out <b>Daily Net</b></label></div>
+    <div class="v3Kpi card kpi"><div class="v3KpiIcon kpiIcon"><img src="kpi-bjr.png" alt=""></div><small class="label">BJR</small><strong class="value" id="v3Bjr">—</strong><em>↑ 1.8%</em><span>kg/JJG</span><div class="v3Progress"><i></i></div><label>Target 16.50 <b>—</b></label></div>
+  </div>
+
+  <div class="v3Two">
+    <div class="panel v3Signals">
+      <div class="v3PanelHead"><span class="danger">!</span><b>OPERATIONAL SIGNALS</b><a href="#" onclick="show('exception');return false">See All →</a></div>
+      <div id="dashboardSignals"><div class="notice">Upload and lock a daily dataset to generate operational signals.</div></div>
+    </div>
+    <div class="panel v3Decision decisionHero">
+      <div class="v3PanelHead"><span class="target">◎</span><b>ASSISTANT DECISION</b><label>AI RECOMMENDATION</label></div>
+      <div class="decisionLabel">Recommended focus</div>
+      <strong id="dashboardDecision">—</strong>
+      <div id="dashboardDecisionText" class="muted">No active dataset.</div>
+      <button class="btn" onclick="show('pdca')">CREATE ACTION PLAN →</button>
+    </div>
+  </div>
+
+  <div class="v3Two v3Lower">
+    <div class="panel v3Production">
+      <div class="v3PanelHead"><span class="greenIcon">▥</span><b>PRODUCTION BY BLOCK</b><a href="#" onclick="show('production');return false">See All →</a></div>
+      <table><thead><tr><th>#</th><th>BLOCK</th><th>JJG</th><th>HA ROTASI</th><th>STATUS</th><th class="v3HideCol">Populasi</th><th class="v3HideCol">JJG/Pokok</th><th class="v3HideCol">AKP</th></tr></thead>
+      <tbody id="dashboardProductionBody"><tr><td colspan="8" class="small">Upload and lock AMANTA.</td></tr></tbody></table>
+    </div>
+    <div class="panel v3Density harvestDensityPanel">
+      <div class="v3PanelHead"><span class="greenIcon">♣</span><b>HARVEST DENSITY &amp; AKP</b></div>
+      <div class="densitySummary">
+        <div class="densityMetric"><small>TOTAL JJG</small><strong id="akpTotalJjg">—</strong><em>↑ 8.4%</em><span>actual daily</span></div>
+        <div class="densityMetric"><small>TOTAL POKOK PANEN</small><strong id="akpTotalPokok">—</strong><em>↑ 6.1%</em><span>populasi rotasi</span></div>
+        <div class="densityMetric"><small>JJG / POKOK</small><strong id="akpGlobalJjgPokok">—</strong><em>↑ 2.3%</em></div>
+        <div class="densityMetric"><small>AKP TOTAL</small><strong id="akpGlobal">—</strong><em>↑ 1.1%</em></div>
       </div>
     </div>
-    <div class="neoHeroTag">PLANTATION<br><b>OPERATIONAL INTELLIGENCE</b></div>
   </div>
 
-  <div class="neoControls">
-    <div class="neoControl"><span class="neoControlIcon">▣</span><div><small>DAILY VIEW</small><b id="activeDate">No dataset</b></div><span>⌄</span></div>
-    <div class="neoControl neoSelect"><span class="neoControlIcon">●</span><div><small>AFDELING</small><b id="neoAfdControl">OCYM</b></div><span>⌄</span><select id="afdFilter" aria-label="Afdeling"><option value="ALL">Semua Afdeling</option><option value="OC">OCYM</option><option value="OE">OEYM</option></select></div>
-    <div class="neoLock" id="lockState"><span>🔒</span><div><b>DATA LOCKED</b><small>VALIDATED</small></div><strong>→</strong></div>
+  <div class="panel v3QuickAction">
+    <div class="v3PanelHead"><span class="bolt">ϟ</span><b>QUICK ACTION</b><a href="#" onclick="show('history');return false">Custom →</a></div>
+    <div class="v3ActionGrid">
+      <button onclick="show('closing')">☁ <span>Upload Data</span></button>
+      <button onclick="show('people')">▤ <span>Closing Period</span></button>
+      <button onclick="downloadTransportCSV()">⇩ <span>Export Report</span></button>
+      <button onclick="show('infield')">◈ <span>Map View</span></button>
+      <button onclick="show('ai')">✦ <span>AI Analysis</span></button>
+    </div>
   </div>
 
-  <div class="neoNav">
-    <button class="active" onclick="show('dashboard')"><span>⌂</span>Dashboard</button>
-    <button onclick="show('production')"><span>▥</span>Production</button>
-    <button onclick="show('rotation')"><span>♣</span>Rotation</button>
-    <button onclick="show('transport')"><span>▰</span>Transport</button>
-    <button onclick="show('quality')"><span>☑</span>Quality</button>
-    <button onclick="show('people')"><span>♟</span>People</button>
-    <button onclick="show('history')"><span>▦</span>More</button>
-  </div>
-
-  <div class="neoHeading"><div><span class="neoHeadingIcon">▥</span><div><small>EXECUTIVE DAILY CONTROL</small><h1>Today's Operation</h1></div></div><a href="#" onclick="show('production');return false">View Detail →</a></div>
-
-  <div class="neoKpis">
-    <div class="card neoKpi"><div class="neoKpiTop"><span class="neoMetricIcon fruit">◉</span><small>TOTAL JJG</small></div><div class="value">—</div><div class="neoTrend up">↑ 8.4%</div><span class="neoVs">vs yesterday</span><div class="neoBar"><i></i></div><div class="neoTarget"><span>Target 2.350</span><b>—</b></div></div>
-    <div class="card neoKpi"><div class="neoKpiTop"><span class="neoMetricIcon people">♟</span><small>PRODUCING HK</small></div><div class="value">—</div><div class="neoTrend up">↑ 9.5%</div><span class="neoVs">vs yesterday</span><div class="neoBar"><i></i></div><div class="neoTarget"><span>Target 22</span><b>—</b></div></div>
-    <div class="card neoKpi"><div class="neoKpiTop"><span class="neoMetricIcon truck">▰</span><small>NET TRANSPORT</small></div><div class="value">—</div><div class="neoTrend neutral">Daily net</div><span class="neoVs">Weight In − Weight Out</span><div class="neoBar"><i></i></div><div class="neoTarget"><span>Net TBS</span><b>TON</b></div></div>
-    <div class="card neoKpi"><div class="neoKpiTop"><span class="neoMetricIcon bjr">◉</span><small>BJR</small></div><div class="value">—</div><div class="neoTrend up">↑ 1.8%</div><span class="neoVs">kg / JJG</span><div class="neoBar"><i></i></div><div class="neoTarget"><span>Target 16.50</span><b>—</b></div></div>
-  </div>
-
-  <div class="neoGrid2">
-    <div class="neoPanel signals"><div class="neoPanelHead"><div><span class="neoPanelIcon red">!</span><div><small>MONITORING</small><h2>Operational Signals</h2></div></div><a href="#" onclick="show('exception');return false">See All →</a></div><div id="dashboardSignals"><div class="neoEmpty">Upload &amp; lock daily dataset untuk menghasilkan signal.</div></div></div>
-    <div class="neoPanel decisionPanel"><div class="neoPanelHead"><div><span class="neoPanelIcon white">◎</span><div><small>RECOMMENDED FOCUS</small><h2>Assistant Decision</h2></div></div><label>AI RECOMMENDATION</label></div><div class="neoDecisionKicker">Recommended focus</div><strong id="dashboardDecision">—</strong><p id="dashboardDecisionText">No active dataset.</p><button onclick="show('pdca')">CREATE ACTION PLAN <span>→</span></button></div>
-  </div>
-
-  <div class="neoGrid2 lower">
-    <div class="neoPanel productionPanel"><div class="neoPanelHead"><div><span class="neoPanelIcon green">▥</span><div><small>OUTPUT DISTRIBUTION</small><h2>Production by Block</h2></div></div><a href="#" onclick="show('production');return false">See All →</a></div><div class="neoTableWrap"><table><thead><tr><th>BLOCK</th><th>JJG</th><th>ROTASI</th><th>STATUS</th></tr></thead><tbody id="dashboardProductionBody"><tr><td colspan="4" class="small">Upload and lock AMANTA.</td></tr></tbody></table></div></div>
-    <div class="neoPanel densityPanel"><div class="neoPanelHead"><div><span class="neoPanelIcon green">♣</span><div><small>HARVEST QUALITY</small><h2>Harvest Density &amp; AKP</h2></div></div></div><div class="neoDensityGrid"><div><small>TOTAL JJG</small><strong id="akpTotalJjg">—</strong><span>actual daily</span></div><div><small>POKOK PANEN</small><strong id="akpTotalPokok">—</strong><span>populasi rotasi</span></div><div><small>JJG / POKOK</small><strong id="akpGlobalJjgPokok">—</strong><span>density</span></div><div><small>AKP TOTAL</small><strong id="akpGlobal">—</strong><span>harvest index</span></div></div></div>
-  </div>
-
-  <div class="neoQuick"><div class="neoQuickHead"><div><span>ϟ</span><div><small>WORKFLOW</small><b>Quick Actions</b></div></div><a href="#" onclick="show('history');return false">Custom →</a></div><div class="neoActions"><button onclick="show('closing')"><span>☁</span><b>Upload Data</b><small>AMANTA daily</small></button><button onclick="show('people')"><span>▤</span><b>Closing Period</b><small>Book period</small></button><button onclick="downloadTransportCSV()"><span>⇩</span><b>Export Report</b><small>CSV report</small></button><button onclick="show('infield')"><span>◈</span><b>Map View</b><small>Infield control</small></button><button onclick="show('ai')"><span>✦</span><b>AI Analysis</b><small>Decision support</small></button></div></div>
-
-  <div class="neoEngineHidden">
-    <div class="panel" id="kkpDashboardPanel"><div id="kkpDashboardSummary" class="notice">Upload &amp; lock AMANTA OCYM untuk menghitung output KKP.</div><div class="peopleTableWrap"><table><tbody id="kkpDashboardBody"><tr><td>Belum ada dataset OCYM aktif.</td></tr></tbody></table></div></div>
-    <div class="panel peopleDashPanel"><span id="dashPeoplePeriod">Book Period —</span><strong id="dashPeopleCount">—</strong><strong id="dashPeopleJjg">—</strong><strong id="dashPeopleMore">—</strong><strong id="dashPeopleMoreMtd">—</strong><strong id="dashPeoplePremi">—</strong><strong id="dashPeoplePremiMtd">—</strong><div class="peopleTableWrap"><table><tbody id="dashPeopleBody"><tr><td>Upload &amp; lock AMANTA.</td></tr></tbody></table></div></div>
+  <!-- Existing data targets retained for the application engine; visually collapsed on Dashboard V3. -->
+  <div class="v3EngineHidden">
+    <div class="panel" id="kkpDashboardPanel">
+      <div id="kkpDashboardSummary" class="notice">Upload &amp; lock AMANTA OCYM untuk menghitung output KKP.</div>
+      <div class="peopleTableWrap"><table><tbody id="kkpDashboardBody"><tr><td>Belum ada dataset OCYM aktif.</td></tr></tbody></table></div>
+    </div>
+    <div class="panel peopleDashPanel">
+      <span id="dashPeoplePeriod">Book Period —</span>
+      <strong id="dashPeopleCount">—</strong><strong id="dashPeopleJjg">—</strong><strong id="dashPeopleMore">—</strong>
+      <strong id="dashPeopleMoreMtd">—</strong><strong id="dashPeoplePremi">—</strong><strong id="dashPeoplePremiMtd">—</strong>
+      <div class="peopleTableWrap"><table><tbody id="dashPeopleBody"><tr><td>Upload &amp; lock AMANTA.</td></tr></tbody></table></div>
+    </div>
     <div id="donutTotal">—</div>
   </div>
-  <div class="v3MetaSync"><span id="activeMeta">Upload AMANTA files in Daily Closing</span></div>
+<div class="v3MetaSync"><span id="activeMeta">Upload AMANTA files in Daily Closing</span></div>
 </section>
-
 <section id="closing" class="section"><div class="top"><div><div class="eyebrow">CONTROL</div><div class="title">Daily Closing</div><div class="meta">AMANTA as source of truth · one dashboard for all SYM afdeling.</div></div></div>
 <div class="panel"><h2>AMANTA Upload — 1 Daily Dataset</h2><div class="upload">Pilih AMANTA sesuai afdeling · OCYM maksimal 2 file · OEYM maksimal 3 file<br><input id="amantaFiles" type="file" accept=".csv" multiple><div id="uploadMsg" class="small">Belum ada file.</div></div><div id="reconBox" class="notice">Menunggu upload. Sistem akan mendeteksi tanggal, site, versi, overlap dan melakukan reconciliation tanpa double-count.</div><button class="btn" id="processBtn" onclick="processAMANTA()" disabled>UPLOAD &amp; PROCESS</button><button class="btn" id="lockBtn" onclick="closeDataset()" disabled>CLOSE & LOCK DATASET</button>
 <div class="notice"><b>Lock rule:</b> after closing, source values must not be silently edited. Corrections should create a new dataset version with reason, evidence, requester and approval.</div></div></section>
@@ -718,7 +724,7 @@ main:has(#dashboard.active) > .astraHead{display:none}
 
 <section id="infield" class="section">
 <div class="panel" style="margin-top:12px">
-<div class="panelHead"><h2>Infield Control — Real AMANTA</h2><div class="sectionExport"><span>PRODUKSI UNIT AMANTA · BJR Aktual</span><button class="btn" type="button" onclick="downloadInfieldCSV()">⇩ Download Infield CSV</button></div></div>
+<div class="panelHead"><h2>Infield Control — Real AMANTA</h2><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span>PRODUKSI UNIT AMANTA · BJR Aktual</span><button class="btn" type="button" onclick="downloadInfieldCSV()">Download Infield CSV</button></div></div>
 <div class="notice">Penginfield dikunci dari KODEUNIT. Tim Infield dibentuk dari NPK utama + NPKUTAMA (helper). JJG Infield berasal dari PRODUKSIUNIT.JJG berdasarkan KODEUNIT. JJG Langsir tidak dikurangkan karena data absen langsir tidak menyediakan JJG.</div>
 <div class="peopleKpis" style="margin-top:12px">
 <div class="peopleKpi"><small>PENGINFIELD</small><strong id="infieldPeople">—</strong></div>
@@ -735,11 +741,11 @@ main:has(#dashboard.active) > .astraHead{display:none}
     <div>
       <div class="eyebrow">PEOPLE · PREMI</div>
       <div class="title">People Performance</div>
-      <div class="meta">Pemanen Cluster, Performance &amp; Development · mengikuti Open Book–Closing Book.</div>
+      <div class="meta">Pemanen Cluster, Performance &amp; Development · mengikuti Open Book–Closing Book.</div><div style="margin-top:10px"><button class="btn" type="button" onclick="downloadPeoplePerformanceCSV()">Download People Performance CSV</button></div>
     </div>
   </div>
   <div class="panel">
-    <div class="peoplePeriodBar"><button class="btn sectionExportBtn" type="button" onclick="downloadPeoplePerformanceCSV()">⇩ Download People Performance CSV</button>
+    <div class="peoplePeriodBar">
       <div><b>Periode Book:</b> <span id="peoplePeriod">—</span></div>
       <div class="small">OCYM · Premi dihitung harian, lalu diakumulasi sesuai periode Book 21–20</div>
     </div>
@@ -1194,6 +1200,58 @@ function downloadTransportCSV(){
    rows.push([kab,rit,readyVal,goVal,rawIn,rawOut,net!==null&&net>0?net:'—',duration]);
  });
  downloadCSV(`ADRIANA_Transport_${d.date||ACTIVE.date||'dataset'}.csv`,rows);
+}
+function downloadPeoplePerformanceCSV(){
+ if(!ACTIVE||!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
+ const d=window.ADRIANA_DATA;
+ if(ACTIVE_AFD==='OE'){alert('People Performance belum memiliki master basis premi untuk OEYM.');return;}
+ const date=d.date||ACTIVE.date;
+ if(!date){alert('Tanggal aktif belum tersedia.');return;}
+ const day=window.ADRIANA_BUILD_PREMI_DAY?window.ADRIANA_BUILD_PREMI_DAY(ACTIVE):null;
+ const hist=window.ADRIANA_BUILD_PREMI_HISTORY?window.ADRIANA_BUILD_PREMI_HISTORY(date,ACTIVE):null;
+ if(!day||!hist){alert('Data People Performance belum tersedia.');return;}
+ const pmRows=hist.agg||[];
+ const activeRows=(day.rows||[]).slice().sort((a,b)=>b.jjg-a.jjg);
+ const aggMap=new Map(pmRows.map(x=>[x.npk,x]));
+ const out=[];
+ out.push(['ADRIANA PEOPLE PERFORMANCE EXPORT']);
+ out.push(['AFD',ACTIVE_AFD,'Tanggal',date]);
+ out.push(['Book Period',hist.open,hist.close,'Actual Through',hist.end]);
+ out.push([]);
+ out.push(['SECTION','DAILY PERFORMANCE']);
+ out.push(['Pemanen','NPK','JJG Today','Basis Blok Avg','More Basis Today','Premi Today','Blok Dipanen','Mandoran']);
+ activeRows.forEach(x=>out.push([x.name,x.npk,x.jjg,x.avgBasis!=null?Number(x.avgBasis.toFixed(2)):'',x.more, x.premi, (x.blocks||[]).join(' | '),(x.mandors||[]).join(' | ')]));
+ out.push([]);
+ out.push(['SECTION','PERIOD PERFORMANCE']);
+ out.push(['Rank','Pemanen','NPK','JJG Periode','Hari Panen','More Basis Periode','Premi Periode','JJG/HK','Achievement','Class']);
+ pmRows.slice().sort((a,b)=>b.premi-a.premi).forEach((x,i)=>{
+   const ach=x.avgBasis&&x.avgBasis>0?(x.jjgPerHK/x.avgBasis*100):null;
+   const cls=peopleClass(ach);
+   out.push([i+1,x.name,x.npk,x.jjg,x.hkDays,Number(x.more.toFixed(2)),x.premi,Number(x.jjgPerHK.toFixed(2)),ach!=null?Number(ach.toFixed(1)):'',cls.label]);
+ });
+ out.push([]);
+ out.push(['SUMMARY','Total Pemanen',activeRows.length,'JJG Today',day.totalJjg,'More Basis Today',Number(day.totalMore.toFixed(2)),'Premi Today',day.totalPremi]);
+ out.push(['SUMMARY','Pemanen Periode',pmRows.length,'JJG Periode',pmRows.reduce((a,x)=>a+x.jjg,0),'More Basis Periode',Number(pmRows.reduce((a,x)=>a+x.more,0).toFixed(2)),'Premi Periode',pmRows.reduce((a,x)=>a+x.premi,0)]);
+ downloadCSV(`ADRIANA_People_Performance_${date}.csv`,out);
+}
+function downloadInfieldCSV(){
+ if(!ACTIVE||!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
+ if(ACTIVE_AFD!=='OC'){alert('Infield tersedia untuk OCYM setelah dataset diproses.');return;}
+ const d=window.ADRIANA_DATA;
+ const builder=window.ADRIANA_BUILD_INFIELD_REAL;
+ if(typeof builder!=='function'){alert('Engine Infield belum tersedia.');return;}
+ const x=builder(d), rows=(x.rows||[]).slice().sort((a,b)=>a.net-b.net);
+ if(!rows.length){alert('Data Infield belum tersedia pada dataset aktif.');return;}
+ const out=[];
+ out.push(['ADRIANA INFIELD CONTROL EXPORT']);
+ out.push(['AFD',ACTIVE_AFD,'Tanggal',d.date||ACTIVE.date||'']);
+ out.push([]);
+ out.push(['SECTION','INFIELD TEAM']);
+ out.push(['Rank','Tim Infield (NPK + Helper)','Identitas NPK','Kode Alat','Blok Summary','JJG TAP','Langsir','JJG Infield Real','BJR Aktual (kg/JJG)','Tonase (T)']);
+ rows.forEach((r,i)=>out.push([i+1,r.nama,r.ident,r.code,(r.blocks||[]).join(' | '),r.jjg,'—',r.net,r.bjr!=null?Number(r.bjr.toFixed(2)):'',r.tonase!=null?Number(r.tonase.toFixed(3)):'']));
+ out.push([]);
+ out.push(['SUMMARY','Penginfield',x.people?.length||0,'Blok Infield',new Set(rows.flatMap(r=>r.blocks||[])).size,'JJG TAP Gross',x.gross,'JJG Langsir','—','JJG Infield Real',x.net]);
+ downloadCSV(`ADRIANA_Infield_${ACTIVE_AFD}_${d.date||ACTIVE.date||'dataset'}.csv`,out);
 }
 function formatAmantaDateTimeForExport(dt){
  if(!(dt instanceof Date)||isNaN(dt))return '';
@@ -1940,52 +1998,15 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
 })();
 
 </script>
-
-<script>
-/* FINAL EXPORT ADD-ONS — additive only; existing application logic untouched */
-function _adrianaExportRenderedTable(table, filename, title){
-  if(!table){ alert('Tabel belum tersedia untuk di-download.'); return; }
-  const rows=[];
-  if(title) rows.push([title]);
-  table.querySelectorAll('tr').forEach(tr=>{
-    const cells=[...tr.querySelectorAll('th,td')].map(td=>{
-      const clone=td.cloneNode(true);
-      clone.querySelectorAll('button,svg').forEach(x=>x.remove());
-      return (clone.innerText||clone.textContent||'').replace(/\s+/g,' ').trim();
-    });
-    if(cells.length) rows.push(cells);
-  });
-  const data=rows.filter(r=>r.some(v=>v!==''));
-  if(data.length<=1){ alert('Data belum tersedia untuk di-download.'); return; }
-  const csv='\uFEFF'+data.map(r=>r.map(csvEscape).join(',')).join('\r\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-  const url=URL.createObjectURL(blob), a=document.createElement('a');
-  a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),100);
-}
-function downloadInfieldCSV(){
-  const afd=(typeof ACTIVE_AFD!=='undefined'&&ACTIVE_AFD)||'OCYM', date=(window.ADRIANA_DATA&&window.ADRIANA_DATA.date)||'dataset';
-  const table=document.querySelector('#infield .peopleTableWrap table');
-  _adrianaExportRenderedTable(table,`ADRIANA_Infield_${afd}_${date}.csv`,'ADRIANA INFIELD EXPORT');
-}
-function downloadPeoplePerformanceCSV(){
-  const afd=(typeof ACTIVE_AFD!=='undefined'&&ACTIVE_AFD)||'OCYM', date=(window.ADRIANA_DATA&&window.ADRIANA_DATA.date)||'dataset';
-  const tables=document.querySelectorAll('#people .peopleTableWrap table');
-  if(!tables.length){alert('Tabel People Performance belum tersedia.');return;}
-  const rows=[['ADRIANA PEOPLE PERFORMANCE EXPORT'],['AFD',afd,'Tanggal',date],[]];
-  tables.forEach((table,idx)=>{
-    rows.push([idx===0?'SECTION':'SECTION','PEOPLE PERFORMANCE '+(idx===0?'DAILY':'PERIOD')]);
-    table.querySelectorAll('tr').forEach(tr=>{
-      const cells=[...tr.querySelectorAll('th,td')].map(td=>(td.innerText||td.textContent||'').replace(/\s+/g,' ').trim());
-      if(cells.length) rows.push(cells);
-    });
-    rows.push([]);
-  });
-  const csv='\uFEFF'+rows.filter(r=>r.some(v=>v!=='')).map(r=>r.map(csvEscape).join(',')).join('\r\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-  const url=URL.createObjectURL(blob), a=document.createElement('a');
-  a.href=url; a.download=`ADRIANA_People_Performance_${afd}_${date}.csv`;
-  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),100);
-}
-</script>
 </body></html>
+<style>
+/* Final hero cleanup: no duplicated tagline; branding is HTML-only */
+.v3Planting{display:none!important}
+</style>
+
+<style>
+.v3AAL50,.astra50Logo{display:none!important}
+.v3Hero .v3BrandBlock{display:flex!important}
+.v3Hero .v3Adriana{display:block!important}
+.v3Hero .v3User{display:flex!important}
+</style>
