@@ -101,6 +101,43 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
 @media(max-width:980px){.side{position:fixed;left:0;right:0;top:auto;bottom:0;width:100%;height:66px;padding:7px 7px;background:rgba(5,53,37,.97);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.1);box-shadow:0 -10px 28px rgba(0,0,0,.12)}.side .brandRow,.side .sub{display:none}.nav{display:flex;overflow-x:auto;gap:5px;height:52px;align-items:center}.nav button{flex:0 0 auto;padding:9px 12px;font-size:9px;white-space:nowrap}.nav button.active{box-shadow:inset 0 -3px 0 #55d99e,inset 0 0 0 1px rgba(255,255,255,.08)}.main{margin-left:0;width:100%;padding:0 14px 90px}.astraHead{margin:0 -14px 14px;padding:11px 14px}.adrianaMainLogo{height:34px!important;max-width:170px}.astra50Logo{height:30px!important;max-width:105px}.astraRight{display:none}.dashWelcome{border-radius:18px;padding:18px}.dashWelcome .title{font-size:24px}.dashControls{flex-direction:column;align-items:stretch}.dateBox{min-width:0}.grid.kpiGrid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.dashLower{grid-template-columns:1fr}.dashRight{grid-template-columns:1fr 1fr}.miniGrid,.peopleKpis{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.astraHead{position:relative}.brandPair{gap:7px}.brandDivider{height:23px}.dashWelcome{display:block}.dashControls{margin-top:14px;display:grid;grid-template-columns:1fr auto}.dashWelcome .title{font-size:22px}.grid.kpiGrid{gap:8px}.card{padding:13px}.kpi{min-height:132px}.kpi .value{font-size:22px}.kpiIcon{width:31px;height:31px;margin-bottom:8px}.kpi .small{font-size:8px}.dashRight{grid-template-columns:1fr}.panel{padding:13px;border-radius:15px}.panelHead h2{font-size:12px}.densitySummary{gap:6px}.densityMetric{padding:9px}.densityMetric strong{font-size:17px}.top .title{font-size:21px}.top{margin-bottom:12px}.peoplePeriodBar{display:block}.peoplePeriodBar .small{margin-top:6px}.section table{min-width:620px}.section .panel{overflow:hidden}.section .peopleTableWrap,.section .perfTable{margin-left:-2px;margin-right:-2px}.dashLower .productionPanel table{min-width:720px}.decisionHero #dashboardDecision{font-size:23px}.quickGrid{gap:6px}}
 
+
+/* DOWNLOAD + HEADER BRAND UPGRADE — visual layer */
+.astraHead{gap:14px}
+.astraLestariHeadLogo{
+  width:54px;height:54px;object-fit:contain;object-position:center;
+  border-radius:0;background:#fff;display:block;flex:0 0 54px;
+  margin-left:auto;
+}
+.sectionDownloadBar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-top:12px;padding:10px 12px;border:1px solid var(--neo-line);
+  background:var(--neo-surface2);border-radius:11px;
+}
+.sectionDownloadBar span{
+  font-size:9px;font-weight:800;color:var(--neo-muted);
+  text-transform:uppercase;letter-spacing:.07em;
+}
+.downloadBtn{margin-top:0!important;white-space:nowrap}
+.kpiIcon{width:56px!important;height:56px!important;border-radius:14px!important}
+.kpi .kpiIcon img{width:44px!important;height:44px!important;max-width:44px!important;max-height:44px!important}
+.kpi .label,.kpi .value,.kpi .delta,.kpi .small,.kpi .spark{margin-left:68px!important}
+@media(max-width:980px){
+  .astraLestariHeadLogo{width:48px;height:48px;flex-basis:48px}
+  .kpiIcon{width:52px!important;height:52px!important}
+  .kpi .kpiIcon img{width:40px!important;height:40px!important;max-width:40px!important;max-height:40px!important}
+  .kpi .label,.kpi .value,.kpi .delta,.kpi .small,.kpi .spark{margin-left:62px!important}
+}
+@media(max-width:520px){
+  .astraLestariHeadLogo{width:42px;height:42px;flex-basis:42px}
+  .astra50Logo{max-width:112px!important}
+  .adrianaMainLogo{max-width:155px!important}
+  .sectionDownloadBar{align-items:flex-start;flex-direction:column}
+  .downloadBtn{width:100%}
+  .kpiIcon{width:50px!important;height:50px!important}
+  .kpi .kpiIcon img{width:38px!important;height:38px!important;max-width:38px!important;max-height:38px!important}
+  .kpi .label,.kpi .value,.kpi .delta,.kpi .small,.kpi .spark{margin-left:60px!important}
+}
 </style>
 </head>
 <body>
@@ -123,7 +160,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
   </div>
 </aside>
 <main class="main">
-<div class="astraHead"><div class="brandPair"><img class="adrianaMainLogo" src="adriana-logo-main.png" alt="ADRIANA — Assistant Daily Reporting & Analytics"><span class="brandDivider"></span><img class="astra50Logo" src="astra-agro-50-header.png" alt="Astra Agro 50"></div><div class="astraRight"><b>Sustainable Plantation</b><span>Operational Intelligence · ADRIANA</span></div></div>
+<div class="astraHead"><div class="brandPair"><img class="adrianaMainLogo" src="adriana-logo-main.png" alt="ADRIANA — Assistant Daily Reporting & Analytics"><span class="brandDivider"></span><img class="astra50Logo" src="astra-agro-50-header.png" alt="Astra Agro 50"></div><div class="astraRight"><b>Sustainable Plantation</b><span>Operational Intelligence · ADRIANA</span></div><img class="astraLestariHeadLogo" src="astra-agro-lestari-head.jpg" alt="Astra Agro Lestari"></div>
 <section id="dashboard" class="section active">
 <div class="dashWelcome"><div><div class="eyebrow">DAILY OPERATIONAL VIEW</div><div class="title">Welcome, <span class="welcomeName">Afdeling Head SYM!</span></div><div class="meta" id="activeMeta">Upload AMANTA files in Daily Closing</div><div class="afdFilter"><label>AFDELING</label><select id="afdFilter"><option value="ALL">Semua Afdeling</option><option value="OC">OCYM</option><option value="OE">OEYM</option></select></div></div><div class="dashControls"><div class="dateBox"><span>▣</span><div><small>Daily Operational View</small><strong id="activeDate">No dataset</strong></div><b>⌄</b></div><div class="lock" id="lockState">● NO DATASET</div></div></div>
 <div class="grid kpiGrid">
@@ -227,6 +264,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
 <div class="peopleKpi"><small>JJG INFIELD REAL</small><strong id="infieldNet">—</strong></div>
 </div>
 <div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Tim Infield (NPK + Helper)</th><th>Kode Alat</th><th>Blok Summary</th><th>JJG TAP</th><th>Langsir</th><th>JJG Infield Real</th><th>BJR Aktual</th><th>Tonase</th></tr></thead><tbody id="infieldBody"><tr><td colspan="9" class="small">Upload &amp; lock AMANTA untuk melihat Infield.</td></tr></tbody></table></div>
+<div class="sectionDownloadBar"><span>Export Infield</span><button class="btn downloadBtn" type="button" onclick="downloadInfieldCSV()">Download Infield CSV ↓</button></div>
 <div class="perfNote">Ranking diurutkan dari JJG Infield Real paling sedikit. Sumber JJG: PRODUKSIUNIT.JJG berdasarkan KODEUNIT. NPKUTAMA digunakan untuk menghubungkan helper. Langsir tidak menjadi deduction JJG.</div>
 </div></section>
 <section id="people" class="section">
@@ -317,6 +355,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
       <div id="kkpProductionSummary" class="notice">Upload &amp; lock AMANTA OCYM untuk menghitung output produksi KKP.</div>
       <div style="display:flex;justify-content:flex-end;margin:10px 0"><button class="btn" type="button" onclick="downloadKKPProductionCSV()">Download KKP Production CSV</button></div>
       <div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Wilayah</th><th>KKP</th><th>Pemanen</th><th>JJG per Pemanen</th><th>Total JJG</th><th>Status</th></tr></thead><tbody id="kkpProductionBody"><tr><td colspan="7" class="small">Belum ada dataset OCYM aktif.</td></tr></tbody></table></div>
+<div class="sectionDownloadBar"><span>Export People Performance</span><button class="btn downloadBtn" type="button" onclick="downloadPeoplePerformanceCSV()">Download People Performance CSV ↓</button></div>
       <div class="peopleNote"><b>Master KKP:</b> OC PN 1 — KKP 1–3 · OC PN 2 — KKP 1–3. Total 6 KKP / 24 roster pemanen. Produksi diambil dari JJG aktual AMANTA berdasarkan NPK; Agus 05 menggunakan nama sebagai fallback. Ranking berdasarkan total JJG KKP tertinggi → terendah.</div>
     </div>
   </div>
@@ -1407,5 +1446,91 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(ACTIVE)renderKKP(ACTIVE);renderHistory();},150);});
 })();
 
+</script>
+
+<script>
+/* ADRIANA DOWNLOAD EXTENSION — additive only; existing calculation logic untouched */
+(function(){
+  const csvEscape = v => {
+    const x = String(v ?? '');
+    return /[",\n\r]/.test(x) ? '"' + x.replace(/"/g,'""') + '"' : x;
+  };
+  const saveCsv = (filename, rows) => {
+    if(!rows || !rows.length){ alert('Data belum tersedia untuk di-download.'); return; }
+    const csv = '\uFEFF' + rows.map(r => r.map(csvEscape).join(',')).join('\r\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+  };
+
+  window.downloadInfieldCSV = function(){
+    const d = window.ADRIANA_DATA || (typeof ACTIVE !== 'undefined' ? ACTIVE : null);
+    const afd = (typeof ACTIVE_AFD !== 'undefined' ? ACTIVE_AFD : (d?.afd || 'OC'));
+    if(!d?.date){ alert('Belum ada dataset aktif.'); return; }
+    if(afd !== 'OC'){ alert('Infield tersedia untuk OCYM.'); return; }
+    const builder = window.ADRIANA_BUILD_INFIELD_REAL;
+    if(typeof builder !== 'function'){ alert('Engine Infield belum tersedia.'); return; }
+    const x = builder(d);
+    const rows = [
+      ['ADRIANA INFIELD CONTROL EXPORT'],
+      ['AFD', afd, 'Tanggal', d.date],
+      [],
+      ['Rank','Tim Infield (NPK + Helper)','Kode Alat','Blok Summary','JJG TAP','Langsir','JJG Infield Real','BJR Aktual (kg/JJG)','Tonase (T)']
+    ];
+    (x.rows || []).slice().sort((a,b)=>a.net-b.net).forEach((r,i)=>{
+      rows.push([
+        i+1, r.nama || '—', r.code || '—', (r.blocks||[]).join(', ') || '—',
+        r.jjg ?? 0, r.langsir ?? '—', r.net ?? 0,
+        r.bjr == null ? '—' : Number(r.bjr).toFixed(2),
+        r.tonase == null ? '—' : Number(r.tonase).toFixed(3)
+      ]);
+    });
+    rows.push([]);
+    rows.push(['TOTAL PENGINFIELD', (x.people||[]).length, 'TOTAL BLOK', new Set((x.rows||[]).flatMap(r=>r.blocks||[])).size]);
+    rows.push(['JJG TAP GROSS', x.gross ?? 0, 'JJG INFIELD REAL', x.net ?? 0]);
+    saveCsv(`ADRIANA_Infield_${afd}_${d.date}.csv`, rows);
+  };
+
+  window.downloadPeoplePerformanceCSV = function(){
+    const d = window.ADRIANA_DATA || (typeof ACTIVE !== 'undefined' ? ACTIVE : null);
+    const afd = (typeof ACTIVE_AFD !== 'undefined' ? ACTIVE_AFD : (d?.afd || 'OC'));
+    if(!d?.date){ alert('Belum ada dataset aktif.'); return; }
+    if(afd === 'OE'){ alert('OEYM belum memiliki master basis premi.'); return; }
+    if(typeof peopleMtdRows !== 'function'){ alert('Engine People Performance belum tersedia.'); return; }
+
+    const pm = peopleMtdRows(d.date, d);
+    const day = pm.history?.daily?.find(x=>x.date===d.date) || buildPeopleDay(d);
+    const rows = [
+      ['ADRIANA PEOPLE PERFORMANCE EXPORT'],
+      ['AFD', afd, 'Tanggal', d.date, 'Periode', day.period || pm.history?.period || '—'],
+      [],
+      ['Pemanen','NPK','JJG Today','Basis Blok (Avg)','More Basis Today','More Basis Periode',
+       'Premi Today','Premi Periode','JJG/HK Periode','Achievement','Class']
+    ];
+    (pm.rows || []).slice().sort((a,b)=>b.jjg-a.jjg).forEach(x=>{
+      rows.push([
+        x.name !== '—' ? x.name : x.npk,
+        x.npk || '—',
+        x.jjg ?? 0,
+        x.basis == null ? '—' : Number(x.basis).toFixed(2),
+        Number(x.more||0).toFixed(2),
+        Number(x.mtdMore||0).toFixed(2),
+        Number(x.premi||0),
+        Number(x.mtdPremi||0),
+        Number(x.mtdJjgPerHK||0).toFixed(2),
+        x.achievement == null ? '—' : Number(x.achievement).toFixed(1)+'%',
+        x.cluster?.label || '—'
+      ]);
+    });
+    rows.push([]);
+    rows.push(['TOTAL PEMANEN', (pm.rows||[]).length, 'TOTAL JJG TODAY', day.totalJjg ?? 0,
+      'MORE BASIS TODAY', Number(day.totalMore||0).toFixed(2),
+      'PREMI TODAY', Number(day.totalPremi||0)]);
+    saveCsv(`ADRIANA_People_Performance_${afd}_${d.date}.csv`, rows);
+  };
+})();
 </script>
 </body></html>
