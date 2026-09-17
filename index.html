@@ -866,7 +866,10 @@ body{
           <h2 style="margin:4px 0 2px">Premi Closing Periode</h2>
           <div id="peoplePeriodDetail" class="small">Periode Book —</div>
         </div>
-        <div id="peoplePeriodStatus" class="periodStatus">—</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+          <div id="peoplePeriodStatus" class="periodStatus">—</div>
+          <button class="btn downloadBtn" type="button" onclick="downloadPremiClosingPeriodCSV()">Download Premi Closing CSV ↓</button>
+        </div>
       </div>
       <div class="peopleKpis periodKpis">
         <div class="peopleKpi"><small>OPEN BOOK</small><strong id="peopleOpenBook">—</strong></div>
@@ -1562,6 +1565,24 @@ function renderPeopleAI(d){
     }));
     return {daily,agg:Object.values(agg)};
   };
+  window.downloadPremiClosingPeriodCSV=function(){
+    const activeDate=(window.ADRIANA_DATA&&window.ADRIANA_DATA.date)||window.ACTIVE?.date||null;
+    if(!activeDate){alert('Belum ada dataset aktif.');return;}
+    let hist=null;
+    try{ if(typeof buildPeopleHistory==='function') hist=buildPeopleHistory(activeDate,window.ADRIANA_DATA); }catch(e){}
+    if(!hist||!Array.isArray(hist.agg)||!hist.agg.length){alert('Data premi closing periode belum tersedia.');return;}
+    const rows=hist.agg.slice().sort((a,b)=>b.premi-a.premi);
+    const out=[
+      ['ADRIANA PREMI CLOSING PERIODE'],
+      ['Periode Book',`${hist.open} - ${hist.close}`],
+      ['Actual Through',hist.end],
+      [],
+      ['Rank','Pemanen','NPK','JJG Periode','Hari Panen','More Basis Periode','Premi Periode','JJG/HK','Avg Basis']
+    ];
+    rows.forEach((x,i)=>out.push([i+1,x.name||'—',x.npk||'—',x.jjg||0,x.hkDays||0,Number(x.more||0).toFixed(2),Number(x.premi||0).toFixed(0),Number(x.jjgPerHK||0).toFixed(2),x.avgBasis==null?'—':Number(x.avgBasis).toFixed(2)]));
+    downloadCSV(`ADRIANA_Premi_Closing_${hist.bookMonth||activeDate}.csv`,out);
+  };
+
   window.ADRIANA_PREMI_RENDER=function(d){
     const host=document.getElementById('peopleBody'), dashHost=document.getElementById('dashPeopleBody');
     if(!d?.date||d.date<PEOPLE_START_DATE||ACTIVE_AFD==='OE') return;
