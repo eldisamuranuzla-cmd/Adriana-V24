@@ -101,123 +101,6 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
 @media(max-width:980px){.side{position:fixed;left:0;right:0;top:auto;bottom:0;width:100%;height:66px;padding:7px 7px;background:rgba(5,53,37,.97);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.1);box-shadow:0 -10px 28px rgba(0,0,0,.12)}.side .brandRow,.side .sub{display:none}.nav{display:flex;overflow-x:auto;gap:5px;height:52px;align-items:center}.nav button{flex:0 0 auto;padding:9px 12px;font-size:9px;white-space:nowrap}.nav button.active{box-shadow:inset 0 -3px 0 #55d99e,inset 0 0 0 1px rgba(255,255,255,.08)}.main{margin-left:0;width:100%;padding:0 14px 90px}.astraHead{margin:0 -14px 14px;padding:11px 14px}.adrianaMainLogo{height:34px!important;max-width:170px}.astra50Logo{height:30px!important;max-width:105px}.astraRight{display:none}.dashWelcome{border-radius:18px;padding:18px}.dashWelcome .title{font-size:24px}.dashControls{flex-direction:column;align-items:stretch}.dateBox{min-width:0}.grid.kpiGrid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.dashLower{grid-template-columns:1fr}.dashRight{grid-template-columns:1fr 1fr}.miniGrid,.peopleKpis{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.astraHead{position:relative}.brandPair{gap:7px}.brandDivider{height:23px}.dashWelcome{display:block}.dashControls{margin-top:14px;display:grid;grid-template-columns:1fr auto}.dashWelcome .title{font-size:22px}.grid.kpiGrid{gap:8px}.card{padding:13px}.kpi{min-height:132px}.kpi .value{font-size:22px}.kpiIcon{width:31px;height:31px;margin-bottom:8px}.kpi .small{font-size:8px}.dashRight{grid-template-columns:1fr}.panel{padding:13px;border-radius:15px}.panelHead h2{font-size:12px}.densitySummary{gap:6px}.densityMetric{padding:9px}.densityMetric strong{font-size:17px}.top .title{font-size:21px}.top{margin-bottom:12px}.peoplePeriodBar{display:block}.peoplePeriodBar .small{margin-top:6px}.section table{min-width:620px}.section .panel{overflow:hidden}.section .peopleTableWrap,.section .perfTable{margin-left:-2px;margin-right:-2px}.dashLower .productionPanel table{min-width:720px}.decisionHero #dashboardDecision{font-size:23px}.quickGrid{gap:6px}}
 
-
-/* LOGO + EXPORT UPGRADE — visual only */
-.astraHead{
-  display:flex!important;align-items:center!important;gap:18px!important;
-  overflow:hidden!important;
-}
-.astraHead .brandPair{
-  flex:1 1 auto!important;min-width:0!important;display:flex!important;
-  align-items:center!important;gap:16px!important;
-}
-.astraHead .adrianaMainLogo{
-  height:52px!important;width:auto!important;max-width:245px!important;
-  flex:0 1 auto!important;object-fit:contain!important;
-}
-.astraHead .astra50Logo{
-  height:52px!important;width:auto!important;max-width:205px!important;
-  flex:0 1 auto!important;object-fit:contain!important;
-}
-.astraHead .brandDivider{height:42px!important;flex:0 0 1px!important}
-.astraLestariHeadLogo{
-  width:64px!important;height:64px!important;max-width:64px!important;max-height:64px!important;
-  flex:0 0 64px!important;object-fit:contain!important;background:#fff!important;
-  display:block!important;position:relative!important;z-index:5!important;
-}
-.astraHead .astraRight{display:none!important}
-
-.kpiIcon{
-  width:60px!important;height:60px!important;border-radius:15px!important;
-  margin-bottom:10px!important;
-}
-.kpi .kpiIcon img{
-  width:50px!important;height:50px!important;max-width:50px!important;max-height:50px!important;
-  object-fit:contain!important;
-}
-.kpi .label,.kpi .value,.kpi .delta,.kpi .small,.kpi .spark{
-  margin-left:72px!important;
-}
-.kpi .label{margin-right:54px!important}
-
-.periodHeadActions{
-  display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;
-}
-.sectionDownloadBar{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  margin-top:11px;padding:10px 12px;background:var(--neo-surface2);
-  border:1px solid var(--neo-line);border-radius:11px;
-}
-.sectionDownloadBar span{
-  font-size:9px;font-weight:800;color:var(--neo-muted);
-  text-transform:uppercase;letter-spacing:.07em;
-}
-.downloadBtn{margin-top:0!important;white-space:nowrap}
-
-@media(max-width:980px){
-  .astraHead{gap:9px!important;padding:9px 10px!important}
-  .astraHead .brandPair{gap:8px!important}
-  .astraHead .adrianaMainLogo{
-    height:42px!important;max-width:180px!important;
-  }
-  .astraHead .astra50Logo{
-    height:40px!important;max-width:132px!important;
-  }
-  .astraHead .brandDivider{height:31px!important}
-  .astraLestariHeadLogo{
-    width:52px!important;height:52px!important;max-width:52px!important;max-height:52px!important;flex-basis:52px!important;
-  }
-  .kpiIcon{width:56px!important;height:56px!important}
-  .kpi .kpiIcon img{width:46px!important;height:46px!important;max-width:46px!important;max-height:46px!important}
-  .kpi .label,.kpi .value,.kpi .delta,.kpi .small,.kpi .spark{margin-left:66px!important}
-}
-@media(max-width:520px){
-  .astraHead{padding:7px 8px!important;gap:5px!important}
-  .astraHead .brandPair{gap:5px!important}
-  .astraHead .adrianaMainLogo{
-    height:36px!important;max-width:145px!important;
-  }
-  .astraHead .astra50Logo{
-    height:34px!important;max-width:105px!important;
-  }
-  .astraHead .brandDivider{height:26px!important}
-  .astraLestariHeadLogo{
-    width:43px!important;height:43px!important;max-width:43px!important;max-height:43px!important;flex-basis:43px!important;
-  }
-  .kpiIcon{width:52px!important;height:52px!important}
-  .kpi .kpiIcon img{width:43px!important;height:43px!important;max-width:43px!important;max-height:43px!important}
-  .kpi .label,.kpi .value,.kpi .delta,.kpi .small,.kpi .spark{margin-left:62px!important}
-  .sectionDownloadBar{flex-direction:column;align-items:stretch}
-  .downloadBtn{width:100%}
-  .periodHeadActions{justify-content:stretch}
-  .periodHeadActions .downloadBtn{width:auto}
-}
-
-/* DAILY COMPARISON — current day vs previous calendar day */
-.dayCompare{
-  margin:5px 0 0 72px;
-  font-size:9px;font-weight:750;color:var(--neo-muted);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.dayCompare.up{color:#198b52}
-.dayCompare.down{color:#d44a4d}
-.dayCompare.flat{color:#718077}
-@media(max-width:980px){.dayCompare{margin-left:66px}}
-@media(max-width:520px){.dayCompare{margin-left:62px;font-size:8px}}
-
-/* RESTORE PREMI CLOSING PERIOD — dashboard presentation only */
-.premiClosingDashboard{margin-top:12px}
-.premiClosingDashboard .panelHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.premiClosingDashboard .periodHeadActions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0}
-.premiClosingDashboard .peoplePeriodGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:10px}
-.premiClosingDashboard .peoplePeriodGrid>div{padding:10px;border:1px solid var(--neo-line);border-radius:10px;background:var(--neo-surface2)}
-.premiClosingDashboard .peoplePeriodGrid span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:var(--neo-muted)}
-.premiClosingDashboard .peoplePeriodGrid b{display:block;margin-top:3px;font-size:12px;color:var(--neo-text)}
-@media(max-width:760px){
-  .premiClosingDashboard .peoplePeriodGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .premiClosingDashboard .periodHeadActions{align-items:stretch;flex-direction:column}
-  .premiClosingDashboard .downloadBtn{width:100%}
-}
 </style>
 </head>
 <body>
@@ -240,14 +123,14 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
   </div>
 </aside>
 <main class="main">
-<div class="astraHead"><div class="brandPair"><img class="adrianaMainLogo" src="adriana-logo-main.png" alt="ADRIANA — Assistant Daily Reporting & Analytics"><span class="brandDivider"></span><img class="astra50Logo" src="astra-agro-50-header.png" alt="Astra Agro 50"></div><div class="astraRight"><b>Sustainable Plantation</b><span>Operational Intelligence · ADRIANA</span></div><img class="astraLestariHeadLogo" src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"></div>
+<div class="astraHead"><div class="brandPair"><img class="adrianaMainLogo" src="adriana-logo-main.png" alt="ADRIANA — Assistant Daily Reporting & Analytics"><span class="brandDivider"></span><img class="astra50Logo" src="astra-agro-50-header.png" alt="Astra Agro 50"></div><div class="astraRight"><b>Sustainable Plantation</b><span>Operational Intelligence · ADRIANA</span></div></div>
 <section id="dashboard" class="section active">
 <div class="dashWelcome"><div><div class="eyebrow">DAILY OPERATIONAL VIEW</div><div class="title">Welcome, <span class="welcomeName">Afdeling Head SYM!</span></div><div class="meta" id="activeMeta">Upload AMANTA files in Daily Closing</div><div class="afdFilter"><label>AFDELING</label><select id="afdFilter"><option value="ALL">Semua Afdeling</option><option value="OC">OCYM</option><option value="OE">OEYM</option></select></div></div><div class="dashControls"><div class="dateBox"><span>▣</span><div><small>Daily Operational View</small><strong id="activeDate">No dataset</strong></div><b>⌄</b></div><div class="lock" id="lockState">● NO DATASET</div></div></div>
 <div class="grid kpiGrid">
-<div class="card kpi kpiPalm"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-tbs.png" alt="TBS Kelapa Sawit"></div><div class="label">TOTAL JJG</div><div class="value">1,863</div><div class="delta up">↑ Operational volume</div><div class="small">3-source reconciliation matched</div><div class="dayCompare" id="compareJJG">vs hari sebelumnya: —</div> <div class="spark"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-<div class="card kpi kpiPeople"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-worker.png" alt="Producing Manpower"></div><div class="label">PRODUCING HK</div><div class="value">23</div><div class="delta up">↑ Producing manpower</div><div class="small">unique producing NPK</div><div class="dayCompare" id="compareHK">vs hari sebelumnya: —</div> <div class="spark bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-<div class="card kpi kpiTruck"><span class="confidence medium">MEDIUM</span><div class="kpiIcon"><img src="kpi-truck.png" alt="Net Transport"></div><div class="label">NET TRANSPORT</div><div class="value">12.86 T</div><div class="delta down">↓ Scale movement</div><div class="small">2 trips · scale weight</div><div class="dayCompare" id="compareTONASE">vs hari sebelumnya: —</div> <div class="spark bars amber"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-<div class="card kpi kpiRestan"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-bjr.png" alt="TBS Kelapa Sawit"></div><div class="label">BJR</div><div class="value">—</div><div class="small">kg/JJG · net tonnage ÷ JJG</div><div class="dayCompare" id="compareBJR">vs hari sebelumnya: —</div> <div class="spark dashed"></div></div>
+<div class="card kpi kpiPalm"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-tbs.png" alt="TBS Kelapa Sawit"></div><div class="label">TOTAL JJG</div><div class="value">1,863</div><div class="delta up">↑ Operational volume</div><div class="small">3-source reconciliation matched</div><div class="spark"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+<div class="card kpi kpiPeople"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-worker.png" alt="Producing Manpower"></div><div class="label">PRODUCING HK</div><div class="value">23</div><div class="delta up">↑ Producing manpower</div><div class="small">unique producing NPK</div><div class="spark bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+<div class="card kpi kpiTruck"><span class="confidence medium">MEDIUM</span><div class="kpiIcon"><img src="kpi-truck.png" alt="Net Transport"></div><div class="label">NET TRANSPORT</div><div class="value">12.86 T</div><div class="delta down">↓ Scale movement</div><div class="small">2 trips · scale weight</div><div class="spark bars amber"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+<div class="card kpi kpiRestan"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-bjr.png" alt="TBS Kelapa Sawit"></div><div class="label">BJR</div><div class="value">—</div><div class="small">kg/JJG · net tonnage ÷ JJG</div><div class="spark dashed"></div></div>
 </div>
 <div class="two dashTopGrid">
 <div class="panel signalsPanel"><div class="panelHead"><h2>Today's Operational Signals</h2><span>See All →</span></div><div id="dashboardSignals"><div class="notice">Upload and lock a daily dataset to generate operational signals.</div></div></div>
@@ -266,36 +149,23 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
   <div id="kkpDashboardSummary" class="notice">Upload &amp; lock AMANTA OCYM untuk menghitung output KKP.</div>
   <div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Wilayah</th><th>KKP</th><th>Pemanen</th><th>JJG</th><th>Total JJG</th><th>Status</th></tr></thead><tbody id="kkpDashboardBody"><tr><td colspan="7" class="small">Belum ada dataset OCYM aktif.</td></tr></tbody></table></div>
 </div>
-
-<div class="panel premiClosingDashboard" id="premiClosingDashboard">
-  <div class="panelHead">
-    <h2>Premi Closing Period</h2>
-    <span class="small">Ringkasan periode premi aktif</span>
-  </div>
-  <div class="periodHeadActions">
-    <div id="peoplePeriodStatus" class="periodStatus">—</div>
-    <button class="btn downloadBtn" type="button" onclick="downloadPremiClosingPeriodCSV()">Download Premi Closing CSV ↓</button>
-  </div>
-  <div class="peoplePeriodGrid">
-    <div><span>Periode</span><b id="peoplePeriod">—</b></div>
-    <div><span>Open Book</span><b id="peopleOpenBook">—</b></div>
-    <div><span>Closing Book</span><b id="peopleCloseBook">—</b></div>
-    <div><span>Total More Basis</span><b id="peoplePeriodMore">—</b></div>
-    <div><span>Total Premi</span><b id="peoplePeriodPremi">—</b></div>
+<div class="panel peopleDashPanel">
+  <div class="panelHead"><h2>People Performance &amp; Premi</h2><span id="dashPeoplePeriod">Book Period —</span></div>
+  <div class="peopleKpis">
+    <div class="peopleKpi"><small>PEMANEN AKTIF</small><strong id="dashPeopleCount">—</strong></div>
+    <div class="peopleKpi"><small>JJG TODAY</small><strong id="dashPeopleJjg">—</strong></div>
+    <div class="peopleKpi"><small>MORE BASIS TODAY</small><strong id="dashPeopleMore">—</strong></div>
+    <div class="peopleKpi"><small>MORE BASIS PERIODE</small><strong id="dashPeopleMoreMtd">—</strong></div>
+    <div class="peopleKpi"><small>PREMI HARI INI</small><strong id="dashPeoplePremi">—</strong></div>
+    <div class="peopleKpi"><small>PREMI PERIODE</small><strong id="dashPeoplePremiMtd">—</strong></div>
   </div>
   <div class="peopleTableWrap">
     <table>
-      <thead>
-        <tr>
-          <th>Rank</th><th>Pemanen</th><th>JJG Periode</th><th>Hari Panen</th>
-          <th>More Basis Periode</th><th>Premi Periode</th><th>JJG/HK</th>
-        </tr>
-      </thead>
-      <tbody id="peoplePeriodBody">
-        <tr><td colspan="7" class="small">Belum ada data Premi Closing.</td></tr>
-      </tbody>
+      <thead><tr><th>Pemanen</th><th>JJG Today</th><th>Basis Blok (Avg)</th><th>More Basis</th><th>More Basis Periode</th><th>Premi Today</th><th>Premi Periode</th><th>Class</th></tr></thead>
+      <tbody id="dashPeopleBody"><tr><td colspan="7" class="small">Upload &amp; lock AMANTA untuk melihat People Performance.</td></tr></tbody>
     </table>
   </div>
+  <div class="peopleNote">Premi dihitung harian per pemanen: seluruh JJG pemanen dari blok yang benar-benar dipanen dikurangi rata-rata basis blok yang dipanen pemanen tersebut. More Basis dan Premi Periode diakumulasi berdasarkan Open Book–Closing Book. Periode payroll: tanggal 21 sampai tanggal 20 bulan berikutnya. Minggu: Rp2.500/JJG.</div>
 </div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
 <div class="footer">ADRIANA v22.13 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
@@ -356,7 +226,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
 <div class="peopleKpi"><small>JJG LANGSIR</small><strong id="infieldLangsir">—</strong></div>
 <div class="peopleKpi"><small>JJG INFIELD REAL</small><strong id="infieldNet">—</strong></div>
 </div>
-<div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Tim Infield (NPK + Helper)</th><th>Kode Alat</th><th>Blok Summary</th><th>JJG TAP</th><th>Langsir</th><th>JJG Infield Real</th><th>BJR Aktual</th><th>Tonase</th></tr></thead><tbody id="infieldBody"><tr><td colspan="9" class="small">Upload &amp; lock AMANTA untuk melihat Infield.</td></tr></tbody></table></div><div class="sectionDownloadBar"><span>Export Infield</span><button class="btn downloadBtn" type="button" onclick="downloadInfieldCSV()">Download Infield CSV ↓</button></div>
+<div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Tim Infield (NPK + Helper)</th><th>Kode Alat</th><th>Blok Summary</th><th>JJG TAP</th><th>Langsir</th><th>JJG Infield Real</th><th>BJR Aktual</th><th>Tonase</th></tr></thead><tbody id="infieldBody"><tr><td colspan="9" class="small">Upload &amp; lock AMANTA untuk melihat Infield.</td></tr></tbody></table></div>
 <div class="perfNote">Ranking diurutkan dari JJG Infield Real paling sedikit. Sumber JJG: PRODUKSIUNIT.JJG berdasarkan KODEUNIT. NPKUTAMA digunakan untuk menghubungkan helper. Langsir tidak menjadi deduction JJG.</div>
 </div></section>
 <section id="people" class="section">
@@ -395,7 +265,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
         </thead>
         <tbody id="peopleBody"><tr><td colspan="9" class="small">Belum ada dataset aktif.</td></tr></tbody>
       </table>
-    </div><div class="sectionDownloadBar"><span>Export People Performance</span><button class="btn downloadBtn" type="button" onclick="downloadPeoplePerformanceCSV()">Download People Performance CSV ↓</button></div>
+    </div>
     
     <div class="panel periodClosingPanel" style="margin-top:14px">
       <div class="periodClosingHead">
@@ -404,7 +274,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
           <h2 style="margin:4px 0 2px">Premi Closing Periode</h2>
           <div id="peoplePeriodDetail" class="small">Periode Book —</div>
         </div>
-        <div class="periodHeadActions"><div id="peoplePeriodStatus" class="periodStatus">—</div><button class="btn downloadBtn" type="button" onclick="downloadPremiClosingPeriodCSV()">Download Premi Closing CSV ↓</button></div>
+        <div id="peoplePeriodStatus" class="periodStatus">—</div>
       </div>
       <div class="peopleKpis periodKpis">
         <div class="peopleKpi"><small>OPEN BOOK</small><strong id="peopleOpenBook">—</strong></div>
@@ -843,7 +713,38 @@ function migrateLegacyHistoryHybrid(){
  for(const date of idx){let snap=null;try{snap=JSON.parse(localStorage.getItem('adriana_daily_'+date)||'null')}catch(e){}if(!snap)continue;const afd=detectAFDHybrid(snap.sections||{},snap.files?.[0]||'')||'OC';const k=afdKeyHybrid(snap.date||date,afd);if(!localStorage.getItem(k))localStorage.setItem(k,JSON.stringify({...snap,afd,afdLabel:AFD_LABEL[afd]||afd,migratedFrom:'adriana_daily_'+date,migratedAt:new Date().toISOString()}));if(!afdIdx.some(x=>x.date===(snap.date||date)&&x.afd===afd))afdIdx.push({date:snap.date||date,afd});}
  afdIdx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));localStorage.setItem('adriana_afd_index',JSON.stringify(afdIdx));
 }
-function getAfdSnapshotsHybrid(afd){migrateLegacyHistoryHybrid();let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}return idx.map(x=>{try{return JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null')}catch(e){return null}}).filter(x=>x&&(!afd||afd==='ALL'||x.afd===afd)).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
+function getAfdSnapshotsHybrid(afd){
+  migrateLegacyHistoryHybrid();
+  const out={};
+  let idx=[];
+  try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}
+  if(Array.isArray(idx)){
+    for(const x of idx){
+      try{
+        const s=JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null');
+        if(s&&(!afd||afd==='ALL'||s.afd===afd)) out[(s.date||x.date)+'|'+(s.afd||x.afd)]=s;
+      }catch(e){}
+    }
+  }
+
+  // Compatibility fallback: also read the original daily historical store.
+  let dailyIdx=[];
+  try{dailyIdx=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]')}catch(e){}
+  if(Array.isArray(dailyIdx)){
+    for(const date of dailyIdx){
+      try{
+        const s=JSON.parse(localStorage.getItem('adriana_daily_'+date)||'null');
+        if(!s) continue;
+        const sa=s.afd||detectAFDHybrid(s.sections||{},s.files?.[0]||'')||'OC';
+        if(afd&&afd!=='ALL'&&sa!==afd) continue;
+        const k=(s.date||date)+'|'+sa;
+        if(!out[k]) out[k]={...s,afd:sa,afdLabel:s.afdLabel||AFD_LABEL[sa]||sa};
+      }catch(e){}
+    }
+  }
+
+  return Object.values(out).filter(Boolean).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+}catch(e){}return idx.map(x=>{try{return JSON.parse(localStorage.getItem(afdKeyHybrid(x.date,x.afd))||'null')}catch(e){return null}}).filter(x=>x&&(!afd||afd==='ALL'||x.afd===afd)).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
 function getLockedSnapshots(){return getAfdSnapshotsHybrid(ACTIVE_AFD==='ALL'?'':ACTIVE_AFD)}
 async function processAMANTA(){
  const files=[...document.getElementById('amantaFiles').files];if(!files.length)return;
@@ -1340,7 +1241,7 @@ function renderPeopleAI(d){
   set('infieldPeople',x.people.length.toLocaleString('id-ID'));set('infieldBlocks',new Set(rows.flatMap(r=>r.blocks||[])).size.toLocaleString('id-ID'));set('infieldGross',x.gross.toLocaleString('id-ID'));set('infieldLangsir','—');set('infieldNet',x.net.toLocaleString('id-ID'));
   host.innerHTML=rows.map((r,i)=>{const blockText=(r.blocks||[]).join(', ');return `<tr><td><span class="rankBadge ${i===0?'low':''}">${i+1}</span></td><td><b>${html.escape(r.nama)}</b><div class="small">${html.escape(r.ident)}</div></td><td>${html.escape(r.code)}</td><td>${html.escape(blockText||'—')}</td><td>${r.jjg.toLocaleString('id-ID')}</td><td>—</td><td><b>${r.net.toLocaleString('id-ID')}</b></td><td>${r.bjr==null?'—':r.bjr.toFixed(2)+' kg/JJG'}</td><td>${r.tonase==null?'—':r.tonase.toFixed(3)+' T'}</td></tr>`}).join('')||'<tr><td colspan="9" class="small">Belum ada record PRODUKSIUNIT dengan KODEUNIT.</td></tr>';
  }
- window.ADRIANA_BUILD_INFIELD_REAL=build;window.ADRIANA_RENDER_INFIELD=render;const base=renderAll;renderAll=function(snap){base(snap);try{render(snap)}catch(e){console.warn('Infield:',e)}};
+ window.ADRIANA_BUILD_INFIELD_REAL=build;const base=renderAll;renderAll=function(snap){base(snap);try{render(snap)}catch(e){console.warn('Infield:',e)}};
 })();
 
 const _ADRIANA_RENDER_ALL_BASE=renderAll;
@@ -1503,7 +1404,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
     return groups;
   };
   window.ADRIANA_KKP_MASTER=KKP_MASTER;
-  window.ADRIANA_BUILD_KKP=kkpRows;window.ADRIANA_RENDER_KKP=renderKKP;
+  window.ADRIANA_BUILD_KKP=kkpRows;
   const renderKKP=(d)=>{
     const host=document.getElementById('kkpProductionBody');if(!host)return;
     if(!d?.date||((ACTIVE_AFD==='OE')&&d.afd!=='OC')){host.innerHTML='<tr><td colspan="7" class="small">Pilih OCYM / load dataset OC untuk melihat produksi KKP OC PN 1 dan OC PN 2.</td></tr>';const dh0=document.getElementById('kkpDashboardBody');if(dh0)dh0.innerHTML='<tr><td colspan="7" class="small">Pilih OCYM / load dataset OC untuk melihat produksi KKP OC PN 1 dan OC PN 2.</td></tr>';return;}
@@ -1537,169 +1438,5 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(ACTIVE)renderKKP(ACTIVE);renderHistory();},150);});
 })();
 
-</script>
-
-<script>
-/* ADRIANA EXPORT EXTENSIONS — additive only */
-(function(){
-  function exportCsv(filename, rows){
-    if(!rows || !rows.length){ alert('Data belum tersedia untuk di-download.'); return; }
-    const esc=v=>{const x=String(v??'');return /[",\n\r]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x;};
-    const csv='\uFEFF'+rows.map(r=>r.map(esc).join(',')).join('\r\n');
-    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-    const url=URL.createObjectURL(blob),a=document.createElement('a');
-    a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),500);
-  }
-
-  window.downloadInfieldCSV=function(){
-    const d=window.ADRIANA_DATA;
-    if(!d?.date){alert('Belum ada dataset aktif.');return;}
-    if(typeof window.ADRIANA_BUILD_INFIELD_REAL!=='function'){alert('Engine Infield belum tersedia.');return;}
-    const x=window.ADRIANA_BUILD_INFIELD_REAL(d), rows=[
-      ['ADRIANA INFIELD EXPORT'],['AFD',ACTIVE_AFD||d.afd||'','Tanggal',d.date],[],
-      ['Rank','Tim Infield (NPK + Helper)','Kode Alat','Blok Summary','JJG TAP','Langsir','JJG Infield Real','BJR Aktual','Tonase']
-    ];
-    (x.rows||[]).slice().sort((a,b)=>a.net-b.net).forEach((r,i)=>rows.push([
-      i+1,r.nama||'—',r.code||'—',(r.blocks||[]).join(' | ')||'—',r.jjg??0,'—',r.net??0,
-      r.bjr==null?'—':Number(r.bjr).toFixed(2),
-      r.tonase==null?'—':Number(r.tonase).toFixed(3)
-    ]));
-    rows.push([],['TOTAL TIM',x.people?.length||0,'TOTAL JJG TAP',x.gross??0,'TOTAL JJG REAL',x.net??0]);
-    exportCsv(`ADRIANA_Infield_${ACTIVE_AFD||d.afd||'OC'}_${d.date}.csv`,rows);
-  };
-
-  window.downloadPeoplePerformanceCSV=function(){
-    const d=window.ADRIANA_DATA;
-    if(!d?.date){alert('Belum ada dataset aktif.');return;}
-    if(typeof peopleMtdRows!=='function'){alert('Engine People Performance belum tersedia.');return;}
-    const pm=peopleMtdRows(d.date,d);
-    const rows=[['ADRIANA PEOPLE PERFORMANCE EXPORT'],
-      ['AFD',ACTIVE_AFD||d.afd||'','Tanggal',d.date],
-      ['Periode',document.getElementById('peoplePeriod')?.textContent||'—'],[],
-      ['Pemanen','NPK','JJG Today','Basis Blok Avg','More Basis Today','Premi Today','More Basis Periode','Premi Periode','JJG/HK MTD','Achievement','Class']
-    ];
-    (pm.rows||[]).slice().sort((a,b)=>b.jjg-a.jjg).forEach(x=>rows.push([
-      x.name!=='—'?x.name:'—',x.npk||'—',x.jjg??0,
-      x.avgBasis==null?'—':Number(x.avgBasis).toFixed(2),
-      Number(x.more||0).toFixed(2),Number(x.premi||0),
-      Number(x.mtdMore||0).toFixed(2),Number(x.mtdPremi||0),
-      Number(x.mtdJjgPerHK||0).toFixed(2),
-      x.achievement==null?'—':Number(x.achievement).toFixed(1)+'%',
-      x.cluster?.key||'—'
-    ]));
-    exportCsv(`ADRIANA_People_Performance_${ACTIVE_AFD||d.afd||'OC'}_${d.date}.csv`,rows);
-  };
-
-  window.downloadPremiClosingPeriodCSV=function(){
-    const d=window.ADRIANA_DATA;
-    const body=document.getElementById('peoplePeriodBody');
-    if(!d?.date || !body){alert('Data Premi Closing belum tersedia.');return;}
-    const status=document.getElementById('peoplePeriodStatus')?.textContent||'—';
-    const period=document.getElementById('peoplePeriod')?.textContent||'—';
-    const open=document.getElementById('peopleOpenBook')?.textContent||'—';
-    const close=document.getElementById('peopleCloseBook')?.textContent||'—';
-    const totalPremi=document.getElementById('peoplePeriodPremi')?.textContent||'—';
-    const totalMore=document.getElementById('peoplePeriodMore')?.textContent||'—';
-    const rows=[
-      ['ADRIANA PREMI CLOSING PERIOD EXPORT'],
-      ['AFD',ACTIVE_AFD||d.afd||'','Tanggal Aktif',d.date,'Status',status],
-      ['Periode Book',period,'Open Book',open,'Closing Book',close],
-      ['Total Premi Periode',totalPremi,'Total More Basis',totalMore],[],
-      ['Rank','Pemanen','JJG Periode','Hari Panen','More Basis Periode','Premi Periode','JJG/HK']
-    ];
-    [...body.querySelectorAll('tr')].forEach((tr,i)=>{
-      const cells=[...tr.children].map(td=>td.textContent.trim());
-      if(cells.length>=7 && !/Belum ada|Tidak ada/i.test(cells.join(' '))) rows.push(cells);
-    });
-    exportCsv(`ADRIANA_Premi_Closing_${ACTIVE_AFD||d.afd||'OC'}_${d.date}.csv`,rows);
-  };
-})();
-</script>
-
-<script>
-/* ADRIANA DAILY KPI COMPARISON
-   Current day is primary. Previous calendar day is the comparison baseline.
-   Uses the same locked/hybrid snapshot source; no historical data is rewritten. */
-(function(){
-  function previousCalendarDate(iso){
-    const d=new Date(String(iso)+'T00:00:00');
-    d.setDate(d.getDate()-1);
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }
-  function snapshotForDate(afd,date){
-    if(!date)return null;
-    let snaps=[];
-    try{
-      if(typeof getAfdSnapshotsHybrid==='function') snaps=getAfdSnapshotsHybrid(afd||'OC')||[];
-    }catch(e){}
-    return (snaps||[]).find(x=>x&&x.date===date&&(x.afd||'OC')===(afd||'OC'))||null;
-  }
-  function metricSnapshot(snap){
-    if(!snap)return null;
-    try{
-      const d=buildData(snap);
-      return {
-        jjg:Number(d.jjg)||0,
-        hk:Number(d.producingHK)||0,
-        ton:Number(d.netTransportKg)||0,
-        bjr:Number(d.bjrKgPerJjg)||0
-      };
-    }catch(e){return null}
-  }
-  function fmtDelta(cur,prev,unit,dec=0){
-    if(prev==null)return 'vs hari sebelumnya: tidak tersedia';
-    const diff=cur-prev;
-    const sign=diff>0?'+':diff<0?'':'';
-    const val=dec?Math.abs(diff).toFixed(dec):Math.abs(diff).toLocaleString();
-    const curTxt=dec?cur.toFixed(dec):cur.toLocaleString();
-    const prevTxt=dec?prev.toFixed(dec):prev.toLocaleString();
-    return `vs ${window.__ADRIANA_PREV_DATE_LABEL||'hari sebelumnya'}: ${prevTxt} → ${curTxt} (${sign}${val}${unit})`;
-  }
-  function setCompare(id,cur,prev,unit,dec=0){
-    const el=document.getElementById(id);if(!el)return;
-    el.classList.remove('up','down','flat');
-    if(prev==null){el.textContent='vs hari sebelumnya: tidak tersedia';el.classList.add('flat');return;}
-    const diff=cur-prev;
-    el.textContent=fmtDelta(cur,prev,unit,dec);
-    el.classList.add(diff>0?'up':diff<0?'down':'flat');
-  }
-
-  window.renderAll=function(snap){
-    const d=buildData(snap);
-    ACTIVE=snap;window.ADRIANA_DATA=d;
-    document.getElementById('activeDate').textContent=fmtDate(snap.date);
-    document.getElementById('activeMeta').textContent=`${snap.site} · ${AFD_LABEL[snap.afd]||snap.afd||'OCYM'} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;
-    document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';
-
-    const vals=document.querySelectorAll('#dashboard .card .value');
-    if(vals[0])vals[0].textContent=d.jjg.toLocaleString();
-    if(vals[1])vals[1].textContent=d.producingHK.toLocaleString();
-    if(vals[2])vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';
-    if(vals[3])vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';
-
-    const prevDate=previousCalendarDate(snap.date);
-    const prevSnap=snapshotForDate(snap.afd||ACTIVE_AFD,prevDate);
-    const prev=metricSnapshot(prevSnap);
-    window.__ADRIANA_PREV_DATE_LABEL=prevSnap?fmtDate(prevDate):prevDate;
-
-    setCompare('compareJJG',d.jjg,prev?.jjg??null,' JJG',0);
-    setCompare('compareHK',d.producingHK,prev?.hk??null,' HK',0);
-    setCompare('compareTONASE',d.netTransportKg/1000,prev?prev.ton/1000:null,' T',2);
-    setCompare('compareBJR',d.bjrKgPerJjg,prev?.bjr??null,' kg/JJG',2);
-
-    const bjrNotice=document.getElementById('bjrNotice');
-    if(bjrNotice)bjrNotice.innerHTML=d.bjrKgPerJjg?`<b>BJR:</b> ${d.bjrKgPerJjg.toFixed(2)} kg/JJG · ${d.netTransportKg.toLocaleString()} kg net ÷ ${d.jjg.toLocaleString()} JJG`:'<b>BJR:</b> unavailable because net transport or JJG is unavailable.';
-    const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();
-
-    renderProduction(d);renderHarvestDensitySummary(d);renderJJGContribution(d);renderQuality(d);
-    renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);
-    renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d);
-    try{if(typeof window.ADRIANA_RENDER_INFIELD==='function')window.ADRIANA_RENDER_INFIELD(snap)}catch(e){console.warn('Infield:',e)}
-    try{renderPeoplePerformance(window.ADRIANA_DATA||d);renderPeopleAI(window.ADRIANA_DATA||d)}catch(e){console.warn('People Performance render:',e)}
-    try{if(typeof window.ADRIANA_RENDER_KKP==='function')window.ADRIANA_RENDER_KKP(snap)}catch(e){console.warn('KKP:',e)}
-    try{if(typeof window.renderProductionTrend==='function')window.renderProductionTrend()}catch(e){console.warn('Trend:',e)}
-  renderPeoplePerformance(window.ADRIANA_DATA||d);renderPeopleAI(window.ADRIANA_DATA||d);};
-})();
 </script>
 </body></html>
