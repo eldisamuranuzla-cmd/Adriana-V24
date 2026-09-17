@@ -563,6 +563,170 @@ main:has(#dashboard.active) > .astraHead{display:none}
   .sectionExport span{display:none}
   .sectionExport .btn{font-size:10px;padding:8px 10px}
 }
+
+/* =========================================================
+   ADRIANA V20 — DASHBOARD FINAL VISUAL LAYER
+   VISUAL ONLY. NO DATA / CALCULATION / EVENT LOGIC CHANGED.
+   ========================================================= */
+#dashboard.v3dash{
+  background:linear-gradient(180deg,#edf7f1 0%,#f7faf8 100%)!important;
+  color:#122c22!important;
+  padding-bottom:105px!important;
+}
+#dashboard .v3Hero{
+  height:306px!important;
+  margin:0!important;
+  border-radius:0 0 28px 28px!important;
+  overflow:hidden!important;
+  background:#dcefe4!important;
+  box-shadow:0 12px 30px rgba(0,74,48,.10)!important;
+}
+#dashboard .v3HeroBg{
+  background-image:
+    linear-gradient(180deg,rgba(249,253,250,.28) 0%,rgba(239,249,243,.06) 35%,rgba(5,73,46,.08) 68%,rgba(3,69,43,.38) 100%),
+    url("adriana-dashboard-scenery.jpg")!important;
+  background-size:cover!important;
+  background-position:center 42%!important;
+  filter:none!important;
+}
+#dashboard .v3HeroBg:after{display:none!important}
+#dashboard .v3HeroTop{position:relative!important;height:100%!important;padding:17px 28px 0!important;display:block!important}
+#dashboard .v3BrandBlock{position:absolute!important;left:28px!important;top:18px!important;display:flex!important;align-items:center!important;gap:10px!important;z-index:4!important}
+#dashboard .v3AstraLogo{width:62px!important;height:62px!important;object-fit:contain!important;filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))!important}
+#dashboard .v3AstraText{display:flex!important;flex-direction:column!important;line-height:.95!important;color:#063f2d!important}
+#dashboard .v3AstraText b:first-child{font-size:21px!important;letter-spacing:.02em!important}
+#dashboard .v3AstraText b:nth-child(2){font-size:17px!important;letter-spacing:.015em!important}
+#dashboard .v3AstraText small{font-size:9px!important;margin-top:6px!important;color:#204b3b!important}
+#dashboard .v3AAL50{position:absolute!important;right:29px!important;top:18px!important;width:150px!important;height:62px!important;object-fit:contain!important;z-index:4!important;filter:drop-shadow(0 2px 4px rgba(0,0,0,.06))!important}
+#dashboard .v3AdrianaLogo{left:42px!important;top:108px!important;width:min(515px,54vw)!important;z-index:4!important}
+#dashboard .v3AdrianaLogo small{font-size:16px!important;margin-top:4px!important;color:#12382b!important}
+#dashboard .v3User{position:absolute!important;right:28px!important;top:111px!important;z-index:5!important;display:flex!important;align-items:center!important;gap:10px!important;padding:10px 14px!important;border-radius:22px!important;background:rgba(255,255,255,.91)!important;box-shadow:0 8px 22px rgba(0,55,37,.13)!important;backdrop-filter:blur(8px)!important;color:#112d22!important;min-width:235px!important}
+#dashboard .v3Bell{width:42px!important;height:42px!important;border-radius:50%!important;background:#fff!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:24px!important;box-shadow:0 4px 12px rgba(0,0,0,.10)!important;color:#0a3023!important;position:relative!important}
+#dashboard .v3Bell i{position:absolute!important;right:0!important;top:0!important;width:10px!important;height:10px!important;border-radius:50%!important;background:#e6342e!important;border:2px solid #fff!important}
+#dashboard .v3Avatar{width:48px!important;height:48px!important;border-radius:50%!important;background:#075d40!important;color:#fff!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:16px!important;font-weight:900!important}
+#dashboard .v3User span:nth-child(3){display:flex!important;flex-direction:column!important;line-height:1.05!important;flex:1!important}
+#dashboard .v3User span:nth-child(3) small{font-size:11px!important;color:#4e5c55!important}
+#dashboard .v3User span:nth-child(3) b{font-size:17px!important;color:#102c22!important}
+#dashboard .v3Planting{right:38px!important;bottom:25px!important;font-size:11px!important;line-height:1.35!important;letter-spacing:.22em!important;color:#fff!important;text-shadow:0 2px 5px rgba(0,0,0,.35)!important;z-index:4!important}
+
+#dashboard .v3ControlBar{position:relative!important;margin:-22px 30px 16px!important;z-index:10!important;grid-template-columns:1.35fr 1fr .95fr!important;gap:0!important;padding:6px!important;border:1px solid rgba(214,229,220,.9)!important;border-radius:20px!important;background:rgba(255,255,255,.94)!important;box-shadow:0 10px 26px rgba(0,70,45,.11)!important;backdrop-filter:blur(10px)!important}
+#dashboard .v3Control{min-height:57px!important;padding:9px 15px!important;border-radius:15px!important;background:#fff!important;border:0!important}
+#dashboard .v3Control small{font-size:8px!important;color:#75827c!important;letter-spacing:.08em!important}
+#dashboard .v3Control b{font-size:14px!important;color:#182e26!important}
+#dashboard .v3Control strong{font-size:16px!important}
+#dashboard .v3Lock{min-height:57px!important;border-radius:15px!important;background:#e6f7ee!important;color:#0b6a45!important;padding:8px 13px!important}
+#dashboard .v3Lock b{font-size:13px!important}
+#dashboard .v3Lock small{font-size:10px!important}
+
+#dashboard .v3QuickNav{margin:0 30px 16px!important;gap:9px!important}
+#dashboard .v3QuickNav button{min-height:86px!important;border-radius:17px!important;border:1px solid #dce8e2!important;background:rgba(255,255,255,.92)!important;box-shadow:0 5px 14px rgba(0,70,45,.06)!important;font-size:13px!important;color:#172e25!important}
+#dashboard .v3QuickNav button span{font-size:31px!important;color:#53786b!important;line-height:1.1!important;margin-bottom:7px!important}
+#dashboard .v3QuickNav button.active{background:linear-gradient(145deg,#087650,#075238)!important;color:#fff!important;border-color:#075238!important;box-shadow:0 9px 20px rgba(4,93,61,.22)!important}
+#dashboard .v3QuickNav button.active span{color:#fff!important}
+
+#dashboard .v3SectionTitle{margin:0 30px 10px!important;font-size:18px!important;color:#172d25!important}
+#dashboard .v3SectionTitle>span{color:#0b8655!important;font-size:22px!important}
+#dashboard .v3SectionTitle a{font-size:11px!important;color:#465b52!important}
+#dashboard .v3Kpis{margin:0 30px 14px!important;gap:10px!important}
+#dashboard .v3Kpi{min-height:164px!important;padding:15px 13px!important;border-radius:17px!important;border:1px solid #dfe9e3!important;background:rgba(255,255,255,.95)!important;box-shadow:0 6px 16px rgba(0,65,43,.06)!important}
+#dashboard .v3KpiIcon{width:43px!important;height:43px!important;border-radius:50%!important;background:#eff8f2!important;margin-bottom:8px!important}
+#dashboard .v3Kpi strong{font-size:29px!important;line-height:1!important;color:#17372b!important}
+#dashboard .v3Kpi small{font-size:9px!important;color:#61716a!important;letter-spacing:.04em!important}
+#dashboard .v3Kpi em{font-size:11px!important;color:#0a8b50!important;font-style:normal!important;font-weight:900!important}
+#dashboard .v3Kpi span{font-size:9px!important;color:#68766f!important}
+#dashboard .v3Progress{height:7px!important;border-radius:99px!important;background:#e4eee8!important;margin:11px 0 8px!important}
+#dashboard .v3Progress i{border-radius:99px!important;background:#35a87b!important}
+#dashboard .v3Kpi label{font-size:9px!important;color:#68766f!important}
+#dashboard .v3Kpi label b{font-size:10px!important;color:#244237!important}
+
+#dashboard .v3Two{margin:0 30px 12px!important;gap:12px!important}
+#dashboard .v3Signals,#dashboard .v3Decision{min-height:218px!important;border-radius:18px!important;border:1px solid #dce8e1!important;box-shadow:0 6px 17px rgba(0,65,43,.06)!important;background:rgba(255,255,255,.96)!important;padding:18px!important}
+#dashboard .v3Decision{background:linear-gradient(145deg,#086b49,#087d51 55%,#075238)!important;color:#fff!important;border:0!important;box-shadow:0 10px 22px rgba(0,83,53,.19)!important}
+#dashboard .v3PanelHead{font-size:13px!important;color:#182f26!important}
+#dashboard .v3Decision .v3PanelHead{color:#fff!important}
+#dashboard .v3Decision .decisionLabel{font-size:10px!important;color:rgba(255,255,255,.72)!important;margin-top:22px!important}
+#dashboard .v3Decision #dashboardDecision{font-size:27px!important;line-height:1.05!important;color:#fff!important;margin:8px 0!important}
+#dashboard .v3Decision #dashboardDecisionText{font-size:11px!important;line-height:1.45!important;color:rgba(255,255,255,.78)!important}
+#dashboard .v3Decision .btn{margin-top:17px!important;background:#fff!important;color:#086643!important;border:0!important;border-radius:10px!important;font-weight:900!important}
+#dashboard .v3Production,#dashboard .v3Density{min-height:270px!important;border-radius:18px!important;border:1px solid #dce8e1!important;box-shadow:0 6px 17px rgba(0,65,43,.06)!important;background:rgba(255,255,255,.96)!important;padding:18px!important}
+#dashboard .v3Production th,#dashboard .v3Production td{font-size:11px!important;padding:9px 6px!important}
+#dashboard .v3Production th{color:#64736c!important;font-size:9px!important}
+#dashboard .densitySummary{gap:10px!important;margin-top:15px!important}
+#dashboard .v3Density .densityMetric{min-height:100px!important;padding:13px!important;border-radius:14px!important;background:#f8fbf9!important;border:1px solid #e1ebe5!important}
+#dashboard .v3Density .densityMetric small{font-size:9px!important}
+#dashboard .v3Density .densityMetric strong{font-size:25px!important;color:#17372b!important}
+#dashboard .v3Density .densityMetric em{font-size:10px!important;color:#078b4e!important}
+#dashboard .v3Density .densityMetric span{font-size:9px!important;color:#65746c!important}
+#dashboard .v3QuickAction{margin:0 30px 18px!important;padding:17px!important;border-radius:18px!important;border:1px solid #dce8e1!important;background:rgba(255,255,255,.96)!important;box-shadow:0 6px 17px rgba(0,65,43,.06)!important}
+#dashboard .v3ActionGrid{gap:9px!important;margin-top:13px!important}
+#dashboard .v3ActionGrid button{min-height:58px!important;border-radius:12px!important;font-size:11px!important;background:#f9fcfa!important;border:1px solid #d9e7df!important}
+#dashboard .v3ActionGrid button span{font-size:11px!important}
+
+@media(max-width:760px){
+  #dashboard.v3dash{padding-bottom:92px!important}
+  #dashboard .v3Hero{height:274px!important;border-radius:0 0 23px 23px!important}
+  #dashboard .v3HeroTop{padding:12px 15px 0!important}
+  #dashboard .v3BrandBlock{left:16px!important;top:14px!important;gap:7px!important}
+  #dashboard .v3AstraLogo{width:43px!important;height:43px!important}
+  #dashboard .v3AstraText b:first-child{font-size:15px!important}
+  #dashboard .v3AstraText b:nth-child(2){font-size:12px!important}
+  #dashboard .v3AstraText small{font-size:6px!important;margin-top:4px!important}
+  #dashboard .v3AAL50{right:15px!important;top:14px!important;width:100px!important;height:43px!important}
+  #dashboard .v3AdrianaLogo{left:17px!important;top:77px!important;width:59vw!important;min-width:245px!important;max-width:370px!important}
+  #dashboard .v3AdrianaLogo small{font-size:10px!important;margin-left:3px!important;margin-top:3px!important}
+  #dashboard .v3User{right:14px!important;top:76px!important;min-width:185px!important;padding:7px 9px!important;border-radius:18px!important;gap:7px!important}
+  #dashboard .v3Bell{width:34px!important;height:34px!important;font-size:19px!important}
+  #dashboard .v3Avatar{width:35px!important;height:35px!important;font-size:12px!important}
+  #dashboard .v3User span:nth-child(3) small{font-size:7px!important}
+  #dashboard .v3User span:nth-child(3) b{font-size:12px!important}
+  #dashboard .v3Planting{right:17px!important;bottom:18px!important;font-size:7px!important;letter-spacing:.20em!important}
+  #dashboard .v3ControlBar{margin:-15px 15px 12px!important;grid-template-columns:1.15fr .92fr .9fr!important;padding:5px!important;border-radius:16px!important}
+  #dashboard .v3Control{min-height:50px!important;padding:7px 8px!important}
+  #dashboard .v3Control small{font-size:6px!important}
+  #dashboard .v3Control b{font-size:10px!important}
+  #dashboard .v3Lock{min-height:50px!important;padding:6px 7px!important}
+  #dashboard .v3Lock b{font-size:8px!important}
+  #dashboard .v3Lock small{font-size:7px!important}
+  #dashboard .v3QuickNav{margin:0 15px 13px!important;gap:6px!important}
+  #dashboard .v3QuickNav button{min-height:67px!important;border-radius:12px!important;font-size:8px!important;padding:7px 2px!important}
+  #dashboard .v3QuickNav button span{font-size:23px!important;margin-bottom:4px!important}
+  #dashboard .v3SectionTitle{margin:0 15px 9px!important;font-size:14px!important}
+  #dashboard .v3SectionTitle>span{font-size:17px!important}
+  #dashboard .v3Kpis{margin:0 15px 12px!important;gap:6px!important}
+  #dashboard .v3Kpi{min-height:142px!important;padding:10px 8px!important;border-radius:13px!important}
+  #dashboard .v3KpiIcon{width:32px!important;height:32px!important;margin-bottom:4px!important}
+  #dashboard .v3Kpi strong{font-size:21px!important}
+  #dashboard .v3Kpi small{font-size:6px!important}
+  #dashboard .v3Kpi em,#dashboard .v3Kpi span,#dashboard .v3Kpi label{font-size:7px!important}
+  #dashboard .v3Progress{height:5px!important;margin:8px 0 6px!important}
+  #dashboard .v3Two{margin:0 15px 9px!important;gap:8px!important}
+  #dashboard .v3Signals,#dashboard .v3Decision{min-height:190px!important;padding:13px!important;border-radius:14px!important}
+  #dashboard .v3PanelHead{font-size:9px!important}
+  #dashboard .v3Decision .decisionLabel{font-size:7px!important;margin-top:14px!important}
+  #dashboard .v3Decision #dashboardDecision{font-size:19px!important}
+  #dashboard .v3Decision #dashboardDecisionText{font-size:7px!important}
+  #dashboard .v3Decision .btn{font-size:8px!important;margin-top:11px!important;padding:8px 10px!important}
+  #dashboard .v3Production,#dashboard .v3Density{min-height:215px!important;padding:13px!important;border-radius:14px!important}
+  #dashboard .v3Production th,#dashboard .v3Production td{font-size:9px!important;padding:7px 4px!important}
+  #dashboard .v3Production th{font-size:7px!important}
+  #dashboard .v3Density .densityMetric{min-height:78px!important;padding:9px!important;border-radius:11px!important}
+  #dashboard .v3Density .densityMetric small{font-size:7px!important}
+  #dashboard .v3Density .densityMetric strong{font-size:19px!important}
+  #dashboard .v3Density .densityMetric em,#dashboard .v3Density .densityMetric span{font-size:7px!important}
+  #dashboard .v3QuickAction{margin:0 15px 14px!important;padding:12px!important;border-radius:14px!important}
+  #dashboard .v3ActionGrid{gap:6px!important;margin-top:9px!important}
+  #dashboard .v3ActionGrid button{min-height:48px!important;font-size:7px!important;padding:7px 2px!important}
+  #dashboard .v3ActionGrid button span{font-size:8px!important;margin-top:3px!important}
+}
+@media(max-width:480px){
+  #dashboard .v3Hero{height:258px!important}
+  #dashboard .v3AdrianaLogo{top:73px!important;left:14px!important;width:61vw!important;min-width:220px!important}
+  #dashboard .v3User{top:73px!important;right:12px!important;min-width:171px!important}
+  #dashboard .v3AAL50{width:88px!important}
+  #dashboard .v3Two{grid-template-columns:1fr 1fr!important}
+  #dashboard .v3Lower{grid-template-columns:1fr 1fr!important}
+}
+
 </style>
 </head>
 <body>
