@@ -330,6 +330,105 @@ body{grid-template-columns:1fr!important}
   .v3Adriana small{font-size:9px!important}
 }
 
+
+
+/* =========================================================
+   ADRIANA V20 UI V3 — GLOBAL APP NAVIGATION + SCROLL FIX
+   VISUAL / NAVIGATION PRESENTATION ONLY
+   ========================================================= */
+
+/* Full-width application: no desktop sidebar anywhere */
+.app{display:block!important;min-height:100vh!important}
+.side{display:none!important}
+.main{margin-left:0!important;width:100%!important;max-width:none!important;padding:0 0 92px!important}
+
+/* Remove legacy top corporate banner entirely from visual flow */
+.astraHead{display:none!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important}
+
+/* Only ADRIANA + Astra Agro Lestari in the hero. No Astra Agro 50. */
+.v3AAL50,.astra50Logo{display:none!important}
+
+/* The new bottom navigation is global, not dashboard-section-bound */
+.v3BottomNav{
+  display:grid!important;
+  position:fixed!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  z-index:9999!important;
+  width:auto!important;
+  transform:none!important;
+  margin:0!important;
+}
+
+/* Every section must be independently scrollable */
+.section{
+  min-height:calc(100vh - 1px)!important;
+  overflow:visible!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:auto!important;
+}
+.section.active{display:block!important}
+
+/* Rotation matrix keeps horizontal swipe while page remains vertically scrollable */
+.section#rotation{
+  overflow:visible!important;
+  touch-action:auto!important;
+}
+.section#rotation .rotationMatrixScroller{
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-x!important;
+  overscroll-behavior-x:contain!important;
+  max-width:100%!important;
+}
+
+/* Transport table can horizontally scroll without locking the page */
+.section#transport .panel{
+  overflow-x:auto!important;
+  overflow-y:visible!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-x!important;
+}
+
+/* People Performance tables: horizontal swipe only inside the table */
+.section#people .perfTable{
+  overflow-x:auto!important;
+  overflow-y:visible!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-x!important;
+}
+
+/* Keep content clear of the fixed bottom bar */
+.section:not(#dashboard){padding-bottom:25px!important}
+
+/* Desktop: keep the app centered, bottom nav centered with content */
+@media(min-width:1100px){
+  .main{padding-left:24px!important;padding-right:24px!important}
+  .v3BottomNav{
+    left:50%!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+    width:min(1100px,100vw)!important;
+    border-radius:20px 20px 0 0!important;
+  }
+}
+
+/* Mobile: no side gap and no accidental horizontal page lock */
+@media(max-width:760px){
+  html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+  .main{padding-bottom:86px!important}
+  .section{width:100%!important;max-width:100%!important}
+  .v3BottomNav{border-radius:20px 20px 0 0!important}
+}
+
+/* Small phones */
+@media(max-width:480px){
+  .main{padding-bottom:84px!important}
+  .v3BottomNav{padding-bottom:calc(8px + env(safe-area-inset-bottom))!important}
+}
+
 </style>
 </head>
 <body>
@@ -384,12 +483,12 @@ body{grid-template-columns:1fr!important}
 
   <div class="v3QuickNav">
     <button class="active" onclick="show('dashboard')"><span>⌂</span>Dashboard</button>
-    <button onclick="show('production')"><span>▥</span>Production</button>
-    <button onclick="show('rotation')"><span>♣</span>Rotation</button>
-    <button onclick="show('transport')"><span>▰</span>Transport</button>
-    <button onclick="show('quality')"><span>☑</span>Quality</button>
-    <button onclick="show('people')"><span>♟</span>People</button>
-    <button onclick="show('history')"><span>▦</span>More</button>
+    <button data-v3target="production" onclick="show('production');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='production'))"><span>▥</span>Production</button>
+    <button data-v3target="rotation" onclick="show('rotation');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='rotation'))"><span>♣</span>Rotation</button>
+    <button data-v3target="transport" onclick="show('transport');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='transport'))"><span>▰</span>Transport</button>
+    <button data-v3target="quality" onclick="show('quality');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='quality'))"><span>☑</span>Quality</button>
+    <button data-v3target="people" onclick="show('people');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='people'))"><span>♟</span>People</button>
+    <button data-v3target="history" onclick="show('history');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='history'))"><span>▦</span>More</button>
   </div>
 
   <div class="v3SectionTitle"><span>▥</span><b>TODAY'S OPERATION</b><a href="#" onclick="show('production');return false">View Detail →</a></div>
@@ -457,18 +556,7 @@ body{grid-template-columns:1fr!important}
     </div>
     <div id="donutTotal">—</div>
   </div>
-
-  <div class="v3BottomNav">
-    <button class="active" onclick="show('dashboard')"><span>⌂</span>Home</button>
-    <button onclick="show('production')"><span>▥</span>Production</button>
-    <button onclick="show('rotation')"><span>♣</span>Rotation</button>
-    <button onclick="show('transport')"><span>▰</span>Transport</button>
-    <button onclick="show('quality')"><span>☑</span>Quality</button>
-    <button onclick="show('people')"><span>♟</span>People</button>
-    <button onclick="show('history')"><span>▦</span>More</button>
-  </div>
-
-  <div class="v3MetaSync"><span id="activeMeta">Upload AMANTA files in Daily Closing</span></div>
+<div class="v3MetaSync"><span id="activeMeta">Upload AMANTA files in Daily Closing</span></div>
 </section>
 <section id="closing" class="section"><div class="top"><div><div class="eyebrow">CONTROL</div><div class="title">Daily Closing</div><div class="meta">AMANTA as source of truth · one dashboard for all SYM afdeling.</div></div></div>
 <div class="panel"><h2>AMANTA Upload — 1 Daily Dataset</h2><div class="upload">Pilih AMANTA sesuai afdeling · OCYM maksimal 2 file · OEYM maksimal 3 file<br><input id="amantaFiles" type="file" accept=".csv" multiple><div id="uploadMsg" class="small">Belum ada file.</div></div><div id="reconBox" class="notice">Menunggu upload. Sistem akan mendeteksi tanggal, site, versi, overlap dan melakukan reconciliation tanpa double-count.</div><button class="btn" id="processBtn" onclick="processAMANTA()" disabled>UPLOAD &amp; PROCESS</button><button class="btn" id="lockBtn" onclick="closeDataset()" disabled>CLOSE & LOCK DATASET</button>
@@ -685,6 +773,18 @@ body{grid-template-columns:1fr!important}
 
 <div class="footer">ADRIANA v22 · AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
 </main></div>
+
+<!-- ADRIANA V3 GLOBAL BOTTOM NAV — available on every section -->
+<div class="v3BottomNav">
+    <button class="active" data-v3target="dashboard" onclick="show('dashboard');document.querySelectorAll('.v3BottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.v3target==='dashboard'))"><span>⌂</span>Home</button>
+    <button onclick="show('production')"><span>▥</span>Production</button>
+    <button onclick="show('rotation')"><span>♣</span>Rotation</button>
+    <button onclick="show('transport')"><span>▰</span>Transport</button>
+    <button onclick="show('quality')"><span>☑</span>Quality</button>
+    <button onclick="show('people')"><span>♟</span>People</button>
+    <button onclick="show('history')"><span>▦</span>More</button>
+  </div>
+
 <script>
 const ADRIANA_BUILD='v21';
 const ROTATION_MASTER={"27":{ha:30.10},"23":{ha:30.90},"19":{ha:28.40},"15":{ha:30.40},"11":{ha:28.70},"7":{ha:30.60},"4":{ha:28.10},"2":{ha:28.18},"5":{ha:12.81},"8":{ha:15.00},"12":{ha:24.20},"13":{ha:25.00},"9":{ha:25.00},"6":{ha:20.03},"3":{ha:29.03},"1":{ha:25.81},"1A":{ha:13.01},"10A":{ha:25.88},"10":{ha:23.11},"14":{ha:26.19},"18":{ha:24.94},"22":{ha:21.36},"26":{ha:18.70},"30":{ha:22.55},"29":{ha:25.30},"25":{ha:20.70},"21":{ha:24.60},"17":{ha:21.80},"16":{ha:25.50},"20":{ha:27.90},"24":{ha:29.10},"28":{ha:29.40}};
