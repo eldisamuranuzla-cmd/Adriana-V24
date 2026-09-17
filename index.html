@@ -265,6 +265,71 @@ body{background:#f4f7f3}
 .v3Kpis .kpiTruck .v3YoY,
 .v3Kpis .kpiTruck .v3VsYesterday{display:none!important}
 .v3Kpis .kpiTruck span{color:#617069!important;font-size:8px!important}
+
+
+/* =========================================================
+   ADRIANA V20 UI V2 — MOBILE EXECUTIVE LAYOUT
+   VISUAL ONLY: sidebar hidden, AAL50 removed, ADRIANA + AAL
+   ========================================================= */
+
+/* No left sidebar in the application viewport */
+.side{display:none!important}
+body{grid-template-columns:1fr!important}
+.main{margin-left:0!important;width:100%!important;max-width:none!important}
+
+/* Remove the old duplicated top corporate strip */
+.astraHead{display:none!important}
+
+/* Hero becomes the single branding area */
+.v3Hero{height:285px!important}
+.v3HeroTop{justify-content:flex-start!important}
+.v3BrandBlock{order:1!important;flex:0 0 auto!important}
+.v3Adriana{position:absolute!important;left:30px!important;top:92px!important;margin:0!important}
+.v3User{position:absolute!important;right:24px!important;top:15px!important}
+.v3AAL50{display:none!important}
+
+/* Make the top row read as Astra Agro Lestari + ADRIANA, with no AAL50 */
+.v3BrandBlock .v3AstraLogo{width:52px!important;height:52px!important}
+.v3BrandBlock .v3AstraText b:first-child{font-size:18px!important}
+.v3BrandBlock .v3AstraText b:nth-child(2){font-size:15px!important}
+.v3BrandBlock .v3AstraText small{font-size:7px!important}
+
+/* Desktop also gets the app-like full-width layout */
+.v3dash{max-width:1100px!important;margin:0 auto!important}
+.v3BottomNav{display:grid!important}
+
+/* Never show the legacy sidebar title/logo */
+.side .brandRow,.side .sideLogo{display:none!important}
+
+/* Transport KPI is absolute daily tonnage only */
+.v3Kpis .kpiTruck em,
+.v3Kpis .kpiTruck .delta,
+.v3Kpis .kpiTruck .v3Delta,
+.v3Kpis .kpiTruck .v3YoY,
+.v3Kpis .kpiTruck .v3VsYesterday{display:none!important}
+
+/* Mobile */
+@media(max-width:760px){
+  body{display:block!important}
+  .main{padding:0!important}
+  .v3dash{margin:0!important;max-width:none!important}
+  .v3Hero{height:255px!important}
+  .v3HeroTop{padding:13px 15px 0!important}
+  .v3BrandBlock .v3AstraLogo{width:43px!important;height:43px!important}
+  .v3BrandBlock .v3AstraText b:first-child{font-size:15px!important}
+  .v3BrandBlock .v3AstraText b:nth-child(2){font-size:12px!important}
+  .v3BrandBlock .v3AstraText small{font-size:6px!important}
+  .v3Adriana{left:20px!important;top:86px!important;font-size:46px!important}
+  .v3Adriana small{font-size:11px!important}
+  .v3User{right:15px!important;top:12px!important}
+}
+
+@media(max-width:480px){
+  .v3Hero{height:245px!important}
+  .v3Adriana{left:18px!important;top:92px!important;font-size:40px!important}
+  .v3Adriana small{font-size:9px!important}
+}
+
 </style>
 </head>
 <body>
