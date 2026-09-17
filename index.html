@@ -205,23 +205,19 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
 @media(max-width:980px){.dayCompare{margin-left:66px}}
 @media(max-width:520px){.dayCompare{margin-left:62px;font-size:8px}}
 
-/* ACCUMULATED PRODUCTION TREND — visual layer */
-.trendPanel{margin:14px 0;padding:16px;background:var(--neo-surface,#fff);border:1px solid var(--neo-line,#dfe9e3);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.05)}
-.trendHead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px}
-.trendEyebrow{font-size:9px;font-weight:800;letter-spacing:.1em;color:#188452}
-.trendHead h2{margin:3px 0 2px;font-size:18px;color:#17382c}
-.trendHead p{margin:0;font-size:10px;color:#718077}
-.trendControls{display:flex;align-items:end;gap:8px;flex-wrap:wrap}
-.trendControls label{font-size:9px;font-weight:800;color:#718077;text-transform:uppercase;letter-spacing:.05em}
-.trendControls select{display:block;margin-top:4px;padding:8px 28px 8px 10px;border:1px solid #d7e2dc;border-radius:9px;background:#fff;font-size:11px;color:#17382c}
-.trendGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.trendCard{min-width:0;padding:12px;border:1px solid #e2ebe6;border-radius:13px;background:#fff}
-.trendCardTitle{font-size:10px;font-weight:800;color:#28493c;min-height:28px}
-.trendValue{font-size:18px;font-weight:900;color:#17382c;margin:2px 0 5px}
-.trendCanvasWrap{height:145px;position:relative}
-.trendCanvasWrap canvas{width:100%;height:100%;display:block}
-@media(max-width:900px){.trendGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){.trendPanel{padding:12px}.trendHead{flex-direction:column}.trendControls{width:100%}.trendControls label{flex:1}.trendControls select{width:100%}.trendControls .downloadBtn{width:100%}.trendGrid{grid-template-columns:1fr}.trendCanvasWrap{height:135px}}
+/* RESTORE PREMI CLOSING PERIOD — dashboard presentation only */
+.premiClosingDashboard{margin-top:12px}
+.premiClosingDashboard .panelHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.premiClosingDashboard .periodHeadActions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0}
+.premiClosingDashboard .peoplePeriodGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.premiClosingDashboard .peoplePeriodGrid>div{padding:10px;border:1px solid var(--neo-line);border-radius:10px;background:var(--neo-surface2)}
+.premiClosingDashboard .peoplePeriodGrid span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:var(--neo-muted)}
+.premiClosingDashboard .peoplePeriodGrid b{display:block;margin-top:3px;font-size:12px;color:var(--neo-text)}
+@media(max-width:760px){
+  .premiClosingDashboard .peoplePeriodGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .premiClosingDashboard .periodHeadActions{align-items:stretch;flex-direction:column}
+  .premiClosingDashboard .downloadBtn{width:100%}
+}
 </style>
 </head>
 <body>
@@ -254,36 +250,6 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
 <div class="card kpi kpiRestan"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-bjr.png" alt="TBS Kelapa Sawit"></div><div class="label">BJR</div><div class="value">—</div><div class="small">kg/JJG · net tonnage ÷ JJG</div><div class="dayCompare" id="compareBJR">vs hari sebelumnya: —</div> <div class="spark dashed"></div></div>
 </div>
 <div class="two dashTopGrid">
-
-<section id="productionTrendPanel" class="trendPanel">
-  <div class="trendHead">
-    <div>
-      <div class="trendEyebrow">PRODUCTION TREND</div>
-      <h2>Grafik Tren Produksi (Akumulasi)</h2>
-      <p>Akumulasi harian berdasarkan snapshot AMANTA · AFD aktif</p>
-    </div>
-    <div class="trendControls">
-      <label>Periode
-        <select id="trendPeriod">
-          <option value="7">7 Hari</option>
-          <option value="30" selected>30 Hari</option>
-        </select>
-      </label>
-      <label>Mode
-        <select id="trendMode">
-          <option value="accum" selected>Akumulasi</option>
-        </select>
-      </label>
-      <button type="button" class="btn downloadBtn" onclick="downloadProductionTrendCSV()">Download Trend CSV ↓</button>
-    </div>
-  </div>
-  <div class="trendGrid">
-    <div class="trendCard"><div class="trendCardTitle">Akumulasi Tonase Transport</div><div class="trendValue" id="trendTonaseValue">—</div><div class="trendCanvasWrap"><canvas id="trendTonase"></canvas></div></div>
-    <div class="trendCard"><div class="trendCardTitle">Akumulasi Producing HK</div><div class="trendValue" id="trendHKValue">—</div><div class="trendCanvasWrap"><canvas id="trendHK"></canvas></div></div>
-    <div class="trendCard"><div class="trendCardTitle">Akumulasi JJG</div><div class="trendValue" id="trendJJGValue">—</div><div class="trendCanvasWrap"><canvas id="trendJJG"></canvas></div></div>
-    <div class="trendCard"><div class="trendCardTitle">BJR Rata-rata</div><div class="trendValue" id="trendBJRValue">—</div><div class="trendCanvasWrap"><canvas id="trendBJR"></canvas></div></div>
-  </div>
-</section>
 <div class="panel signalsPanel"><div class="panelHead"><h2>Today's Operational Signals</h2><span>See All →</span></div><div id="dashboardSignals"><div class="notice">Upload and lock a daily dataset to generate operational signals.</div></div></div>
 <div class="panel decision decisionHero"><div class="decisionGlow"></div><div class="decisionHead"><h2>Assistant Decision</h2><span>AI RECOMMENDATION</span></div><div class="decisionLabel">Recommended focus</div><div id="dashboardDecision">—</div><div id="dashboardDecisionText" class="muted">No active dataset.</div><button class="btn" onclick="show('pdca')">CREATE ACTION PLAN&nbsp; →</button><div class="decisionLeaf">◌</div></div>
 </div>
@@ -299,6 +265,37 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
   <div class="panelHead"><h2>KKP Harvest Production</h2><span>OC PN 1 + OC PN 2 · 6 KKP</span></div>
   <div id="kkpDashboardSummary" class="notice">Upload &amp; lock AMANTA OCYM untuk menghitung output KKP.</div>
   <div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Wilayah</th><th>KKP</th><th>Pemanen</th><th>JJG</th><th>Total JJG</th><th>Status</th></tr></thead><tbody id="kkpDashboardBody"><tr><td colspan="7" class="small">Belum ada dataset OCYM aktif.</td></tr></tbody></table></div>
+</div>
+
+<div class="panel premiClosingDashboard" id="premiClosingDashboard">
+  <div class="panelHead">
+    <h2>Premi Closing Period</h2>
+    <span class="small">Ringkasan periode premi aktif</span>
+  </div>
+  <div class="periodHeadActions">
+    <div id="peoplePeriodStatus" class="periodStatus">—</div>
+    <button class="btn downloadBtn" type="button" onclick="downloadPremiClosingPeriodCSV()">Download Premi Closing CSV ↓</button>
+  </div>
+  <div class="peoplePeriodGrid">
+    <div><span>Periode</span><b id="peoplePeriod">—</b></div>
+    <div><span>Open Book</span><b id="peopleOpenBook">—</b></div>
+    <div><span>Closing Book</span><b id="peopleCloseBook">—</b></div>
+    <div><span>Total More Basis</span><b id="peoplePeriodMore">—</b></div>
+    <div><span>Total Premi</span><b id="peoplePeriodPremi">—</b></div>
+  </div>
+  <div class="peopleTableWrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th><th>Pemanen</th><th>JJG Periode</th><th>Hari Panen</th>
+          <th>More Basis Periode</th><th>Premi Periode</th><th>JJG/HK</th>
+        </tr>
+      </thead>
+      <tbody id="peoplePeriodBody">
+        <tr><td colspan="7" class="small">Belum ada data Premi Closing.</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
 <div class="footer">ADRIANA v22.13 &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
@@ -1699,82 +1696,6 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
     renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);
     renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d);
   };
-})();
-</script>
-
-<script>
-/* ADRIANA PRODUCTION TREND — 7/30 day accumulated view */
-(function(){
-  const $=id=>document.getElementById(id);
-  let lastTrendRows=[];
-
-  function isoPrev(d,n){const x=new Date(d+'T00:00:00');x.setDate(x.getDate()-n);return x.toISOString().slice(0,10);}
-  function snapsFor(afd,days){
-    let all=[];
-    try{all=(typeof getAfdSnapshotsHybrid==='function'?getAfdSnapshotsHybrid(afd||'OC'):[])||[];}catch(e){}
-    const activeDate=(window.ADRIANA_DATA&&window.ADRIANA_DATA.date)||((typeof ACTIVE!=='undefined'&&ACTIVE)?ACTIVE.date:null);
-    if(!activeDate)return [];
-    const from=isoPrev(activeDate,days-1);
-    return all.filter(s=>s&&s.date>=from&&s.date<=activeDate&&(s.afd||'OC')===(afd||'OC'))
-      .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-  }
-  function metrics(s){
-    try{const d=buildData(s);return {date:s.date,jjg:+d.jjg||0,hk:+d.producingHK||0,ton:+d.netTransportKg/1000||0,bjr:+d.bjrKgPerJjg||0};}
-    catch(e){return null}
-  }
-  function draw(id,values,labels){
-    const c=$(id);if(!c)return;
-    const r=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1,w=Math.max(260,r.width),h=Math.max(120,r.height);
-    c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.clearRect(0,0,w,h);
-    if(!values.length)return;
-    const pad={l:8,r:8,t:10,b:22},pw=w-pad.l-pad.r,ph=h-pad.t-pad.b;
-    const max=Math.max(...values,1),min=0;
-    ctx.font='9px Arial';ctx.strokeStyle='#dfe9e3';ctx.fillStyle='#718077';
-    for(let i=0;i<=3;i++){const y=pad.t+ph*i/3;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();}
-    const pts=values.map((v,i)=>({x:pad.l+(values.length===1?pw/2:pw*i/(values.length-1)),y:pad.t+ph-(v-min)/(max-min)*ph}));
-    ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
-    ctx.lineWidth=2.5;ctx.strokeStyle='#0a8050';ctx.stroke();
-    const last=pts[pts.length-1];ctx.beginPath();ctx.arc(last.x,last.y,4,0,Math.PI*2);ctx.fillStyle='#0a8050';ctx.fill();
-    ctx.fillStyle='#718077';
-    const picks=[0,Math.floor((labels.length-1)/2),labels.length-1].filter((v,i,a)=>a.indexOf(v)===i);
-    picks.forEach(i=>ctx.fillText(labels[i].slice(5),Math.max(0,Math.min(w-42,pts[i].x-15)),h-6));
-  }
-  function renderTrend(){
-    const d=window.ADRIANA_DATA;if(!d||!d.date)return;
-    const days=+$('trendPeriod')?.value||30,afd=(typeof ACTIVE_AFD!=='undefined'?ACTIVE_AFD:(d.afd||'OC'));
-    const rows=snapsFor(afd,days).map(metrics).filter(Boolean);
-    lastTrendRows=rows;
-    let aTon=0,aHK=0,aJJG=0;const ton=[],hk=[],jjg=[],bjr=[],labs=[];
-    rows.forEach(x=>{aTon+=x.ton;aHK+=x.hk;aJJG+=x.jjg;ton.push(aTon);hk.push(aHK);jjg.push(aJJG);bjr.push(x.bjr);labs.push(x.date)});
-    $('trendTonaseValue').textContent=aTon.toFixed(2)+' T';
-    $('trendHKValue').textContent=aHK.toLocaleString()+' HK';
-    $('trendJJGValue').textContent=aJJG.toLocaleString()+' JJG';
-    $('trendBJRValue').textContent=rows.length?bjr[bjr.length-1].toFixed(2)+' kg/JJG':'—';
-    draw('trendTonase',ton,labs);draw('trendHK',hk,labs);draw('trendJJG',jjg,labs);draw('trendBJR',bjr,labs);
-  }
-  window.renderProductionTrend=renderTrend;
-  window.downloadProductionTrendCSV=function(){
-    if(!lastTrendRows.length){alert('Belum ada historical snapshot untuk grafik.');return;}
-    let aTon=0,aHK=0,aJJG=0;
-    const rows=[['ADRIANA PRODUCTION TREND'],['Tanggal','Akumulasi Tonase (T)','Akumulasi HK','Akumulasi JJG','BJR (kg/JJG)']];
-    lastTrendRows.forEach(x=>{aTon+=x.ton;aHK+=x.hk;aJJG+=x.jjg;rows.push([x.date,aTon.toFixed(3),aHK,aJJG,x.bjr.toFixed(2)])});
-    const esc=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
-    const blob=new Blob(['\uFEFF'+rows.map(r=>r.map(esc).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`ADRIANA_Production_Trend_${$('trendPeriod').value}D.csv`;a.click();
-    setTimeout(()=>URL.revokeObjectURL(a.href),500);
-  };
-  document.addEventListener('change',e=>{if(e.target&&e.target.id==='trendPeriod')renderTrend();});
-  window.addEventListener('resize',()=>{if(window.ADRIANA_DATA)renderTrend();});
-
-  // Wrap the existing renderAll without replacing its logic.
-  const wait=setInterval(()=>{
-    if(typeof window.renderAll==='function'){
-      clearInterval(wait);
-      const original=window.renderAll;
-      window.renderAll=function(snap){original(snap);setTimeout(renderTrend,0);}
-    }
-  },50);
 })();
 </script>
 </body></html>
