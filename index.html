@@ -323,136 +323,6 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
 @media(max-width:560px){.trendPanel{padding:12px}.trendHead{flex-direction:column}.trendControls{width:100%}.trendControls label{flex:1}.trendControls select{width:100%}.trendControls .downloadBtn{width:100%}.trendGrid{grid-template-columns:1fr}.trendCanvasWrap{height:135px}}
 
 .trendPanel{grid-column:1/-1}
-
-/* =========================================================
-   ADRIANA — KPI VISUAL UPGRADE
-   VISUAL ONLY: no data, calculation, storage, event, or logic changes.
-   ========================================================= */
-
-/* Desktop KPI cards */
-.kpiGrid .kpi{
-  min-height:178px;
-  padding:18px 18px 15px;
-}
-.kpiGrid .kpiIcon{
-  width:72px;
-  height:72px;
-  min-height:72px;
-  border-radius:16px;
-  margin-bottom:12px;
-  background:linear-gradient(145deg,#eef8f2,#e2f1e8);
-}
-.kpiGrid .kpiIcon img{
-  width:66px !important;
-  height:66px !important;
-  max-width:66px !important;
-  max-height:66px !important;
-  object-fit:contain;
-  filter:drop-shadow(0 4px 6px rgba(20,70,45,.14));
-}
-.kpiGrid .kpi .label{
-  font-size:11px;
-  font-weight:850;
-  letter-spacing:.09em;
-}
-.kpiGrid .kpi .value{
-  font-size:34px;
-  font-weight:900;
-  letter-spacing:-.045em;
-  margin-top:6px;
-}
-.kpiGrid .kpi .delta{
-  font-size:10px;
-  font-weight:800;
-}
-.kpiGrid .kpi .small{
-  font-size:9px;
-}
-.kpiGrid .kpi .confidence{
-  font-size:8px !important;
-  padding:4px 7px;
-}
-
-/* Make the four KPI illustrations visually distinct */
-.kpiGrid .kpiPalm .kpiIcon{
-  background:linear-gradient(145deg,#edf8f0,#dcefe4);
-}
-.kpiGrid .kpiPeople .kpiIcon{
-  background:linear-gradient(145deg,#edf8f0,#dcefe4);
-}
-.kpiGrid .kpiTruck .kpiIcon{
-  background:linear-gradient(145deg,#fff8e7,#f9edc9);
-}
-.kpiGrid .kpiRestan .kpiIcon{
-  background:linear-gradient(145deg,#fff9e9,#f7edc9);
-}
-
-/* Mobile/tablet: keep the attractive 2x2 KPI layout */
-@media(max-width:760px){
-  .grid.kpiGrid{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:10px;
-  }
-  .kpiGrid .kpi{
-    min-height:168px;
-    padding:14px 13px 13px;
-  }
-  .kpiGrid .kpiIcon{
-    width:64px;
-    height:64px;
-    min-height:64px;
-    border-radius:15px;
-    margin-bottom:10px;
-  }
-  .kpiGrid .kpiIcon img{
-    width:59px !important;
-    height:59px !important;
-    max-width:59px !important;
-    max-height:59px !important;
-  }
-  .kpiGrid .kpi .label{
-    font-size:10px;
-  }
-  .kpiGrid .kpi .value{
-    font-size:30px;
-    margin-top:5px;
-  }
-  .kpiGrid .kpi .small{
-    font-size:8px;
-  }
-  .kpiGrid .kpi .delta{
-    font-size:9px;
-  }
-}
-
-@media(max-width:420px){
-  .grid.kpiGrid{
-    gap:8px;
-  }
-  .kpiGrid .kpi{
-    min-height:160px;
-    padding:12px 11px;
-  }
-  .kpiGrid .kpiIcon{
-    width:58px;
-    height:58px;
-    min-height:58px;
-    border-radius:14px;
-  }
-  .kpiGrid .kpiIcon img{
-    width:54px !important;
-    height:54px !important;
-    max-width:54px !important;
-    max-height:54px !important;
-  }
-  .kpiGrid .kpi .label{
-    font-size:9px;
-  }
-  .kpiGrid .kpi .value{
-    font-size:27px;
-  }
-}
-
 </style>
 </head>
 <body>
@@ -464,6 +334,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
     <button data-target="closing">Daily Closing</button>
     <button data-target="rotation">Rotation</button>
     <button data-target="production">Production</button>
+    <button data-target="trend">Trend</button>
     <button data-target="quality">Harvest Quality</button>
     <button data-target="transport">Transport & Restan</button>
     <button data-target="exception">Exception & Priority</button>
@@ -571,6 +442,46 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
 </div>
 </section>
 
+
+
+<section id="trend" class="section">
+  <div class="top">
+    <div>
+      <div class="eyebrow">ENGINE · PRODUCTION TREND</div>
+      <div class="title">Production Trend</div>
+      <div class="meta">Tren produksi berdasarkan historical snapshot AMANTA pada AFD aktif.</div>
+    </div>
+  </div>
+  <div class="trendPanel">
+    <div class="trendHead">
+      <div>
+        <div class="trendEyebrow">PRODUCTION TREND</div>
+        <h2>Grafik Tren Produksi (Akumulasi)</h2>
+        <p>Historical harian · AFD aktif · 7/30 hari</p>
+      </div>
+      <div class="trendControls">
+        <label>Periode
+          <select id="engineTrendPeriod">
+            <option value="7">7 Hari</option>
+            <option value="30" selected>30 Hari</option>
+          </select>
+        </label>
+        <label>Mode
+          <select id="engineTrendMode">
+            <option value="accum" selected>Akumulasi</option>
+          </select>
+        </label>
+        <button type="button" class="btn downloadBtn" onclick="downloadProductionTrendCSV()">Download Trend CSV ↓</button>
+      </div>
+    </div>
+    <div class="trendGrid">
+      <div class="trendCard"><div class="trendCardTitle">Akumulasi Tonase Transport</div><div class="trendValue" id="engineTrendTonaseValue">—</div><div class="trendCanvasWrap"><canvas id="engineTrendTonase"></canvas></div></div>
+      <div class="trendCard"><div class="trendCardTitle">Akumulasi Producing HK</div><div class="trendValue" id="engineTrendHKValue">—</div><div class="trendCanvasWrap"><canvas id="engineTrendHK"></canvas></div></div>
+      <div class="trendCard"><div class="trendCardTitle">Akumulasi JJG</div><div class="trendValue" id="engineTrendJJGValue">—</div><div class="trendCanvasWrap"><canvas id="engineTrendJJG"></canvas></div></div>
+      <div class="trendCard"><div class="trendCardTitle">BJR Rata-rata</div><div class="trendValue" id="engineTrendBJRValue">—</div><div class="trendCanvasWrap"><canvas id="engineTrendBJR"></canvas></div></div>
+    </div>
+  </div>
+</section>
 
 <section id="production" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Production</div><div class="meta">Actual production from reconciled AMANTA records.</div></div><button class="btn" type="button" onclick="downloadProductionCSV()">Download Production CSV</button></div><div id="bjrNotice" class="notice" style="margin-top:14px"><b>BJR:</b> —</div><div class="panel" style="margin-top:14px"><div class="panelHead"><h2>Harvest Performance — Mandoran</h2><span>AMANTA</span></div><table><thead><tr><th>Mandoran</th><th>HK</th><th>JJG</th><th>JJG/HK</th></tr></thead><tbody id="productionBody"><tr><td colspan="4" class="small">No active dataset.</td></tr></tbody></table></div><div class="panel harvestPerf"><div class="panelHead"><h2>Harvest Performance — Pemanen</h2><span>JJG per pemanen</span></div><div class="miniGrid"><div class="miniCard"><h3>Top Performer</h3><div id="topHarvester" class="big">—</div><div id="topHarvesterSub" class="small">—</div></div><div class="miniCard"><h3>Bottom Performer</h3><div id="bottomHarvester" class="big">—</div><div id="bottomHarvesterSub" class="small">—</div></div></div><div class="perfTable"><table><thead><tr><th>Rank</th><th>Pemanen</th><th>NPK</th><th>JJG</th><th>JJG/HK</th><th>Block</th><th>Mandoran</th></tr></thead><tbody id="harvesterBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table></div><div class="perfNote">Ranking menggunakan JJG aktual dari AMANTA. Peringkat rendah adalah signal untuk review, bukan otomatis penilaian kinerja.</div></div></section>
 
@@ -1836,6 +1747,88 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
       if(typeof window.renderProductionTrend==='function') window.renderProductionTrend();
     }catch(e){ console.warn('ADRIANA unified render:',e); }
   };
+})();
+</script>
+<script>
+/* ADRIANA PRODUCTION TREND — 7/30 day accumulated view */
+(function(){
+  const $=id=>document.getElementById(id);
+  let lastTrendRows=[];
+
+  function isoPrev(d,n){const x=new Date(d+'T00:00:00');x.setDate(x.getDate()-n);return x.toISOString().slice(0,10);}
+  function snapsFor(afd,days){
+    let all=[];
+    try{all=(typeof getAfdSnapshotsHybrid==='function'?getAfdSnapshotsHybrid(afd||'OC'):[])||[];}catch(e){}
+    const activeDate=(window.ADRIANA_DATA&&window.ADRIANA_DATA.date)||((typeof ACTIVE!=='undefined'&&ACTIVE)?ACTIVE.date:null);
+    if(!activeDate)return [];
+    const from=isoPrev(activeDate,days-1);
+    return all.filter(s=>s&&s.date>=from&&s.date<=activeDate&&(s.afd||'OC')===(afd||'OC'))
+      .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  }
+  function metrics(s){
+    try{const d=buildData(s);return {date:s.date,jjg:+d.jjg||0,hk:+d.producingHK||0,ton:+d.netTransportKg/1000||0,bjr:+d.bjrKgPerJjg||0};}
+    catch(e){return null}
+  }
+  function draw(id,values,labels){
+    const c=$(id);if(!c)return;
+    const r=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1,w=Math.max(260,r.width),h=Math.max(120,r.height);
+    c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    if(!values.length)return;
+    const pad={l:8,r:8,t:10,b:22},pw=w-pad.l-pad.r,ph=h-pad.t-pad.b;
+    const max=Math.max(...values,1),min=0;
+    ctx.font='9px Arial';ctx.strokeStyle='#dfe9e3';ctx.fillStyle='#718077';
+    for(let i=0;i<=3;i++){const y=pad.t+ph*i/3;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();}
+    const pts=values.map((v,i)=>({x:pad.l+(values.length===1?pw/2:pw*i/(values.length-1)),y:pad.t+ph-(v-min)/(max-min)*ph}));
+    ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+    ctx.lineWidth=2.5;ctx.strokeStyle='#0a8050';ctx.stroke();
+    const last=pts[pts.length-1];ctx.beginPath();ctx.arc(last.x,last.y,4,0,Math.PI*2);ctx.fillStyle='#0a8050';ctx.fill();
+    ctx.fillStyle='#718077';
+    const picks=[0,Math.floor((labels.length-1)/2),labels.length-1].filter((v,i,a)=>a.indexOf(v)===i);
+    picks.forEach(i=>ctx.fillText(labels[i].slice(5),Math.max(0,Math.min(w-42,pts[i].x-15)),h-6));
+  }
+  function renderTrend(){
+    const d=window.ADRIANA_DATA;if(!d||!d.date)return;
+    const days=+$('trendPeriod')?.value||30, engineDays=+$('engineTrendPeriod')?.value||days, afd=(typeof ACTIVE_AFD!=='undefined'?ACTIVE_AFD:(d.afd||'OC'));
+    const actualDays=engineDays;
+    const rows=snapsFor(afd,actualDays).map(metrics).filter(Boolean);
+    lastTrendRows=rows;
+    let aTon=0,aHK=0,aJJG=0;const ton=[],hk=[],jjg=[],bjr=[],labs=[];
+    rows.forEach(x=>{aTon+=x.ton;aHK+=x.hk;aJJG+=x.jjg;ton.push(aTon);hk.push(aHK);jjg.push(aJJG);bjr.push(x.bjr);labs.push(x.date)});
+    const ids=['trendTonaseValue','trendHKValue','trendJJGValue','trendBJRValue','engineTrendTonaseValue','engineTrendHKValue','engineTrendJJGValue','engineTrendBJRValue'];
+    if($('trendTonaseValue'))$('trendTonaseValue').textContent=aTon.toFixed(2)+' T';
+    if($('trendHKValue'))$('trendHKValue').textContent=aHK.toLocaleString()+' HK';
+    if($('trendJJGValue'))$('trendJJGValue').textContent=aJJG.toLocaleString()+' JJG';
+    if($('trendBJRValue'))$('trendBJRValue').textContent=rows.length?bjr[bjr.length-1].toFixed(2)+' kg/JJG':'—';
+    if($('engineTrendTonaseValue'))$('engineTrendTonaseValue').textContent=aTon.toFixed(2)+' T';
+    if($('engineTrendHKValue'))$('engineTrendHKValue').textContent=aHK.toLocaleString()+' HK';
+    if($('engineTrendJJGValue'))$('engineTrendJJGValue').textContent=aJJG.toLocaleString()+' JJG';
+    if($('engineTrendBJRValue'))$('engineTrendBJRValue').textContent=rows.length?bjr[bjr.length-1].toFixed(2)+' kg/JJG':'—';
+    draw('trendTonase',ton,labs);draw('trendHK',hk,labs);draw('trendJJG',jjg,labs);draw('trendBJR',bjr,labs);
+    draw('engineTrendTonase',ton,labs);draw('engineTrendHK',hk,labs);draw('engineTrendJJG',jjg,labs);draw('engineTrendBJR',bjr,labs);
+  }
+  window.renderProductionTrend=renderTrend;
+  window.downloadProductionTrendCSV=function(){
+    if(!lastTrendRows.length){alert('Belum ada historical snapshot untuk grafik.');return;}
+    let aTon=0,aHK=0,aJJG=0;
+    const rows=[['ADRIANA PRODUCTION TREND'],['Tanggal','Akumulasi Tonase (T)','Akumulasi HK','Akumulasi JJG','BJR (kg/JJG)']];
+    lastTrendRows.forEach(x=>{aTon+=x.ton;aHK+=x.hk;aJJG+=x.jjg;rows.push([x.date,aTon.toFixed(3),aHK,aJJG,x.bjr.toFixed(2)])});
+    const esc=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+    const blob=new Blob(['\uFEFF'+rows.map(r=>r.map(esc).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`ADRIANA_Production_Trend_${($('trendPeriod')?.value||$('engineTrendPeriod')?.value||30)}D.csv`;a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),500);
+  };
+  document.addEventListener('change',e=>{if(e.target&&(e.target.id==='trendPeriod'||e.target.id==='engineTrendPeriod'))renderTrend();});
+  window.addEventListener('resize',()=>{if(window.ADRIANA_DATA)renderTrend();});
+
+  // Wrap the existing renderAll without replacing its logic.
+  const wait=setInterval(()=>{
+    if(typeof window.renderAll==='function'){
+      clearInterval(wait);
+      const original=window.renderAll;
+      window.renderAll=function(snap){original(snap);setTimeout(renderTrend,0);}
+    }
+  },50);
 })();
 </script>
 </body></html>
