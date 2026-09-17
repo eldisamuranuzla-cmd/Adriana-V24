@@ -1340,7 +1340,7 @@ function renderPeopleAI(d){
   set('infieldPeople',x.people.length.toLocaleString('id-ID'));set('infieldBlocks',new Set(rows.flatMap(r=>r.blocks||[])).size.toLocaleString('id-ID'));set('infieldGross',x.gross.toLocaleString('id-ID'));set('infieldLangsir','—');set('infieldNet',x.net.toLocaleString('id-ID'));
   host.innerHTML=rows.map((r,i)=>{const blockText=(r.blocks||[]).join(', ');return `<tr><td><span class="rankBadge ${i===0?'low':''}">${i+1}</span></td><td><b>${html.escape(r.nama)}</b><div class="small">${html.escape(r.ident)}</div></td><td>${html.escape(r.code)}</td><td>${html.escape(blockText||'—')}</td><td>${r.jjg.toLocaleString('id-ID')}</td><td>—</td><td><b>${r.net.toLocaleString('id-ID')}</b></td><td>${r.bjr==null?'—':r.bjr.toFixed(2)+' kg/JJG'}</td><td>${r.tonase==null?'—':r.tonase.toFixed(3)+' T'}</td></tr>`}).join('')||'<tr><td colspan="9" class="small">Belum ada record PRODUKSIUNIT dengan KODEUNIT.</td></tr>';
  }
- window.ADRIANA_BUILD_INFIELD_REAL=build;const base=renderAll;renderAll=function(snap){base(snap);try{render(snap)}catch(e){console.warn('Infield:',e)}};
+ window.ADRIANA_BUILD_INFIELD_REAL=build;window.ADRIANA_RENDER_INFIELD=render;const base=renderAll;renderAll=function(snap){base(snap);try{render(snap)}catch(e){console.warn('Infield:',e)}};
 })();
 
 const _ADRIANA_RENDER_ALL_BASE=renderAll;
@@ -1503,7 +1503,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
     return groups;
   };
   window.ADRIANA_KKP_MASTER=KKP_MASTER;
-  window.ADRIANA_BUILD_KKP=kkpRows;
+  window.ADRIANA_BUILD_KKP=kkpRows;window.ADRIANA_RENDER_KKP=renderKKP;
   const renderKKP=(d)=>{
     const host=document.getElementById('kkpProductionBody');if(!host)return;
     if(!d?.date||((ACTIVE_AFD==='OE')&&d.afd!=='OC')){host.innerHTML='<tr><td colspan="7" class="small">Pilih OCYM / load dataset OC untuk melihat produksi KKP OC PN 1 dan OC PN 2.</td></tr>';const dh0=document.getElementById('kkpDashboardBody');if(dh0)dh0.innerHTML='<tr><td colspan="7" class="small">Pilih OCYM / load dataset OC untuk melihat produksi KKP OC PN 1 dan OC PN 2.</td></tr>';return;}
@@ -1695,6 +1695,10 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
     renderProduction(d);renderHarvestDensitySummary(d);renderJJGContribution(d);renderQuality(d);
     renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);
     renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d);
+    try{if(typeof window.ADRIANA_RENDER_INFIELD==='function')window.ADRIANA_RENDER_INFIELD(snap)}catch(e){console.warn('Infield:',e)}
+    try{renderPeoplePerformance(window.ADRIANA_DATA||d);renderPeopleAI(window.ADRIANA_DATA||d)}catch(e){console.warn('People Performance render:',e)}
+    try{if(typeof window.ADRIANA_RENDER_KKP==='function')window.ADRIANA_RENDER_KKP(snap)}catch(e){console.warn('KKP:',e)}
+    try{if(typeof window.renderProductionTrend==='function')window.renderProductionTrend()}catch(e){console.warn('Trend:',e)}
   renderPeoplePerformance(window.ADRIANA_DATA||d);renderPeopleAI(window.ADRIANA_DATA||d);};
 })();
 </script>
