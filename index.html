@@ -192,6 +192,18 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
   .periodHeadActions{justify-content:stretch}
   .periodHeadActions .downloadBtn{width:auto}
 }
+
+/* DAILY COMPARISON — current day vs previous calendar day */
+.dayCompare{
+  margin:5px 0 0 72px;
+  font-size:9px;font-weight:750;color:var(--neo-muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.dayCompare.up{color:#198b52}
+.dayCompare.down{color:#d44a4d}
+.dayCompare.flat{color:#718077}
+@media(max-width:980px){.dayCompare{margin-left:66px}}
+@media(max-width:520px){.dayCompare{margin-left:62px;font-size:8px}}
 </style>
 </head>
 <body>
@@ -218,10 +230,10 @@ table{width:100%;border-collapse:separate;border-spacing:0;font-size:9px}th{back
 <section id="dashboard" class="section active">
 <div class="dashWelcome"><div><div class="eyebrow">DAILY OPERATIONAL VIEW</div><div class="title">Welcome, <span class="welcomeName">Afdeling Head SYM!</span></div><div class="meta" id="activeMeta">Upload AMANTA files in Daily Closing</div><div class="afdFilter"><label>AFDELING</label><select id="afdFilter"><option value="ALL">Semua Afdeling</option><option value="OC">OCYM</option><option value="OE">OEYM</option></select></div></div><div class="dashControls"><div class="dateBox"><span>▣</span><div><small>Daily Operational View</small><strong id="activeDate">No dataset</strong></div><b>⌄</b></div><div class="lock" id="lockState">● NO DATASET</div></div></div>
 <div class="grid kpiGrid">
-<div class="card kpi kpiPalm"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-tbs.png" alt="TBS Kelapa Sawit"></div><div class="label">TOTAL JJG</div><div class="value">1,863</div><div class="delta up">↑ Operational volume</div><div class="small">3-source reconciliation matched</div><div class="spark"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-<div class="card kpi kpiPeople"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-worker.png" alt="Producing Manpower"></div><div class="label">PRODUCING HK</div><div class="value">23</div><div class="delta up">↑ Producing manpower</div><div class="small">unique producing NPK</div><div class="spark bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-<div class="card kpi kpiTruck"><span class="confidence medium">MEDIUM</span><div class="kpiIcon"><img src="kpi-truck.png" alt="Net Transport"></div><div class="label">NET TRANSPORT</div><div class="value">12.86 T</div><div class="delta down">↓ Scale movement</div><div class="small">2 trips · scale weight</div><div class="spark bars amber"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-<div class="card kpi kpiRestan"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-bjr.png" alt="TBS Kelapa Sawit"></div><div class="label">BJR</div><div class="value">—</div><div class="small">kg/JJG · net tonnage ÷ JJG</div><div class="spark dashed"></div></div>
+<div class="card kpi kpiPalm"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-tbs.png" alt="TBS Kelapa Sawit"></div><div class="label">TOTAL JJG</div><div class="value">1,863</div><div class="delta up">↑ Operational volume</div><div class="small">3-source reconciliation matched</div><div class="dayCompare" id="compareJJG">vs hari sebelumnya: —</div> <div class="spark"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+<div class="card kpi kpiPeople"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-worker.png" alt="Producing Manpower"></div><div class="label">PRODUCING HK</div><div class="value">23</div><div class="delta up">↑ Producing manpower</div><div class="small">unique producing NPK</div><div class="dayCompare" id="compareHK">vs hari sebelumnya: —</div> <div class="spark bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+<div class="card kpi kpiTruck"><span class="confidence medium">MEDIUM</span><div class="kpiIcon"><img src="kpi-truck.png" alt="Net Transport"></div><div class="label">NET TRANSPORT</div><div class="value">12.86 T</div><div class="delta down">↓ Scale movement</div><div class="small">2 trips · scale weight</div><div class="dayCompare" id="compareTONASE">vs hari sebelumnya: —</div> <div class="spark bars amber"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+<div class="card kpi kpiRestan"><span class="confidence high">HIGH</span><div class="kpiIcon"><img src="kpi-bjr.png" alt="TBS Kelapa Sawit"></div><div class="label">BJR</div><div class="value">—</div><div class="small">kg/JJG · net tonnage ÷ JJG</div><div class="dayCompare" id="compareBJR">vs hari sebelumnya: —</div> <div class="spark dashed"></div></div>
 </div>
 <div class="two dashTopGrid">
 <div class="panel signalsPanel"><div class="panelHead"><h2>Today's Operational Signals</h2><span>See All →</span></div><div id="dashboardSignals"><div class="notice">Upload and lock a daily dataset to generate operational signals.</div></div></div>
@@ -1556,6 +1568,88 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
       if(cells.length>=7 && !/Belum ada|Tidak ada/i.test(cells.join(' '))) rows.push(cells);
     });
     exportCsv(`ADRIANA_Premi_Closing_${ACTIVE_AFD||d.afd||'OC'}_${d.date}.csv`,rows);
+  };
+})();
+</script>
+
+<script>
+/* ADRIANA DAILY KPI COMPARISON
+   Current day is primary. Previous calendar day is the comparison baseline.
+   Uses the same locked/hybrid snapshot source; no historical data is rewritten. */
+(function(){
+  function previousCalendarDate(iso){
+    const d=new Date(String(iso)+'T00:00:00');
+    d.setDate(d.getDate()-1);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function snapshotForDate(afd,date){
+    if(!date)return null;
+    let snaps=[];
+    try{
+      if(typeof getAfdSnapshotsHybrid==='function') snaps=getAfdSnapshotsHybrid(afd||'OC')||[];
+    }catch(e){}
+    return (snaps||[]).find(x=>x&&x.date===date&&(x.afd||'OC')===(afd||'OC'))||null;
+  }
+  function metricSnapshot(snap){
+    if(!snap)return null;
+    try{
+      const d=buildData(snap);
+      return {
+        jjg:Number(d.jjg)||0,
+        hk:Number(d.producingHK)||0,
+        ton:Number(d.netTransportKg)||0,
+        bjr:Number(d.bjrKgPerJjg)||0
+      };
+    }catch(e){return null}
+  }
+  function fmtDelta(cur,prev,unit,dec=0){
+    if(prev==null)return 'vs hari sebelumnya: tidak tersedia';
+    const diff=cur-prev;
+    const sign=diff>0?'+':diff<0?'':'';
+    const val=dec?Math.abs(diff).toFixed(dec):Math.abs(diff).toLocaleString();
+    const curTxt=dec?cur.toFixed(dec):cur.toLocaleString();
+    const prevTxt=dec?prev.toFixed(dec):prev.toLocaleString();
+    return `vs ${window.__ADRIANA_PREV_DATE_LABEL||'hari sebelumnya'}: ${prevTxt} → ${curTxt} (${sign}${val}${unit})`;
+  }
+  function setCompare(id,cur,prev,unit,dec=0){
+    const el=document.getElementById(id);if(!el)return;
+    el.classList.remove('up','down','flat');
+    if(prev==null){el.textContent='vs hari sebelumnya: tidak tersedia';el.classList.add('flat');return;}
+    const diff=cur-prev;
+    el.textContent=fmtDelta(cur,prev,unit,dec);
+    el.classList.add(diff>0?'up':diff<0?'down':'flat');
+  }
+
+  window.renderAll=function(snap){
+    const d=buildData(snap);
+    ACTIVE=snap;window.ADRIANA_DATA=d;
+    document.getElementById('activeDate').textContent=fmtDate(snap.date);
+    document.getElementById('activeMeta').textContent=`${snap.site} · ${AFD_LABEL[snap.afd]||snap.afd||'OCYM'} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;
+    document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';
+
+    const vals=document.querySelectorAll('#dashboard .card .value');
+    if(vals[0])vals[0].textContent=d.jjg.toLocaleString();
+    if(vals[1])vals[1].textContent=d.producingHK.toLocaleString();
+    if(vals[2])vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';
+    if(vals[3])vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';
+
+    const prevDate=previousCalendarDate(snap.date);
+    const prevSnap=snapshotForDate(snap.afd||ACTIVE_AFD,prevDate);
+    const prev=metricSnapshot(prevSnap);
+    window.__ADRIANA_PREV_DATE_LABEL=prevSnap?fmtDate(prevDate):prevDate;
+
+    setCompare('compareJJG',d.jjg,prev?.jjg??null,' JJG',0);
+    setCompare('compareHK',d.producingHK,prev?.hk??null,' HK',0);
+    setCompare('compareTONASE',d.netTransportKg/1000,prev?prev.ton/1000:null,' T',2);
+    setCompare('compareBJR',d.bjrKgPerJjg,prev?.bjr??null,' kg/JJG',2);
+
+    const bjrNotice=document.getElementById('bjrNotice');
+    if(bjrNotice)bjrNotice.innerHTML=d.bjrKgPerJjg?`<b>BJR:</b> ${d.bjrKgPerJjg.toFixed(2)} kg/JJG · ${d.netTransportKg.toLocaleString()} kg net ÷ ${d.jjg.toLocaleString()} JJG`:'<b>BJR:</b> unavailable because net transport or JJG is unavailable.';
+    const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();
+
+    renderProduction(d);renderHarvestDensitySummary(d);renderJJGContribution(d);renderQuality(d);
+    renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);
+    renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d);
   };
 })();
 </script>
