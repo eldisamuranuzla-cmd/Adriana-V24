@@ -1439,4 +1439,25 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
 })();
 
 </script>
+
+<script>
+(function(){
+  const __baseRenderAll = window.renderAll;
+  if(typeof __baseRenderAll !== 'function') return;
+  window.renderAll = function(snap){
+    __baseRenderAll(snap);
+    try{
+      const d=window.ADRIANA_DATA||buildData(snap);
+      if(typeof renderPeoplePerformance==='function') renderPeoplePerformance(d);
+      if(typeof renderPeopleAI==='function') renderPeopleAI(d);
+      if(typeof window.ADRIANA_RENDER_KKP==='function') window.ADRIANA_RENDER_KKP(snap);
+      if(typeof buildPeopleHistory==='function' && typeof renderPeriodClosing==='function'){
+        const hist=buildPeopleHistory(snap.date,snap);
+        if(hist) renderPeriodClosing(hist,snap.date);
+      }
+    }catch(e){ console.warn('ADRIANA KKP/PEOPLE/PREMI render:',e); }
+  };
+})();
+</script>
+
 </body></html>
