@@ -476,6 +476,55 @@ body,html{padding-bottom:0!important}
     repeating-linear-gradient(-72deg,transparent 0 62px,rgba(0,45,27,.035) 63px 66px);
   opacity:.55;
 }
+
+/* =========================================================
+   ADRIANA LOGO RESTORE — INLINE / SELF-CONTAINED
+   ========================================================= */
+.v3AdrianaLogo{
+  position:absolute!important;
+  z-index:3!important;
+  left:22px!important;
+  top:86px!important;
+  width:min(500px,72vw)!important;
+  color:#17392c;
+}
+.v3AdrianaLogo svg{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  overflow:visible!important;
+}
+.v3AdrianaLogo small{
+  display:block!important;
+  margin:5px 0 0 7px!important;
+  font-size:14px!important;
+  line-height:1.1!important;
+  font-weight:500!important;
+  letter-spacing:-.02em!important;
+  color:#17392c!important;
+}
+.v3Adriana{display:none!important}
+
+@media(max-width:760px){
+  .v3AdrianaLogo{
+    left:14px!important;
+    top:77px!important;
+    width:min(420px,78vw)!important;
+  }
+  .v3AdrianaLogo small{
+    margin-left:4px!important;
+    font-size:10px!important;
+  }
+}
+@media(max-width:480px){
+  .v3AdrianaLogo{
+    left:12px!important;
+    top:78px!important;
+    width:78vw!important;
+  }
+  .v3AdrianaLogo small{font-size:9px!important}
+}
+
 </style>
 </head>
 <body>
@@ -511,7 +560,30 @@ body,html{padding-bottom:0!important}
       <img src="astra-agro-50-header.png" class="v3AAL50" alt="Astra Agro 50">
       <div class="v3User"><span class="v3Bell">♧<i></i></span><span class="v3Avatar">AH</span><span><small>Afdeling Head</small><b id="v3AfdLabel">OCYM</b></span><b>⌄</b></div>
     </div>
-    <div class="v3Adriana">ADRIANA<span></span><small>Assistant Daily Reporting &amp; Analytics</small></div>
+    <div class="v3AdrianaLogo" aria-label="ADRIANA — Assistant Daily Reporting & Analytics">
+  <svg viewBox="0 0 520 112" role="img" aria-hidden="true">
+    <defs>
+      <linearGradient id="adrianaGreen" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#00704a"/>
+        <stop offset="1" stop-color="#004f37"/>
+      </linearGradient>
+      <linearGradient id="adrianaGold" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="#c59b24"/>
+        <stop offset="1" stop-color="#e2bf48"/>
+      </linearGradient>
+    </defs>
+    <text x="4" y="66" fill="url(#adrianaGreen)"
+      font-family="Arial, Helvetica, sans-serif"
+      font-size="68" font-weight="900" letter-spacing="-4">ADRIANA</text>
+    <path d="M421 23 C451 7 475 11 488 27 C462 29 440 39 421 54 C431 38 431 30 421 23Z"
+      fill="url(#adrianaGreen)"/>
+    <path d="M438 49 C459 39 483 40 501 50 C479 53 458 64 441 80 C449 65 448 56 438 49Z"
+      fill="url(#adrianaGold)"/>
+    <path d="M430 82 C448 68 466 60 485 58"
+      fill="none" stroke="#d0a52e" stroke-width="6" stroke-linecap="round"/>
+  </svg>
+  <small>Assistant Daily Reporting &amp; Analytics</small>
+</div>
     <div class="v3Planting">PLANTING<br>A BETTER<br>TOMORROW</div>
   </div>
 
