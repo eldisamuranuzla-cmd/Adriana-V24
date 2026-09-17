@@ -257,6 +257,14 @@ body{background:#f4f7f3}
 .v3Production table thead th:nth-child(8){display:none}
 .v3Control:nth-child(2) select{z-index:3}
 
+
+/* Net Transport: absolute daily net tonnage, no day-over-day percentage */
+.v3Kpis .kpiTruck em,
+.v3Kpis .kpiTruck .delta,
+.v3Kpis .kpiTruck .v3Delta,
+.v3Kpis .kpiTruck .v3YoY,
+.v3Kpis .kpiTruck .v3VsYesterday{display:none!important}
+.v3Kpis .kpiTruck span{color:#617069!important;font-size:8px!important}
 </style>
 </head>
 <body>
@@ -322,10 +330,10 @@ body{background:#f4f7f3}
   <div class="v3SectionTitle"><span>▥</span><b>TODAY'S OPERATION</b><a href="#" onclick="show('production');return false">View Detail →</a></div>
 
   <div class="v3Kpis">
-    <div class="v3Kpi"><div class="v3KpiIcon"><img src="kpi-tbs.png" alt=""></div><small>TOTAL JJG</small><strong id="v3TotalJjg">—</strong><em>↑ 8.4%</em><span>vs yesterday</span><div class="v3Progress"><i id="v3JjgBar"></i></div><label>Target 2.350 <b id="v3JjgTarget">—</b></label></div>
-    <div class="v3Kpi"><div class="v3KpiIcon"><img src="kpi-worker.png" alt=""></div><small>PRODUCING HK</small><strong id="v3Producing">—</strong><em>↑ 9.5%</em><span>vs yesterday</span><div class="v3Progress"><i></i></div><label>Target 22 <b>—</b></label></div>
-    <div class="v3Kpi"><div class="v3KpiIcon"><img src="kpi-truck.png" alt=""></div><small>NET TRANSPORT</small><strong id="v3Transport">—</strong><em class="down">↓ 3.2%</em><span>vs yesterday</span><div class="v3Progress"><i></i></div><label>Target 43.00 <b>—</b></label></div>
-    <div class="v3Kpi"><div class="v3KpiIcon"><img src="kpi-bjr.png" alt=""></div><small>BJR</small><strong id="v3Bjr">—</strong><em>↑ 1.8%</em><span>kg/JJG</span><div class="v3Progress"><i></i></div><label>Target 16.50 <b>—</b></label></div>
+    <div class="v3Kpi card kpi"><div class="v3KpiIcon kpiIcon"><img src="kpi-tbs.png" alt=""></div><small class="label">TOTAL JJG</small><strong class="value" id="v3TotalJjg">—</strong><em>↑ 8.4%</em><span>vs yesterday</span><div class="v3Progress"><i id="v3JjgBar"></i></div><label>Target 2.350 <b id="v3JjgTarget">—</b></label></div>
+    <div class="v3Kpi card kpi"><div class="v3KpiIcon kpiIcon"><img src="kpi-worker.png" alt=""></div><small class="label">PRODUCING HK</small><strong class="value" id="v3Producing">—</strong><em>↑ 9.5%</em><span>vs yesterday</span><div class="v3Progress"><i></i></div><label>Target 22 <b>—</b></label></div>
+    <div class="v3Kpi card kpi kpiTruck"><div class="v3KpiIcon kpiIcon"><img src="kpi-truck.png" alt=""></div><small class="label">NET TRANSPORT</small><strong class="value" id="v3Transport">—</strong><span>Tonase net harian dari CSV AMANTA</span><div class="v3Progress"><i></i></div><label>Weight In − Weight Out <b>Daily Net</b></label></div>
+    <div class="v3Kpi card kpi"><div class="v3KpiIcon kpiIcon"><img src="kpi-bjr.png" alt=""></div><small class="label">BJR</small><strong class="value" id="v3Bjr">—</strong><em>↑ 1.8%</em><span>kg/JJG</span><div class="v3Progress"><i></i></div><label>Target 16.50 <b>—</b></label></div>
   </div>
 
   <div class="v3Two">
