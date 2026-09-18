@@ -2885,7 +2885,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
 (function(){
   const $=id=>document.getElementById(id);
   const esc=v=>{const s=String(v??'');return (window.html&&html.escape)?html.escape(s):s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))};
-  function isoPrev(d,n){const x=new Date(d+'T00:00:00');x.setDate(x.getDate()-n);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`}
+  function isoPrev(d,n){const x=new Date(String(d)+'T00:00:00');x.setDate(x.getDate()-n);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`}
   function snaps(afd,days){
     let all=[];try{all=(typeof getAfdSnapshotsHybrid==='function'?getAfdSnapshotsHybrid(afd||'OC'):[])||[]}catch(e){}
     const active=(window.ADRIANA_DATA&&window.ADRIANA_DATA.date)||((typeof ACTIVE!=='undefined'&&ACTIVE)?ACTIVE.date:null);
@@ -2913,42 +2913,75 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
     const days=+$('aiHistDays')?.value||30;
     const afd=(typeof ACTIVE_AFD!=='undefined'&&ACTIVE_AFD!=='ALL'?ACTIVE_AFD:((window.ADRIANA_DATA&&window.ADRIANA_DATA.afd)||'OC'))||'OC';
     const ss=snaps(afd,days), daily=ss.flatMap(blockDay).filter(Boolean);
-    const map={};daily.forEach(x=>{const q=map[x.b]??={b:x.b,days:0,jjg:0,ton:0,hkDays:0,validProd:[]};q.days++;q.jjg+=x.jjg;q.ton+=x.ton;q.hkDays+=x.hk;if(x.hk>0&&x.ton>0)q.validProd.push(x.ton*1000/x.hk)});
-    const rows=Object.values(map).map(x=>({...x,avgJjg:x.jjg/x.days,avgTon:x.ton/x.days,avgHK:x.hkDays/x.days,kgPerHK:x.validProd.length?x.validProd.reduce((a,b)=>a+b,0)/x.validProd.length:0})).filter(x=>x.days>0);
-    rows.sort((a,b)=>a.kgPerHK-b.kgPerHK||a.avgTon-b.avgTon);
+    const map={};
+    daily.forEach(x=>{
+      const q=map[x.b]??={b:x.b,days:0,jjg:0,ton:0,hkDays:0,validProd:[],validDays:0};
+      q.days++;q.jjg+=x.jjg;q.ton+=x.ton;q.hkDays+=x.hk;
+      if(x.hk>0&&x.ton>0){q.validProd.push(x.ton*1000/x.hk);q.validDays++;}
+    });
+    const rows=Object.values(map).map(x=>({...x,
+      avgJjg:x.jjg/x.days,avgTon:x.ton/x.days,avgHK:x.hkDays/x.days,
+      kgPerHK:x.validProd.length?x.validProd.reduce((a,b)=>a+b,0)/x.validProd.length:0,
+      totalKg:x.ton*1000
+    })).filter(x=>x.days>0);
+
+    /* Overall historical productivity is calculated from actual daily transport tonnage
+       and producing HK. Block tonnage remains estimated from JJG × daily BJR. */
     const totalTon=ss.reduce((a,s)=>{try{return a+(buildData(s).netTransportKg||0)/1000}catch(e){return a}},0);
     const totalHK=ss.reduce((a,s)=>{try{return a+(buildData(s).producingHK||0)}catch(e){return a}},0);
     const avgDailyTon=ss.length?totalTon/ss.length:0,avgDailyHK=ss.length?totalHK/ss.length:0;
-    const targetVal=parseFloat($('aiHistTargetTon')?.value);const targetTon=Number.isFinite(targetVal)&&targetVal>0?targetVal:avgDailyTon;
-    const valid=rows.filter(x=>x.kgPerHK>0);const weightedKgHK=valid.length?(valid.reduce((a,x)=>a+x.ton*1000,0)/valid.reduce((a,x)=>a+x.hkDays,0)):0;
-    const requiredHK=weightedKgHK>0?Math.ceil(targetTon*1000/weightedKgHK):null;
+    const overallKgHK=totalHK>0?totalTon*1000/totalHK:0;
+    const targetVal=parseFloat($('aiHistTargetTon')?.value);
+    const targetTon=Number.isFinite(targetVal)&&targetVal>0?targetVal:avgDailyTon;
+    const requiredTotalHK=overallKgHK>0?Math.ceil(targetTon*1000/overallKgHK):null;
     const currentHK=Math.round(avgDailyHK);
-    const gap=requiredHK==null?null:requiredHK-currentHK;
-    const top=valid[0]||rows[0];
+
+    /* Rank blocks by historical productivity, but require a meaningful sample.
+       For planning, distribute target tonnage according to each block's historical
+       contribution, then derive recommended HK from that block's own productivity. */
+    const valid=rows.filter(x=>x.kgPerHK>0&&x.avgHK>0&&x.avgTon>0);
+    const totalAvgBlockTon=valid.reduce((a,x)=>a+x.avgTon,0);
+    rows.forEach(x=>{
+      x.share=totalAvgBlockTon>0?x.avgTon/totalAvgBlockTon:0;
+      x.planTon=targetTon*x.share;
+      x.requiredHK=x.kgPerHK>0?Math.ceil(x.planTon*1000/x.kgPerHK):null;
+      x.hkGap=x.requiredHK==null?null:x.requiredHK-Math.ceil(x.avgHK);
+      x.productivityGap=overallKgHK>0?x.kgPerHK-overallKgHK:0;
+    });
+    valid.sort((a,b)=>a.kgPerHK-b.kgPerHK||a.avgTon-b.avgTon);
+    const top=valid[0]||rows.find(x=>x.kgPerHK>0)||rows[0];
+
     const body=$('aiHistBody');
     if(body)body.innerHTML=rows.length?rows.slice(0,12).map((x,i)=>`<tr class="${i===0?'aiHistLow':''}"><td><b>${esc(x.b)}</b></td><td>${x.days}</td><td>${x.avgJjg.toFixed(1)}</td><td>${x.avgHK.toFixed(1)}</td><td>${x.avgTon.toFixed(2)}</td><td>${x.kgPerHK?x.kgPerHK.toFixed(0):'—'}</td><td>${i===0?'<span class="aiHistBadge">FOCUS</span>':'—'}</td></tr>`).join(''):'<tr><td colspan="7" class="small">Historical belum cukup.</td></tr>';
-    if($('aiHistSummary'))$('aiHistSummary').innerHTML=`<b>${days}-day analysis · ${esc(afd)}</b><br>Basis tanggal aktif: <b>${esc(active)}</b> · Window: <b>${esc(ss.length?ss[0].date:'—')} → ${esc(active)}</b> · ${ss.length} snapshot tersedia · Avg total ${avgDailyTon.toFixed(2)} T/hari · Avg producing ${avgDailyHK.toFixed(1)} HK/hari · productivity basis ${weightedKgHK?weightedKgHK.toFixed(0)+' kg/HK':'unavailable'}.`;
+    const active=(window.ADRIANA_DATA&&window.ADRIANA_DATA.date)||((typeof ACTIVE!=='undefined'&&ACTIVE)?ACTIVE.date:'—');
+    if($('aiHistSummary'))$('aiHistSummary').innerHTML=`<b>${days}-day analysis · ${esc(afd)}</b><br>Basis tanggal aktif: <b>${esc(active)}</b> · Window: <b>${esc(ss.length?ss[0].date:'—')} → ${esc(active)}</b> · ${ss.length} snapshot · Avg total ${avgDailyTon.toFixed(2)} T/hari · Avg producing ${avgDailyHK.toFixed(1)} HK/hari · Overall ${overallKgHK?overallKgHK.toFixed(0)+' kg/HK':'unavailable'} · Target ${targetTon.toFixed(2)} T/hari.`;
+
     if($('aiHistRecommendation')){
-      if(!top){$('aiHistRecommendation').innerHTML='<span class="aiHistBadge">AI RECOMMENDATION</span><h3 style="margin:9px 0 5px">Historical belum cukup</h3><div class="aiHistMuted">Belum ada blok dengan data JJG + HK + BJR yang cukup untuk rekomendasi.</div>'}
-      else {
-        const gapText=gap==null?'HK tidak dapat dihitung':gap>0?`Tambah sekitar <b>${gap} HK</b> dari baseline rata-rata ${currentHK} HK/hari.`:gap<0?`Baseline historis menunjukkan kebutuhan sekitar <b>${requiredHK} HK</b>; saat ini rata-rata ${currentHK} HK/hari.`:'Kebutuhan sekitar sama dengan baseline: <b>'+requiredHK+' HK</b>.';
-        $('aiHistRecommendation').innerHTML=`<span class="aiHistBadge">AI RECOMMENDATION</span><h3 style="margin:9px 0 5px">Fokus blok ${esc(top.b)}</h3><div style="font-size:13px;line-height:1.5"><b>${top.kgPerHK?top.kgPerHK.toFixed(0):'—'} kg/HK</b> rata-rata estimated productivity · ${top.avgTon.toFixed(2)} T/hari · ${top.avgHK.toFixed(1)} HK/hari.</div><div class="aiHistMuted" style="margin-top:8px"><b>Plan ${targetTon.toFixed(2)} T/hari:</b> ${gapText}</div><div class="aiHistMuted" style="margin-top:8px">Prioritaskan pengecekan rotasi, luas ancak, komposisi HK dan kondisi blok ${esc(top.b)} sebelum menetapkan penambahan HK.</div>`;
+      if(!top){
+        $('aiHistRecommendation').innerHTML='<span class="aiHistBadge">AI RECOMMENDATION</span><h3 style="margin:9px 0 5px">Historical belum cukup</h3><div class="aiHistMuted">Belum ada blok dengan data JJG + HK + BJR yang cukup untuk rekomendasi.</div>';
+      } else {
+        const recHK=top.requiredHK, gap=top.hkGap;
+        const gapText=recHK==null?'Kebutuhan HK tidak dapat dihitung dari historical.':gap>0?`Untuk plan blok sekitar <b>${top.planTon.toFixed(2)} T/hari</b>, kebutuhan sekitar <b>${recHK} HK</b>; baseline historical ${Math.ceil(top.avgHK)} HK → indikasi tambahan <b>${gap} HK</b>.`:gap<0?`Untuk plan blok sekitar <b>${top.planTon.toFixed(2)} T/hari</b>, kebutuhan sekitar <b>${recHK} HK</b>; baseline historical ${Math.ceil(top.avgHK)} HK → secara matematis sekitar <b>${Math.abs(gap)} HK</b> di atas kebutuhan baseline.`:`Untuk plan blok sekitar <b>${top.planTon.toFixed(2)} T/hari</b>, kebutuhan sekitar <b>${recHK} HK</b>, sama dengan baseline historical.`;
+        $('aiHistRecommendation').innerHTML=`<span class="aiHistBadge">AI RECOMMENDATION</span><h3 style="margin:9px 0 5px">Fokus blok ${esc(top.b)}</h3><div style="font-size:13px;line-height:1.5"><b>${top.kgPerHK.toFixed(0)} kg/HK</b> estimated productivity · ${top.avgTon.toFixed(2)} T/hari · ${top.avgHK.toFixed(1)} HK/hari.</div><div class="aiHistMuted" style="margin-top:8px"><b>Plan total ${targetTon.toFixed(2)} T/hari:</b> ${gapText}</div><div class="aiHistMuted" style="margin-top:8px"><b>Overall plan:</b> sekitar <b>${requiredTotalHK==null?'—':requiredTotalHK+' HK'}</b> vs current average <b>${currentHK} HK</b>.</div><div class="aiHistMuted" style="margin-top:8px">Gunakan rekomendasi ini sebagai decision support. Validasi rotasi, luas ancak, potensi buah, komposisi HK dan penyebab produktivitas rendah sebelum realokasi HK.</div>`;
       }
     }
-    // Feed the existing Assistant Decision card without replacing its existing calculation functions.
+
+    /* Feed the existing Assistant Decision card with the historical planning result. */
     const dd=$('dashboardDecision'),dt=$('dashboardDecisionText');
-    if(dd&&dt&&top){dd.textContent=`Fokus ${top.b} · Plan ${targetTon.toFixed(1)} T/hari`;dt.innerHTML=`Historical ${days} hari menunjukkan produktivitas estimated terendah di <b>${esc(top.b)}</b> (${top.kgPerHK?top.kgPerHK.toFixed(0):'—'} kg/HK). Kebutuhan baseline untuk target ${targetTon.toFixed(1)} T/hari: <b>${requiredHK==null?'—':requiredHK+' HK'}</b>. Current avg: ${currentHK} HK/hari.`}
-    window.ADRIANA_AI_HIST={days,afd,rows,targetTon,requiredHK,currentHK,weightedKgHK,focusBlock:top?.b||null};
+    if(dd&&dt&&top){
+      dd.textContent=`Fokus ${top.b} · ${top.requiredHK==null?'—':top.requiredHK+' HK'} Plan`;
+      dt.innerHTML=`Historical ${days} hari dari <b>${esc(ss.length?ss[0].date:'—')}</b> sampai <b>${esc(active)}</b> menunjukkan produktivitas estimated terendah di <b>${esc(top.b)}</b> (${top.kgPerHK.toFixed(0)} kg/HK). Untuk target total <b>${targetTon.toFixed(1)} T/hari</b>, baseline kebutuhan total sekitar <b>${requiredTotalHK==null?'—':requiredTotalHK+' HK'}</b>. Alokasi fokus blok: <b>${top.requiredHK==null?'—':top.requiredHK+' HK'}</b>.`;
+    }
+    window.ADRIANA_AI_HIST={days,afd,activeDate:active,fromDate:ss.length?ss[0].date:null,rows,targetTon,requiredTotalHK,currentHK,overallKgHK,focusBlock:top?.b||null,focusRequiredHK:top?.requiredHK??null};
   }
   window.ADRIANA_RUN_HISTORICAL_AI=analyze;
   document.addEventListener('click',e=>{if(e.target&&e.target.id==='aiHistRunBtn')analyze()});
   document.addEventListener('change',e=>{if(e.target&&(e.target.id==='aiHistDays'||e.target.id==='aiHistTargetTon'||e.target.id==='afdFilter'))setTimeout(()=>{try{analyze()}catch(e){}},80)});
-  // Re-run after the existing render/history flow so the recommendation follows active date/AFD.
   document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{analyze()}catch(e){}},700));
   const tryHook=()=>{try{if(window.ADRIANA_DATA)analyze()}catch(e){}};
   window.addEventListener('load',()=>setTimeout(tryHook,900));
   const activeDateEl=$('activeDate');
-  if(activeDateEl&&window.MutationObserver){new MutationObserver(()=>setTimeout(tryHook,120)).observe(activeDateEl,{childList:true,subtree:true,characterData:true});}
+  if(activeDateEl&&window.MutationObserver)new MutationObserver(()=>setTimeout(tryHook,120)).observe(activeDateEl,{childList:true,subtree:true,characterData:true});
 })();
 </script>
 </body></html>
