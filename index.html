@@ -2885,7 +2885,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
 (function(){
   const $=id=>document.getElementById(id);
   const esc=v=>{const s=String(v??'');return (window.html&&html.escape)?html.escape(s):s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))};
-  function isoPrev(d,n){const x=new Date(d+'T00:00:00');x.setDate(x.getDate()-n);return x.toISOString().slice(0,10)}
+  function isoPrev(d,n){const x=new Date(d+'T00:00:00');x.setDate(x.getDate()-n);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`}
   function snaps(afd,days){
     let all=[];try{all=(typeof getAfdSnapshotsHybrid==='function'?getAfdSnapshotsHybrid(afd||'OC'):[])||[]}catch(e){}
     const active=(window.ADRIANA_DATA&&window.ADRIANA_DATA.date)||((typeof ACTIVE!=='undefined'&&ACTIVE)?ACTIVE.date:null);
@@ -2927,7 +2927,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
     const top=valid[0]||rows[0];
     const body=$('aiHistBody');
     if(body)body.innerHTML=rows.length?rows.slice(0,12).map((x,i)=>`<tr class="${i===0?'aiHistLow':''}"><td><b>${esc(x.b)}</b></td><td>${x.days}</td><td>${x.avgJjg.toFixed(1)}</td><td>${x.avgHK.toFixed(1)}</td><td>${x.avgTon.toFixed(2)}</td><td>${x.kgPerHK?x.kgPerHK.toFixed(0):'—'}</td><td>${i===0?'<span class="aiHistBadge">FOCUS</span>':'—'}</td></tr>`).join(''):'<tr><td colspan="7" class="small">Historical belum cukup.</td></tr>';
-    if($('aiHistSummary'))$('aiHistSummary').innerHTML=`<b>${days}-day analysis · ${esc(afd)}</b><br>${ss.length} snapshot tersedia · Avg total ${avgDailyTon.toFixed(2)} T/hari · Avg producing ${avgDailyHK.toFixed(1)} HK/hari · productivity basis ${weightedKgHK?weightedKgHK.toFixed(0)+' kg/HK':'unavailable'}.`;
+    if($('aiHistSummary'))$('aiHistSummary').innerHTML=`<b>${days}-day analysis · ${esc(afd)}</b><br>Basis tanggal aktif: <b>${esc(active)}</b> · Window: <b>${esc(ss.length?ss[0].date:'—')} → ${esc(active)}</b> · ${ss.length} snapshot tersedia · Avg total ${avgDailyTon.toFixed(2)} T/hari · Avg producing ${avgDailyHK.toFixed(1)} HK/hari · productivity basis ${weightedKgHK?weightedKgHK.toFixed(0)+' kg/HK':'unavailable'}.`;
     if($('aiHistRecommendation')){
       if(!top){$('aiHistRecommendation').innerHTML='<span class="aiHistBadge">AI RECOMMENDATION</span><h3 style="margin:9px 0 5px">Historical belum cukup</h3><div class="aiHistMuted">Belum ada blok dengan data JJG + HK + BJR yang cukup untuk rekomendasi.</div>'}
       else {
