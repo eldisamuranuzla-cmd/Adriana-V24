@@ -3095,9 +3095,9 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
     const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
     const logo=await logoData();
     let y=14;
+    // Header: gunakan SATU logo ADRIANA saja. Logo image sudah mengandung
+    // mark + wordmark + tagline, jadi tidak perlu teks ADRIANA kedua.
     if(logo){try{doc.addImage(logo,'PNG',12,8,48,12);}catch(e){}}
-    doc.setTextColor(6,69,47); doc.setFontSize(16); doc.setFont(undefined,'bold'); doc.text('ADRIANA',65,15);
-    doc.setFontSize(7); doc.setFont(undefined,'normal'); doc.setTextColor(95,110,101); doc.text('Assistant Daily Reporting & Analytics',65,20);
     doc.setDrawColor(210,225,216); doc.line(12,25,285,25);
     doc.setTextColor(23,35,29); doc.setFontSize(15); doc.setFont(undefined,'bold'); doc.text(title,12,34);
     doc.setFontSize(8); doc.setFont(undefined,'normal'); doc.setTextColor(95,110,101);
