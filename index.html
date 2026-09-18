@@ -1399,152 +1399,6 @@ body{
   .main{padding:0 10px 16px!important;}
 }
 </style>
-
-<style id="adriana-mobile-top-engine-final">
-/* =========================================================
-   ADRIANA FINAL MOBILE TOP ENGINE NAV
-   CSS ONLY — NO LOGIC / JAVASCRIPT CHANGES
-   ========================================================= */
-@media (max-width: 700px){
-  .app{
-    display:block !important;
-    min-height:100vh !important;
-  }
-
-  /* Brand header stays first and is never covered by navigation */
-  .main{
-    margin-left:0 !important;
-    width:100% !important;
-    padding:0 10px 18px !important;
-  }
-
-  .astraHead{
-    position:relative !important;
-    z-index:80 !important;
-    height:86px !important;
-    min-height:86px !important;
-    margin:0 -10px 0 !important;
-    padding:7px 10px !important;
-    overflow:hidden !important;
-    border-radius:0 !important;
-  }
-
-  .brandPair{
-    flex:1 1 auto !important;
-    min-width:0 !important;
-    gap:7px !important;
-    overflow:visible !important;
-  }
-
-  .adrianaMainLogo{
-    width:143px !important;
-    height:61px !important;
-    max-width:none !important;
-    flex:0 0 auto !important;
-    object-fit:contain !important;
-  }
-
-  .brandDivider{
-    height:39px !important;
-    flex:0 0 1px !important;
-  }
-
-  .astra50Logo{
-    width:91px !important;
-    height:55px !important;
-    max-width:none !important;
-    flex:0 0 auto !important;
-    object-fit:contain !important;
-  }
-
-  .astraLestariLogo{
-    width:78px !important;
-    height:58px !important;
-    max-width:none !important;
-    flex:0 0 auto !important;
-    object-fit:contain !important;
-    margin-left:4px !important;
-  }
-
-  /* Navigation is visually moved below the header */
-  .side{
-    position:absolute !important;
-    top:86px !important;
-    left:0 !important;
-    right:0 !important;
-    width:100% !important;
-    height:auto !important;
-    min-height:74px !important;
-    margin:0 !important;
-    padding:6px 6px !important;
-    z-index:70 !important;
-    border-radius:0 0 16px 16px !important;
-    box-shadow:0 5px 16px rgba(10,65,43,.16) !important;
-    overflow:hidden !important;
-  }
-
-  .side > .brandRow,
-  .side > .sub{
-    display:none !important;
-  }
-
-  .nav{
-    display:flex !important;
-    flex-wrap:nowrap !important;
-    gap:4px !important;
-    width:100% !important;
-    height:62px !important;
-    overflow-x:auto !important;
-    overflow-y:hidden !important;
-    -webkit-overflow-scrolling:touch !important;
-    scrollbar-width:none !important;
-    align-items:stretch !important;
-  }
-  .nav::-webkit-scrollbar{display:none !important;}
-
-  .nav button{
-    flex:0 0 auto !important;
-    min-width:73px !important;
-    min-height:56px !important;
-    height:56px !important;
-    padding:7px 8px !important;
-    border-radius:11px !important;
-    font-size:9px !important;
-    line-height:1.05 !important;
-    text-align:center !important;
-    white-space:normal !important;
-  }
-
-  /* Reserve exactly the navigation band before the dashboard starts */
-  .astraHead + .section{
-    margin-top:82px !important;
-  }
-
-  /* Make the brand/header readable like the reference, without cropping logos */
-  .astraHead::after{
-    content:"" !important;
-    position:absolute !important;
-    inset:0 !important;
-    pointer-events:none !important;
-    background:
-      radial-gradient(circle at 74% 15%,rgba(208,229,217,.50),transparent 25%),
-      linear-gradient(110deg,transparent 58%,rgba(231,243,236,.58) 100%) !important;
-    z-index:-1 !important;
-  }
-
-  /* Keep dashboard cards and charts below the navigation */
-  #dashboard,
-  .section{
-    position:relative !important;
-    z-index:1 !important;
-  }
-}
-
-@media (min-width:701px){
-  /* Desktop keeps the existing side navigation untouched. */
-}
-</style>
-
 </head>
 <body>
 <div class="app">
@@ -3193,3 +3047,230 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
 })();
 </script>
 </body></html>
+
+<style id="adriana-mobile-top-engine-corrected">
+/* ADRIANA MOBILE TOP ENGINE — CSS ONLY
+   Corrected for actual DOM order: side navigation precedes main/header. */
+@media (max-width:700px){
+  html,body{overflow-x:hidden !important;}
+
+  .app{
+    display:block !important;
+    min-height:100vh !important;
+  }
+
+  /* Top engine bar: fixed/absolute at the top of the app, not below content */
+  .side{
+    position:absolute !important;
+    top:0 !important;
+    left:0 !important;
+    right:0 !important;
+    width:100% !important;
+    height:74px !important;
+    min-height:74px !important;
+    margin:0 !important;
+    padding:6px !important;
+    z-index:999 !important;
+    border-radius:0 0 16px 16px !important;
+    box-shadow:0 5px 16px rgba(10,65,43,.18) !important;
+    overflow:hidden !important;
+  }
+
+  .side > .brandRow,
+  .side > .sub{display:none !important;}
+
+  .nav{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:stretch !important;
+    gap:4px !important;
+    width:100% !important;
+    height:62px !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    -webkit-overflow-scrolling:touch !important;
+    scrollbar-width:none !important;
+  }
+  .nav::-webkit-scrollbar{display:none !important;}
+
+  .nav button{
+    flex:0 0 auto !important;
+    min-width:73px !important;
+    width:auto !important;
+    min-height:56px !important;
+    height:56px !important;
+    padding:7px 8px !important;
+    border-radius:11px !important;
+    font-size:9px !important;
+    line-height:1.05 !important;
+    text-align:center !important;
+    white-space:normal !important;
+  }
+
+  /* Main content is physically pushed below the top engine bar */
+  .main{
+    margin-left:0 !important;
+    width:100% !important;
+    padding:74px 10px 18px !important;
+  }
+
+  /* Brand/logo header gets its own full, unclipped band below nav */
+  .astraHead{
+    position:relative !important;
+    z-index:100 !important;
+    height:86px !important;
+    min-height:86px !important;
+    margin:0 -10px 0 !important;
+    padding:7px 10px !important;
+    overflow:visible !important;
+    border-radius:0 !important;
+  }
+
+  .brandPair{
+    min-width:0 !important;
+    gap:7px !important;
+    overflow:visible !important;
+  }
+
+  .adrianaMainLogo{
+    width:143px !important;
+    height:61px !important;
+    max-width:none !important;
+    flex:0 0 auto !important;
+    object-fit:contain !important;
+  }
+
+  .brandDivider{
+    height:39px !important;
+    flex:0 0 1px !important;
+  }
+
+  .astra50Logo{
+    width:91px !important;
+    height:55px !important;
+    max-width:none !important;
+    flex:0 0 auto !important;
+    object-fit:contain !important;
+  }
+
+  .astraLestariLogo{
+    width:78px !important;
+    height:58px !important;
+    max-width:none !important;
+    flex:0 0 auto !important;
+    object-fit:contain !important;
+    margin-left:4px !important;
+  }
+
+  /* Remove the old attempt's offset so dashboard follows header naturally */
+  .astraHead + .section{margin-top:0 !important;}
+
+  #dashboard,.section{
+    position:relative !important;
+    z-index:1 !important;
+  }
+}
+</style>
+
+
+<style id="adriana-mobile-top-engine-order-final">
+@media (max-width:700px){
+  /* Logo/header first */
+  .main{
+    margin-left:0 !important;
+    width:100% !important;
+    padding:0 10px 18px !important;
+  }
+
+  .astraHead{
+    position:relative !important;
+    z-index:100 !important;
+    height:86px !important;
+    min-height:86px !important;
+    margin:0 -10px !important;
+    padding:7px 10px !important;
+    overflow:visible !important;
+    border-radius:0 !important;
+  }
+
+  /* Engine bar immediately below logo/header */
+  .side{
+    position:absolute !important;
+    top:86px !important;
+    left:0 !important;
+    right:0 !important;
+    width:100% !important;
+    height:74px !important;
+    min-height:74px !important;
+    margin:0 !important;
+    padding:6px !important;
+    z-index:999 !important;
+    border-radius:0 0 16px 16px !important;
+    box-shadow:0 5px 16px rgba(10,65,43,.18) !important;
+    overflow:hidden !important;
+  }
+
+  .side > .brandRow,
+  .side > .sub{display:none !important;}
+
+  .nav{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:stretch !important;
+    gap:4px !important;
+    width:100% !important;
+    height:62px !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    -webkit-overflow-scrolling:touch !important;
+    scrollbar-width:none !important;
+  }
+  .nav::-webkit-scrollbar{display:none !important;}
+
+  .nav button{
+    flex:0 0 auto !important;
+    min-width:73px !important;
+    height:56px !important;
+    min-height:56px !important;
+    padding:7px 8px !important;
+    border-radius:11px !important;
+    font-size:9px !important;
+    line-height:1.05 !important;
+    text-align:center !important;
+    white-space:normal !important;
+  }
+
+  /* Dashboard starts below BOTH header and engine navigation */
+  .astraHead + .section{
+    margin-top:82px !important;
+  }
+
+  #dashboard,.section{
+    position:relative !important;
+    z-index:1 !important;
+  }
+
+  /* Prevent any logo clipping */
+  .brandPair{
+    min-width:0 !important;
+    gap:7px !important;
+    overflow:visible !important;
+  }
+  .adrianaMainLogo{
+    width:143px !important;height:61px !important;
+    max-width:none !important;object-fit:contain !important;
+    flex:0 0 auto !important;
+  }
+  .brandDivider{height:39px !important;flex:0 0 1px !important;}
+  .astra50Logo{
+    width:91px !important;height:55px !important;
+    max-width:none !important;object-fit:contain !important;
+    flex:0 0 auto !important;
+  }
+  .astraLestariLogo{
+    width:78px !important;height:58px !important;
+    max-width:none !important;object-fit:contain !important;
+    flex:0 0 auto !important;margin-left:4px !important;
+  }
+}
+</style>
