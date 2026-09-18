@@ -1559,11 +1559,11 @@ body{
   </div>
 </section>
 
-<section id="production" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Production</div><div class="meta">Actual production from reconciled AMANTA records.</div></div><button class="btn" type="button" onclick="downloadProductionCSV()">Download Production CSV</button></div><div id="bjrNotice" class="notice" style="margin-top:14px"><b>BJR:</b> —</div><div class="panel" style="margin-top:14px"><div class="panelHead"><h2>Harvest Performance — Mandoran</h2><span>AMANTA</span></div><table><thead><tr><th>Mandoran</th><th>HK</th><th>JJG</th><th>JJG/HK</th></tr></thead><tbody id="productionBody"><tr><td colspan="4" class="small">No active dataset.</td></tr></tbody></table></div><div class="panel" style="margin-top:14px"><div class="panelHead"><h2>Production Rotation Calendar</h2><span>DATE · SEKSI · ROTASI · BLOK · JJG · HK</span></div><div id="rotationProductionNotice" class="notice">Menunggu dataset aktif.</div><div id="rotationProductionCalendar" class="rotationProductionCalendar" style="margin-top:10px"></div><details class="rotationMatrixDetails" style="margin-top:12px"><summary>View detailed production by date</summary><div style="overflow:auto;margin-top:0"><table><thead><tr><th>Tanggal</th><th>Seksi Panen</th><th>Rotasi</th><th>Blok</th><th>Ha Rotasi</th><th>Pokok Rotasi</th><th>JJG Actual</th><th>HK Actual</th><th>JJG/HK</th></tr></thead><tbody id="rotationProductionBody"><tr><td colspan="9" class="small">No active dataset.</td></tr></tbody></table></div></details><div class="densityNote">Kalender mengikuti master Seksi Panen + Rotasi yang sudah ada. Pada tanggal panen, sel menampilkan JJG/HK aktual dari AMANTA yang sudah CLOSE &amp; LOCK; tanggal lain menampilkan umur rotasi.</div></div><div class="panel harvestPerf"><div class="panelHead"><h2>Harvest Performance — Pemanen</h2><span>JJG per pemanen</span></div><div class="miniGrid"><div class="miniCard"><h3>Top Performer</h3><div id="topHarvester" class="big">—</div><div id="topHarvesterSub" class="small">—</div></div><div class="miniCard"><h3>Bottom Performer</h3><div id="bottomHarvester" class="big">—</div><div id="bottomHarvesterSub" class="small">—</div></div></div><div class="perfTable"><table><thead><tr><th>Rank</th><th>Pemanen</th><th>NPK</th><th>JJG</th><th>JJG/HK</th><th>Block</th><th>Mandoran</th></tr></thead><tbody id="harvesterBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table></div><div class="perfNote">Ranking menggunakan JJG aktual dari AMANTA. Peringkat rendah adalah signal untuk review, bukan otomatis penilaian kinerja.</div></div></section>
+<section id="production" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Production</div><div class="meta">Actual production from reconciled AMANTA records.</div></div><button class="btn" type="button" onclick="downloadProductionCSV()">Download Production CSV</button><button class="btn" type="button" onclick="downloadSectionPDF('production','ADRIANA Production')">Download Production PDF</button></div><div id="bjrNotice" class="notice" style="margin-top:14px"><b>BJR:</b> —</div><div class="panel" style="margin-top:14px"><div class="panelHead"><h2>Harvest Performance — Mandoran</h2><span>AMANTA</span></div><table><thead><tr><th>Mandoran</th><th>HK</th><th>JJG</th><th>JJG/HK</th></tr></thead><tbody id="productionBody"><tr><td colspan="4" class="small">No active dataset.</td></tr></tbody></table></div><div class="panel" style="margin-top:14px"><div class="panelHead"><h2>Production Rotation Calendar</h2><span>DATE · SEKSI · ROTASI · BLOK · JJG · HK</span></div><div id="rotationProductionNotice" class="notice">Menunggu dataset aktif.</div><div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:10px 0 6px;flex-wrap:wrap"><button class="btn" type="button" onclick="downloadRotationProductionCSV()">Download JJG/HK per Blok per Rotasi CSV</button></div><div id="rotationProductionCalendar" class="rotationProductionCalendar" style="margin-top:10px"></div><details class="rotationMatrixDetails" style="margin-top:12px"><summary>View detailed production by date</summary><div style="overflow:auto;margin-top:0"><table><thead><tr><th>Tanggal</th><th>Seksi Panen</th><th>Rotasi</th><th>Blok</th><th>Ha Rotasi</th><th>Pokok Rotasi</th><th>JJG Actual</th><th>HK Actual</th><th>JJG/HK</th></tr></thead><tbody id="rotationProductionBody"><tr><td colspan="9" class="small">No active dataset.</td></tr></tbody></table></div></details><div class="densityNote">Kalender mengikuti master Seksi Panen + Rotasi yang sudah ada. Pada tanggal panen, sel menampilkan JJG/HK aktual dari AMANTA yang sudah CLOSE &amp; LOCK; tanggal lain menampilkan umur rotasi.</div></div><div class="panel harvestPerf"><div class="panelHead"><h2>Harvest Performance — Pemanen</h2><span>JJG per pemanen</span></div><div class="miniGrid"><div class="miniCard"><h3>Top Performer</h3><div id="topHarvester" class="big">—</div><div id="topHarvesterSub" class="small">—</div></div><div class="miniCard"><h3>Bottom Performer</h3><div id="bottomHarvester" class="big">—</div><div id="bottomHarvesterSub" class="small">—</div></div></div><div class="perfTable"><table><thead><tr><th>Rank</th><th>Pemanen</th><th>NPK</th><th>JJG</th><th>JJG/HK</th><th>Block</th><th>Mandoran</th></tr></thead><tbody id="harvesterBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table></div><div class="perfNote">Ranking menggunakan JJG aktual dari AMANTA. Peringkat rendah adalah signal untuk review, bukan otomatis penilaian kinerja.</div></div></section>
 
 <section id="quality" class="section"><div class="title">Harvest Quality</div><div class="meta">Recorded quality evidence, not a block-wide conclusion.</div><div class="panel" style="margin-top:14px"><table><thead><tr><th>Block</th><th>Mandoran</th><th>Sample Pokok</th><th>Piringan Non-Std</th><th>Buah Tinggal</th></tr></thead><tbody id="qualityBody"><tr><td colspan="5" class="small">No active dataset.</td></tr></tbody></table></div></section>
 
-<section id="transport" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Transport & Restan</div><div class="meta">Net weight calculated from reconciled scale records. BJR = total net TBS (kg) ÷ total JJG. READY → GO uses DTREADY to DT_GO.</div></div><button class="btn" type="button" onclick="downloadTransportCSV()">Download Transport CSV</button></div><div class="panel" style="margin-top:14px"><table><thead><tr><th>KAB Number</th><th>Rit</th><th>Ready → Go</th><th>Weight In</th><th>Weight Out</th><th>Net</th><th>Duration</th></tr></thead><tbody id="transportBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table><div id="restanNotice" class="notice" style="margin-top:14px">Restan: unavailable.</div></div></section>
+<section id="transport" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Transport & Restan</div><div class="meta">Net weight calculated from reconciled scale records. BJR = total net TBS (kg) ÷ total JJG. READY → GO uses DTREADY to DT_GO.</div></div><button class="btn" type="button" onclick="downloadTransportCSV()">Download Transport CSV</button><button class="btn" type="button" onclick="downloadSectionPDF('transport','ADRIANA Transport & Restan')">Download Transport PDF</button></div><div class="panel" style="margin-top:14px"><table><thead><tr><th>KAB Number</th><th>Rit</th><th>Ready → Go</th><th>Weight In</th><th>Weight Out</th><th>Net</th><th>Duration</th></tr></thead><tbody id="transportBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table><div id="restanNotice" class="notice" style="margin-top:14px">Restan: unavailable.</div></div></section>
 
 
 <section id="exception" class="section">
@@ -1585,7 +1585,7 @@ body{
 
 <section id="infield" class="section">
 <div class="panel" style="margin-top:12px">
-<div class="panelHead"><h2>Infield Control — Real AMANTA</h2><span>PRODUKSI UNIT AMANTA · BJR Aktual</span></div>
+<div class="panelHead"><h2>Infield Control — Real AMANTA</h2><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span>PRODUKSI UNIT AMANTA · BJR Aktual</span><button class="btn" type="button" onclick="downloadSectionPDF('infield','ADRIANA Infield')">Download Infield PDF</button></div></div>
 <div class="notice">Penginfield dikunci dari KODEUNIT. Tim Infield dibentuk dari NPK utama + NPKUTAMA (helper). JJG Infield berasal dari PRODUKSIUNIT.JJG berdasarkan KODEUNIT. JJG Langsir tidak dikurangkan karena data absen langsir tidak menyediakan JJG.</div>
 <div class="peopleKpis" style="margin-top:12px">
 <div class="peopleKpi"><small>PENGINFIELD</small><strong id="infieldPeople">—</strong></div>
@@ -1644,7 +1644,7 @@ body{
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
           <div id="peoplePeriodStatus" class="periodStatus">—</div>
-          <button class="btn downloadBtn" type="button" onclick="downloadPremiClosingPeriodCSV()">Download Premi Closing CSV ↓</button>
+          <button class="btn downloadBtn" type="button" onclick="downloadPremiClosingPeriodCSV()">Download Premi Closing CSV ↓</button><button class="btn downloadBtn" type="button" onclick="downloadSectionPDF('people','ADRIANA Premi Closing Periode')">Download Premi PDF ↓</button>
         </div>
       </div>
       <div class="peopleKpis periodKpis">
@@ -1696,7 +1696,7 @@ body{
 
 
 <section id="ai" class="section">
-<div class="top"><div><div class="eyebrow">ENGINE 08</div><div class="title">AI-Assisted Analysis</div><div class="meta">AI reads the locked dataset, exceptions and evidence. It does not invent unavailable data.</div></div></div>
+<div class="top"><div><div class="eyebrow">ENGINE 08</div><div class="title">AI-Assisted Analysis</div><div class="meta">AI reads the locked dataset, exceptions and evidence. It does not invent unavailable data.</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" onclick="downloadAIAnalysisCSV()">Download AI CSV</button><button class="btn" type="button" onclick="downloadSectionPDF('ai','ADRIANA AI-Assisted Analysis')">Download AI PDF</button></div></div>
 <div class="two">
 <div class="panel"><h2>Generated Analysis</h2><div id="aiAnalysis" class="notice">No active dataset.</div></div>
 <div class="panel decision"><h2>Recommended Decision</h2><div class="muted">Priority</div><div id="aiDecision" style="font-size:25px;font-weight:800;margin:6px 0">—</div><div class="muted" style="font-size:12px;line-height:1.6">Validate the operational context, assign an owner and record the next-day check.</div><button class="btn" onclick="show('pdca')">OPEN PDCA</button></div>
@@ -2048,7 +2048,7 @@ function renderRotation(d){
  host.innerHTML=`<div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION — ${afd}YM</b><br><span class="small">AMANTA sync ${fmtDate(ROTATION_START_DATE)} → ${fmtDate(activeDate)} · ${locked.length} locked date(s) · Source: AMANTA BLOK + HARVDATE</span></div><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><button class="btn" type="button" style="margin-top:0" onclick="renderRotationMonth(-1)" ${viewMonth<='2026-08'?'disabled':''}>‹</button><span class="small" style="min-width:130px;text-align:center"><b>${html.escape(rotationMonthLabel(viewMonth))}</b></span><button class="btn" type="button" style="margin-top:0" onclick="renderRotationMonth(1)" ${viewMonth>=rotationMonthKey(activeDate)?'disabled':''}>›</button></div></div>
  <div class="rotationMetaCompact"><span class="tag green">≤7 · ${summary.Hijau}</span><span class="tag yellow">8–10 · ${summary.Kuning}</span><span class="tag red">11–15 · ${summary.Merah}</span><span class="tag black">≥16 · ${summary.Hitam}</span>${summary.Unavailable?`<span class="tag">Unavailable · ${summary.Unavailable}</span>`:''}</div>
  <div class="rotationToday"><div class="rotationTodayHead"><b>ROTATION TODAY</b><span class="small">Last harvest → current age</span></div><div style="overflow:auto"><table class="rotationTodayTable"><thead><tr><th>BLOCK</th><th>LAST HARVEST</th><th>AGE</th><th>STATUS</th></tr></thead><tbody>${todayBody}</tbody></table></div></div>
- <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:12px 0 8px;flex-wrap:wrap"><button class="btn" type="button" onclick="downloadRotationCalendarCSV()">Download Rotation Calendar CSV</button></div><details class="rotationMatrixDetails"><summary>View full ${html.escape(afd)}YM rotation calendar</summary><div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION MATRIX — ${afd}YM</b></div><div class="small">Harvest date = 0 · Age increases daily</div></div><div class="rotationLegend"><span class="tag green">≤7 Hijau</span><span class="tag yellow">8–10 Kuning</span><span class="tag red">11–15 Merah</span><span class="tag black">≥16 Hitam</span></div><div class="rotationMatrixScroller"><table class="rotationMatrix"><thead><tr><th>BLOCK</th>${headers}</tr></thead><tbody>${matrixBody}</tbody></table></div></div></details>
+ <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:12px 0 8px;flex-wrap:wrap"><button class="btn" type="button" onclick="downloadRotationCalendarCSV()">Download Rotation Calendar CSV</button><button class="btn" type="button" onclick="downloadSectionPDF('rotation','ADRIANA Rotation Calendar')">Download Rotation PDF</button></div><details class="rotationMatrixDetails"><summary>View full ${html.escape(afd)}YM rotation calendar</summary><div class="rotationMatrixWrap"><div class="rotationMatrixHead"><div><b>HARVEST ROTATION MATRIX — ${afd}YM</b></div><div class="small">Harvest date = 0 · Age increases daily</div></div><div class="rotationLegend"><span class="tag green">≤7 Hijau</span><span class="tag yellow">8–10 Kuning</span><span class="tag red">11–15 Merah</span><span class="tag black">≥16 Hitam</span></div><div class="rotationMatrixScroller"><table class="rotationMatrix"><thead><tr><th>BLOCK</th>${headers}</tr></thead><tbody>${matrixBody}</tbody></table></div></div></details>
  <div class="small" style="margin-top:10px">Urutan Seksi/Block mengikuti master Rotation SYM. Nilai dihitung dari histori panen AMANTA yang sudah di-CLOSE &amp; LOCK; jika histori belum tersedia, ditampilkan sebagai —.</div></div>`;
 }
 function csvEscape(v){const x=String(v??'');return /[",\n\r]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x;}
@@ -2089,6 +2089,29 @@ function downloadProductionCSV(){
  rows.push(['Type','Total JJG','Total Populasi Pokok Rotasi','JJG/Pokok Global','AKP Global']);
  rows.push(['GLOBAL',hd.totalJ,Math.round(hd.totalPopRotasi),hd.globalJjgPokok!=null?hd.globalJjgPokok.toFixed(3):'',hd.globalAkp!=null?hd.globalAkp.toFixed(1):'']);
  downloadCSV(`ADRIANA_Production_${afd}_${date}.csv`,rows);
+}
+function downloadRotationProductionCSV(){
+ if(!ACTIVE||!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
+ const d=window.ADRIANA_DATA,afd=ACTIVE_AFD==='ALL'?(d?.afd||'OC'):ACTIVE_AFD,date=d?.date||ACTIVE.date;
+ const rows=buildDailyRotationProduction(d);
+ if(!rows.length){alert('Belum ada data JJG/HK per blok per rotasi pada tanggal aktif.');return;}
+ const sections=rotationSectionsForAfd(afd),sectionOrder=Object.keys(sections),prefix=afd==='OE'?'OE':'OC';
+ const hist=harvestHistoryFromSnapshots(afd,date);
+ const out=[];
+ out.push(['ADRIANA JJG/HK PER BLOK PER ROTASI']);
+ out.push(['AFD',afd,'Tanggal Aktif',date]);
+ out.push([]);
+ out.push(['Tanggal','Seksi Panen','Rotasi Ke','Blok','Ha Rotasi','Pokok Rotasi','JJG Actual','HK Actual','JJG/HK']);
+ rows.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))||sectionOrder.indexOf(a.seksi)-sectionOrder.indexOf(b.seksi)||String(a.rotasi).localeCompare(String(b.rotasi),undefined,{numeric:true})).forEach(x=>{
+   const key=String(x.block).replace(/^(OC|OE)/,'');
+   const dates=(hist[x.block]||[]).slice().sort();
+   const idx=dates.indexOf(x.date);
+   const rotasiKe=idx>=0?idx+1:'';
+   out.push([x.date,x.seksi,rotasiKe,x.block,x.ha!=null?x.ha.toFixed(2):'',x.populasiRotasi!=null?Math.round(x.populasiRotasi):'',x.jjg,x.hk,x.jjgPerHK!=null?x.jjgPerHK.toFixed(2):'']);
+ });
+ out.push([]);
+ out.push(['Keterangan','Rotasi Ke dihitung berdasarkan urutan tanggal panen AMANTA yang sudah tersedia/terkunci untuk masing-masing blok.']);
+ downloadCSV(`ADRIANA_JJG_HK_Per_Blok_Per_Rotasi_${afd}_${date}.csv`,out);
 }
 function downloadRotationCalendarCSV(){
  if(!ACTIVE||!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
@@ -2137,6 +2160,87 @@ function renderDashboard(d){const blocks=Object.entries(d.blocks).sort((a,b)=>b[
 
 function buildExceptions(d){const ex=[],add=(p,o,s,e,a)=>ex.push({priority:p,obj:o,signal:s,evidence:e,action:a});const be=Object.entries(d.blocks).sort((a,b)=>b[1]-a[1]);if(be[0]&&d.jjg&&be[0][1]/d.jjg>=.35)add('P2',be[0][0],'Dominant production concentration',`${be[0][1].toLocaleString()} JJG · ${(be[0][1]/d.jjg*100).toFixed(1)}%`,'Compare rotation, harvest area and field condition.');if(d.byMandoran?.OCPN1&&d.byMandoran?.OCPN2){const a=d.byMandoran.OCPN1.j/d.byMandoran.OCPN1.n.size,b=d.byMandoran.OCPN2.j/d.byMandoran.OCPN2.n.size;if(Math.abs(a-b)/Math.min(a,b)>=.3)add('P1','Mandoran','Material productivity gap',`OCPN1 ${a.toFixed(2)} vs OCPN2 ${b.toFixed(2)} JJG/HK`,'Verify operational context.') }const q=d.sections.SAMPLING_KUALITAS_PANEN;if(q){const h=q.header,pi=h.indexOf('PIRINGANTDKSTDR'),si=h.indexOf('SAMPLEPOKOK'),bi=h.indexOf('BLOK');q.rows.forEach(r=>{const n=num(r[pi]);if(n)add(n>=5?'P2':'P3',r[bi]||'—','Non-standard harvest quality sample',`${n} in sample ${r[si]||0} pokok`,'Recheck field execution.')})}add('DATA GAP','Restan','Confirmed restan value not identified','Restan unavailable','Define official source/formula.');const rank={P1:1,P2:2,P3:3,'DATA GAP':4};ex.sort((a,b)=>rank[a.priority]-rank[b.priority]);const c={P1:0,P2:0,P3:0,'DATA GAP':0};ex.forEach(x=>c[x.priority]++);['P1','P2','P3'].forEach(k=>document.getElementById(k.toLowerCase()).textContent=c[k]);document.getElementById('dg').textContent=c['DATA GAP'];document.getElementById('exceptionBody').innerHTML=ex.map(x=>`<tr><td><span class="tag ${x.priority==='P1'?'low':x.priority==='P2'?'medium':''}">${x.priority}</span></td><td><b>${html.escape(x.obj)}</b></td><td>${html.escape(x.signal)}</td><td>${html.escape(x.evidence)}</td><td>${html.escape(x.action)}</td></tr>`).join('');window.ADRIANA_EXCEPTIONS=ex}
 function attentionRank(d){const q=d.sections.SAMPLING_KUALITAS_PANEN;const qmap={};if(q){const h=q.header,bi=h.indexOf('BLOK'),pi=h.indexOf('PIRINGANTDKSTDR'),si=h.indexOf('SAMPLEPOKOK');q.rows.forEach(r=>{const b=r[bi]||'—';qmap[b]??={nonstd:0,sample:0};qmap[b].nonstd+=num(r[pi]);qmap[b].sample+=num(r[si])})}return Object.entries(d.blocks).map(([b,j])=>{const pct=d.jjg?j/d.jjg:0,qv=qmap[b]||{nonstd:0,sample:0};return {b,j,pct,nonstd:qv.nonstd,sample:qv.sample,score:(d.jjg-j)+(qv.nonstd*100)+(qv.sample?0:50)}}).sort((a,b)=>b.score-a.score)}
+
+/* PDF / export engine — additive only; existing calculation engines remain untouched. */
+let ADRIANA_PDF_LOADING=null;
+function ensurePdfEngine(){
+  if(window.jspdf && window.jspdf.jsPDF && (window.jspdf.jsPDF.API.autoTable || window.autoTable)) return Promise.resolve();
+  if(ADRIANA_PDF_LOADING) return ADRIANA_PDF_LOADING;
+  ADRIANA_PDF_LOADING=new Promise((resolve,reject)=>{
+    const load=(src,next)=>{const el=document.createElement('script');el.src=src;el.async=true;el.onload=next;el.onerror=()=>reject(new Error('PDF engine gagal dimuat. Periksa koneksi internet.'));document.head.appendChild(el);};
+    load('https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js',()=>{
+      if(window.jspdf && window.jspdf.jsPDF && window.jspdf.jsPDF.API.autoTable) return resolve();
+      load('https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js',()=>{
+        if(window.jspdf && window.jspdf.jsPDF) resolve(); else reject(new Error('jsPDF tidak tersedia.'));
+      });
+    });
+  }).catch(err=>{ADRIANA_PDF_LOADING=null;throw err;});
+  return ADRIANA_PDF_LOADING;
+}
+function pdfText(el){return (el?.innerText||el?.textContent||'').replace(/\s+/g,' ').trim();}
+function pdfSafeFile(s){return String(s||'ADRIANA').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_+|_+$/g,'').slice(0,90)||'ADRIANA';}
+function pdfTableRows(table){
+  const rows=[];
+  table.querySelectorAll('tr').forEach(tr=>{
+    const cells=[...tr.children].map(c=>pdfText(c));
+    if(cells.length && cells.some(Boolean)) rows.push(cells);
+  });
+  return rows;
+}
+function pdfWriteWrapped(doc,text,x,y,maxW,lineH=12){
+  if(!text) return y;
+  const lines=doc.splitTextToSize(text,maxW);
+  doc.text(lines,x,y);
+  return y+lines.length*lineH;
+}
+async function downloadSectionPDF(sectionId,title){
+  try{
+    if(!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
+    await ensurePdfEngine();
+    const {jsPDF}=window.jspdf;
+    const section=document.getElementById(sectionId); if(!section){alert('Section tidak ditemukan.');return;}
+    const landscape=['production','rotation','people','infield','transport','ai'].includes(sectionId);
+    const doc=new jsPDF({orientation:landscape?'landscape':'portrait',unit:'pt',format:'a4'});
+    const margin=28, pageW=doc.internal.pageSize.getWidth(), pageH=doc.internal.pageSize.getHeight();
+    let y=34;
+    doc.setFont('helvetica','bold');doc.setFontSize(15);doc.text(title,margin,y);y+=17;
+    doc.setFont('helvetica','normal');doc.setFontSize(8);
+    const meta=`AFD: ${ACTIVE_AFD||'—'} · Tanggal: ${ACTIVE?.date||window.ADRIANA_DATA?.date||'—'} · Dataset: ${ACTIVE?.closingId||'LOCKED'}`;
+    doc.text(meta,margin,y);y+=16;
+    const seen=new Set();
+    const blocks=[...section.querySelectorAll('.notice,.peopleKpi,.classBox,.aiHistRec,.periodStatus')].filter(el=>{if(seen.has(el))return false;seen.add(el);return pdfText(el);});
+    for(const el of blocks){
+      if(y>pageH-70){doc.addPage();y=34;}
+      const txt=pdfText(el); if(!txt) continue;
+      doc.setFont('helvetica','normal');doc.setFontSize(7.5);
+      y=pdfWriteWrapped(doc,txt,margin,y,pageW-margin*2,10)+5;
+    }
+    const tables=[...section.querySelectorAll('table')];
+    for(const table of tables){
+      const rows=pdfTableRows(table); if(rows.length<1) continue;
+      if(y>pageH-110){doc.addPage();y=34;}
+      const head=rows[0], body=rows.slice(1);
+      const colCount=head.length;
+      let fontSize=colCount>11?4.8:colCount>8?5.5:6.5;
+      doc.autoTable({head:[head],body, startY:y, margin:{left:margin,right:margin},theme:'grid',styles:{font:'helvetica',fontSize,cellPadding:2,overflow:'linebreak',valign:'middle'},headStyles:{fontStyle:'bold',fontSize},didDrawPage:()=>{doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text(`${title} · ${ACTIVE?.date||''}`,margin,pageH-12);}});
+      y=(doc.lastAutoTable?.finalY||y)+12;
+    }
+    if(sectionId==='ai'){
+      const rec=document.getElementById('aiHistRecommendation');
+      if(rec&&pdfText(rec)){if(y>pageH-100){doc.addPage();y=34;}doc.setFont('helvetica','bold');doc.setFontSize(9);doc.text('AI Historical Recommendation',margin,y);y+=12;doc.setFont('helvetica','normal');doc.setFontSize(7.5);y=pdfWriteWrapped(doc,pdfText(rec),margin,y,pageW-margin*2,10);}
+    }
+    const date=ACTIVE?.date||window.ADRIANA_DATA?.date||'dataset';
+    doc.save(`${pdfSafeFile(title)}_${date}.pdf`);
+  }catch(err){console.error(err);alert(err?.message||'PDF gagal dibuat.');}
+}
+function downloadAIAnalysisCSV(){
+  if(!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
+  const rows=[['ADRIANA AI ANALYSIS EXPORT'],['AFD',ACTIVE_AFD||'—','Tanggal',ACTIVE?.date||window.ADRIANA_DATA?.date||''],[],['SECTION','GENERATED ANALYSIS'],['Analysis',pdfText(document.getElementById('aiAnalysis'))],['Decision',pdfText(document.getElementById('aiDecision'))],[],['SECTION','HISTORICAL BLOCK INTELLIGENCE']];
+  const t=document.querySelector('#aiHistBody')?.closest('table'); if(t) pdfTableRows(t).forEach(r=>rows.push(r));
+  rows.push([],['Historical Summary',pdfText(document.getElementById('aiHistSummary'))],['AI Recommendation',pdfText(document.getElementById('aiHistRecommendation'))]);
+  downloadCSV(`ADRIANA_AI_${ACTIVE?.date||'dataset'}.csv`,rows);
+}
+
 function renderAI(d){const ranked=attentionRank(d),top=ranked[0];if(!top){document.getElementById('aiAnalysis').innerHTML='No signal available.';document.getElementById('aiDecision').textContent='—';return}const quality=top.sample?`${top.nonstd.toLocaleString()} non-standard finding(s) in ${top.sample.toLocaleString()} sampled palm(s)`:'No harvest quality evidence recorded for this block';const issue=`<b>Primary investigation: ${html.escape(top.b)}</b><br><br>${top.j.toLocaleString()} JJG · ${(top.pct*100).toFixed(1)}% of daily JJG · selected because it is a low-production block, not because it contributes the most JJG.<br><br><b>BJR context:</b> ${d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG from total net TBS ÷ total JJG.':'Unavailable because net TBS or JJG is unavailable.'}<br><br><b>Harvest quality cross-check:</b> ${quality}.<br><br><b>Recommended check:</b> verify whether the block's production level or historical decline is consistent with harvest quality evidence. If quality sampling is absent, treat it as an inspection gap and verify field condition before concluding the cause. AI treats this as a signal, not a verdict.`;document.getElementById('aiAnalysis').innerHTML=issue;document.getElementById('aiDecision').textContent='Investigate '+top.b}
 function saveDecision(){if(!ACTIVE){document.getElementById('decisionMsg').textContent='Close & Lock dataset dulu.';return}const text=document.getElementById('actionText').value.trim();if(!text){document.getElementById('decisionMsg').textContent='Action plan belum diisi.';return}const rec={closingId:ACTIVE.closingId,date:ACTIVE.date,afd:ACTIVE.afd||ACTIVE_AFD,issue:document.getElementById('pdcaIssue').textContent,decision:document.getElementById('dashboardDecision').textContent,action:text,status:'LOCKED',nextCheck:nextDate(ACTIVE.date)};const hist=JSON.parse(localStorage.getItem('adriana_decisions')||'[]');hist.unshift(rec);localStorage.setItem('adriana_decisions',JSON.stringify(hist));document.getElementById('decisionMsg').textContent='Decision saved untuk '+fmtDate(ACTIVE.date);renderDecisionHistory();renderEvaluationState(buildData(ACTIVE))}
 function nextDate(d){const x=new Date(d+'T00:00:00');x.setDate(x.getDate()+1);return x.toISOString().slice(0,10)}
