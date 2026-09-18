@@ -3051,94 +3051,122 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
 
 <script>
 (function(){
-  function pdfReady(){
-    return !!(window.jspdf && window.jspdf.jsPDF);
-  }
+  function pdfReady(){ return !!(window.jspdf && window.jspdf.jsPDF); }
   async function logoData(){
     try{
       const img=document.querySelector('.adrianaMainLogo');
       if(!img) return null;
       if(!img.complete) await new Promise(res=>{img.addEventListener('load',res,{once:true});img.addEventListener('error',res,{once:true});});
       const c=document.createElement('canvas'); c.width=900; c.height=220;
-      const ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height);
-      ctx.drawImage(img,0,0,c.width,c.height);
+      const ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); ctx.drawImage(img,0,0,c.width,c.height);
       return c.toDataURL('image/png');
-    }catch(e){return null;}
+    }catch(e){ return null; }
   }
   function esc(v){return String(v??'').replace(/\s+/g,' ').trim();}
   function tableRows(id){
     const t=document.querySelector('#'+id); if(!t) return {head:[],body:[]};
     const head=[...t.querySelectorAll('thead tr:first-child th')].map(x=>esc(x.innerText));
-    const body=[...t.querySelectorAll('tbody tr')].map(tr=>[...tr.children].map(td=>esc(td.innerText))).filter(r=>r.length&&r.some(Boolean)&&!r.join(' ').toLowerCase().includes('no active dataset')&&!r.join(' ').toLowerCase().includes('belum ada dataset'));
+    const body=[...t.querySelectorAll('tbody tr')].map(tr=>[...tr.children].map(td=>esc(td.innerText)))
+      .filter(r=>r.length&&r.some(Boolean)&&!r.join(' ').toLowerCase().includes('no active dataset')&&!r.join(' ').toLowerCase().includes('belum ada dataset')&&!r.join(' ').toLowerCase().includes('upload & lock'));
     return {head,body};
   }
   function textVal(id){const e=document.getElementById(id);return e?esc(e.innerText):'—';}
+  function activeMeta(){
+    const d=window.ADRIANA_DATA||{};
+    const date=d.date||window.ACTIVE?.date||'—';
+    const afd=window.ACTIVE_AFD==='ALL'?(d.afd||'OC'):(window.ACTIVE_AFD||d.afd||'OC');
+    return {d,date,afd,closing:d.closingId||window.ACTIVE?.closingId||'—'};
+  }
+  function addFooter(doc){
+    const pages=doc.getNumberOfPages();
+    for(let i=1;i<=pages;i++){
+      doc.setPage(i); doc.setFontSize(6); doc.setFont(undefined,'normal'); doc.setTextColor(125,135,130);
+      doc.text('ADRIANA · Assistant Daily Reporting & Analytics',12,202);
+      doc.text('Page '+i+' / '+pages,270,202);
+    }
+  }
   async function makePDF(title,subtitle,sections,filename){
     if(!pdfReady()){alert('PDF engine belum termuat. Pastikan internet aktif lalu coba lagi.');return;}
-    const {jsPDF}=window.jspdf; const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    const {jsPDF}=window.jspdf;
+    const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
     const logo=await logoData();
     let y=14;
-    if(logo){try{doc.addImage(logo,'PNG',12,9,48,12);}catch(e){}}
+    if(logo){try{doc.addImage(logo,'PNG',12,8,48,12);}catch(e){}}
     doc.setTextColor(6,69,47); doc.setFontSize(16); doc.setFont(undefined,'bold'); doc.text('ADRIANA',65,15);
     doc.setFontSize(7); doc.setFont(undefined,'normal'); doc.setTextColor(95,110,101); doc.text('Assistant Daily Reporting & Analytics',65,20);
     doc.setDrawColor(210,225,216); doc.line(12,25,285,25);
     doc.setTextColor(23,35,29); doc.setFontSize(15); doc.setFont(undefined,'bold'); doc.text(title,12,34);
-    doc.setFontSize(8); doc.setFont(undefined,'normal'); doc.setTextColor(95,110,101); doc.text(subtitle||'',12,40);
-    y=46;
+    doc.setFontSize(8); doc.setFont(undefined,'normal'); doc.setTextColor(95,110,101);
+    const subLines=doc.splitTextToSize(subtitle||'',270); doc.text(subLines,12,40); y=44+subLines.length*4;
+
     sections.forEach(sec=>{
-      if(y>185){doc.addPage();y=14;}
-      doc.setTextColor(6,69,47);doc.setFontSize(11);doc.setFont(undefined,'bold');doc.text(sec.title,12,y);y+=4;
-      if(sec.note){doc.setTextColor(95,110,101);doc.setFontSize(7);doc.setFont(undefined,'normal');doc.text(sec.note,12,y+3);y+=8;}
+      if(y>180){doc.addPage();y=14;}
+      doc.setTextColor(6,69,47);doc.setFontSize(11);doc.setFont(undefined,'bold');doc.text(sec.title,12,y);y+=5;
+      if(sec.note){doc.setTextColor(95,110,101);doc.setFontSize(7);doc.setFont(undefined,'normal');doc.text(doc.splitTextToSize(sec.note,270),12,y);y+=7;}
       if(sec.kpis?.length){
-        let x=12; doc.setFontSize(7);
-        sec.kpis.forEach(k=>{doc.setFillColor(247,250,248);doc.setDrawColor(220,231,224);doc.roundedRect(x,y,62,15,2,2,'FD');doc.setTextColor(95,110,101);doc.text(k.label,x+3,y+5);doc.setTextColor(23,35,29);doc.setFont(undefined,'bold');doc.setFontSize(9);doc.text(String(k.value),x+3,y+11);doc.setFont(undefined,'normal');doc.setFontSize(7);x+=66;if(x>280){x=12;y+=19;}});y+=20;
+        let x=12; let rowY=y; doc.setFontSize(7);
+        sec.kpis.forEach(k=>{
+          if(x>220){x=12;rowY+=19;}
+          doc.setFillColor(247,250,248);doc.setDrawColor(220,231,224);doc.roundedRect(x,rowY,62,15,2,2,'FD');
+          doc.setTextColor(95,110,101);doc.setFont(undefined,'normal');doc.setFontSize(6.5);doc.text(String(k.label),x+3,rowY+5);
+          doc.setTextColor(23,35,29);doc.setFont(undefined,'bold');doc.setFontSize(8.5);doc.text(doc.splitTextToSize(String(k.value??'—'),55),x+3,rowY+11);
+          x+=66;
+        });
+        y=rowY+21;
       }
-      if(sec.table){
-        const t=sec.table; if(!t.head.length){return;}
-        doc.autoTable({head:[t.head],body:t.body,startY:y,theme:'grid',styles:{fontSize:6.5,cellPadding:2,overflow:'linebreak'},headStyles:{fillColor:[8,120,79],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[248,251,249]},margin:{left:12,right:12},didDrawPage:()=>{doc.setFontSize(6);doc.setTextColor(120,130,125);doc.text('ADRIANA · '+new Date().toLocaleDateString('id-ID'),12,203);}});
-        y=(doc.lastAutoTable?.finalY||y)+10;
+      if(sec.lines?.length){
+        doc.setFontSize(7.2);doc.setTextColor(70,80,75);doc.setFont(undefined,'normal');
+        sec.lines.filter(Boolean).forEach(line=>{const arr=doc.splitTextToSize(String(line),270);doc.text(arr,12,y);y+=arr.length*4+2;}); y+=3;
       }
-      if(sec.lines?.length){doc.setFontSize(7);doc.setTextColor(70,80,75);sec.lines.forEach(line=>{const arr=doc.splitTextToSize(String(line),270);doc.text(arr,12,y);y+=arr.length*4+2;});y+=3;}
+      if(sec.table?.head?.length && sec.table?.body?.length){
+        if(y>178){doc.addPage();y=14;}
+        if(typeof doc.autoTable==='function'){
+          doc.autoTable({head:[sec.table.head],body:sec.table.body,startY:y,theme:'grid',styles:{fontSize:6.2,cellPadding:1.7,overflow:'linebreak'},headStyles:{fillColor:[8,120,79],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[248,251,249]},margin:{left:12,right:12,top:12,bottom:18},didDrawPage:()=>{}});
+          y=(doc.lastAutoTable?.finalY||y)+8;
+        }else{
+          // Fallback: guaranteed readable text table even if AutoTable CDN is unavailable.
+          const cols=sec.table.head.length, widths=sec.table.head.map((_,i)=>270/cols);
+          doc.setFontSize(6); doc.setFont(undefined,'bold'); doc.setTextColor(255,255,255); doc.setFillColor(8,120,79);
+          doc.rect(12,y,270,7,'F'); let xx=12; sec.table.head.forEach((h,i)=>{doc.text(doc.splitTextToSize(h,widths[i]-3),xx+2,y+4);xx+=widths[i];}); y+=8;
+          doc.setFont(undefined,'normal'); doc.setTextColor(30,40,35);
+          sec.table.body.forEach(row=>{if(y>190){doc.addPage();y=14;} let xx=12; row.forEach((v,i)=>{doc.rect(xx,y,widths[i],6);doc.text(doc.splitTextToSize(String(v),widths[i]-3),xx+2,y+4);xx+=widths[i];});y+=6;}); y+=5;
+        }
+      }
     });
+    addFooter(doc);
     doc.save(filename);
   }
   window.downloadProductionPDF=async function(){
-    if(!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
-    const d=window.ADRIANA_DATA, date=d.date||ACTIVE?.date||'dataset', afd=ACTIVE_AFD==='ALL'?(d.afd||'OC'):ACTIVE_AFD;
-    const mand=tableRows('productionBody'), harv=tableRows('harvesterBody');
-    await makePDF('Production Report',`AFD: ${afd} · Tanggal: ${date} · Closing: ${d.closingId||ACTIVE?.closingId||'—'}`,[
-      {title:'Summary',lines:[textVal('bjrNotice')]},
-      {title:'Harvest Performance — Mandoran',table:mand},
-      {title:'Harvest Performance — Pemanen',table:harv}
+    const {d,date,afd,closing}=activeMeta(); if(!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
+    await makePDF('Production Report',`AFD: ${afd} · Tanggal: ${date} · Closing: ${closing}`,[
+      {title:'Production Summary',kpis:[{label:'TOTAL JJG',value:textVal('dashboardJjg')||d.jjg?.toLocaleString?.()||'—'},{label:'PRODUCING HK',value:textVal('dashboardHK')||d.producingHK?.toLocaleString?.()||'—'},{label:'BJR',value:textVal('bjrNotice')}],lines:[textVal('bjrNotice')]},
+      {title:'Harvest Performance — Mandoran',table:tableRows('productionBody')},
+      {title:'Harvest Performance — Pemanen',table:tableRows('harvesterBody')}
     ],`ADRIANA_Production_${afd}_${date}.pdf`);
   };
   window.downloadTransportPDF=async function(){
-    if(!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
-    const d=window.ADRIANA_DATA,date=d.date||ACTIVE?.date||'dataset',afd=ACTIVE_AFD==='ALL'?(d.afd||'OC'):ACTIVE_AFD;
-    await makePDF('Transport & Restan Report',`AFD: ${afd} · Tanggal: ${date} · Closing: ${d.closingId||ACTIVE?.closingId||'—'}`,[
+    const {date,afd,closing}=activeMeta(); if(!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
+    await makePDF('Transport & Restan Report',`AFD: ${afd} · Tanggal: ${date} · Closing: ${closing}`,[
       {title:'Transport',table:tableRows('transportBody')},
       {title:'Restan',lines:[textVal('restanNotice')]}
     ],`ADRIANA_Transport_Restan_${afd}_${date}.pdf`);
   };
   window.downloadInfieldPDF=async function(){
-    if(!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
-    const d=window.ADRIANA_DATA,date=d.date||ACTIVE?.date||'dataset',afd=ACTIVE_AFD==='ALL'?(d.afd||'OC'):ACTIVE_AFD;
-    await makePDF('Infield Control Report',`AFD: ${afd} · Tanggal: ${date} · Closing: ${d.closingId||ACTIVE?.closingId||'—'}`,[
-      {title:'Infield Summary',kpis:[['PENGINFIELD','infieldPeople'],['BLOK INFIELD','infieldBlocks'],['JJG TAP GROSS','infieldGross'],['JJG LANGSIR','infieldLangsir'],['JJG INFIELD REAL','infieldNet']].map(x=>({label:x[0],value:textVal(x[1])}))},
+    const {date,afd,closing}=activeMeta(); if(!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
+    await makePDF('Infield Control Report',`AFD: ${afd} · Tanggal: ${date} · Closing: ${closing}`,[
+      {title:'Infield Summary',kpis:[{label:'PENGINFIELD',value:textVal('infieldPeople')},{label:'BLOK INFIELD',value:textVal('infieldBlocks')},{label:'JJG TAP GROSS',value:textVal('infieldGross')},{label:'JJG LANGSIR',value:textVal('infieldLangsir')} ,{label:'JJG INFIELD REAL',value:textVal('infieldNet')} ]},
       {title:'Infield Performance',table:tableRows('infieldBody')}
     ],`ADRIANA_Infield_${afd}_${date}.pdf`);
   };
   window.downloadPremiClosingPeriodPDF=async function(){
-    if(!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
-    const d=window.ADRIANA_DATA,date=d.date||ACTIVE?.date||'dataset';
-    await makePDF('Premi Closing Periode',`AFD: OC · Actual through: ${date} · Book Period: ${textVal('peoplePeriodDetail')}`,[
-      {title:'Periode Book',kpis:[['OPEN BOOK','peopleOpenBook'],['CLOSING BOOK','peopleCloseBook'],['PREMI PERIODE','peoplePeriodPremi'],['MORE BASIS PERIODE','peoplePeriodMore']].map(x=>({label:x[0],value:textVal(x[1])})),lines:[textVal('peoplePeriodStatus'),textVal('peoplePeriodDetail')]},
+    const {date}=activeMeta(); if(!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
+    await makePDF('Premi Closing Periode',`AFD: OC · Actual through: ${date} · ${textVal('peoplePeriodDetail')}`,[
+      {title:'Periode Book',kpis:[{label:'OPEN BOOK',value:textVal('peopleOpenBook')},{label:'CLOSING BOOK',value:textVal('peopleCloseBook')},{label:'PREMI PERIODE',value:textVal('peoplePeriodPremi')},{label:'MORE BASIS PERIODE',value:textVal('peoplePeriodMore')}],lines:[textVal('peoplePeriodStatus'),textVal('peoplePeriodDetail')]},
       {title:'Premi Closing Periode — Pemanen',table:tableRows('peoplePeriodBody')}
     ],`ADRIANA_Premi_Closing_Period_${date}.pdf`);
   };
   window.downloadKKPProductionPDF=async function(){
-    if(!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
-    const d=window.ADRIANA_DATA,date=d.date||ACTIVE?.date||'dataset';
+    const {date}=activeMeta(); if(!window.ADRIANA_DATA){alert('Belum ada dataset aktif.');return;}
     await makePDF('KKP Harvest Production',`OC PN 1 + OC PN 2 · Tanggal: ${date}`,[
       {title:'KKP Summary',lines:[textVal('kkpProductionSummary')]},
       {title:'KKP Harvest Production Ranking',table:tableRows('kkpProductionBody')}
