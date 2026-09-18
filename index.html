@@ -922,6 +922,417 @@ body{
   }
 }
 
+
+/* =========================================================
+   ADRIANA REFERENCE-MATCH UI — FINAL VISUAL LAYER ONLY
+   JavaScript is intentionally untouched.
+   ========================================================= */
+
+/* Overall canvas */
+body{
+  background:
+    radial-gradient(circle at 92% 4%,rgba(217,167,45,.09),transparent 20%),
+    linear-gradient(180deg,#f8fbf9 0%,#eef4f0 100%) !important;
+}
+.main{
+  background:transparent !important;
+}
+
+/* Header: ADRIANA | Astra 50 | Astra Agro Lestari */
+.astraHead{
+  height:86px !important;
+  min-height:86px !important;
+  margin:-28px -34px 22px !important;
+  padding:8px 22px !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:12px !important;
+  background:
+    radial-gradient(circle at 82% 0%,rgba(205,225,214,.75) 0 18%,transparent 18.5%),
+    linear-gradient(105deg,#ffffff 0%,#fbfdfb 52%,#edf6f0 100%) !important;
+  border-bottom:1px solid #dce9e1 !important;
+}
+.brandPair{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+  min-width:0;
+}
+.adrianaMainLogo{
+  width:142px !important;
+  height:58px !important;
+  object-fit:contain !important;
+}
+.astra50Logo{
+  width:94px !important;
+  height:52px !important;
+  object-fit:contain !important;
+}
+.brandDivider{
+  height:42px !important;
+  width:1px !important;
+  background:#d5e2da !important;
+}
+.astraLestariLogo{
+  width:116px !important;
+  height:58px !important;
+  object-fit:contain !important;
+  margin-left:auto !important;
+  z-index:4 !important;
+}
+.astraRight{
+  display:none !important;
+}
+
+/* Hero */
+#dashboard .top{
+  background:
+    radial-gradient(circle at 76% 10%,rgba(217,167,45,.25),transparent 24%),
+    linear-gradient(115deg,#075b3e 0%,#07865a 57%,#0b9b67 100%) !important;
+  color:#fff !important;
+  border-radius:20px !important;
+  padding:20px 22px !important;
+  margin-bottom:16px !important;
+  box-shadow:0 14px 30px rgba(4,73,48,.16) !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+}
+#dashboard .top .eyebrow,
+#dashboard .top .meta,
+#dashboard .top .title{
+  color:#fff !important;
+}
+#dashboard .top .title{
+  font-size:28px !important;
+  letter-spacing:-.035em !important;
+}
+#dashboard .top .eyebrow{
+  opacity:.76;
+  letter-spacing:.12em !important;
+}
+#dashboard .top .lock,
+#dashboard .top select{
+  background:rgba(255,255,255,.94) !important;
+  color:#07553a !important;
+}
+
+/* KPI cards — image left, large type right, exactly two columns on phone */
+.kpiGrid{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:14px !important;
+  margin-top:0 !important;
+}
+.kpiGrid .kpi{
+  min-height:192px !important;
+  padding:18px 16px !important;
+  border-radius:20px !important;
+  background:#fff !important;
+  border:1px solid #dfe9e3 !important;
+  box-shadow:0 10px 28px rgba(16,67,46,.08) !important;
+}
+.kpiGrid .kpiIcon{
+  position:absolute !important;
+  left:15px !important;
+  top:18px !important;
+  width:112px !important;
+  height:112px !important;
+  min-height:112px !important;
+  border-radius:24px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:linear-gradient(145deg,#f0f8f3,#dff0e6) !important;
+  z-index:1 !important;
+}
+.kpiGrid .kpi:nth-child(3) .kpiIcon,
+.kpiGrid .kpi:nth-child(4) .kpiIcon{
+  background:linear-gradient(145deg,#fff9e9,#f8ecc5) !important;
+}
+.kpiGrid .kpiIcon img{
+  width:104px !important;
+  height:104px !important;
+  max-width:104px !important;
+  max-height:104px !important;
+  object-fit:contain !important;
+}
+.kpiGrid .kpi .label,
+.kpiGrid .kpi .value,
+.kpiGrid .kpi .delta,
+.kpiGrid .kpi .small,
+.kpiGrid .kpi .spark{
+  margin-left:132px !important;
+  max-width:calc(100% - 142px) !important;
+  position:relative !important;
+  z-index:2 !important;
+}
+.kpiGrid .kpi .label{
+  margin-top:22px !important;
+  font-size:11px !important;
+  line-height:1.1 !important;
+  letter-spacing:.105em !important;
+  font-weight:900 !important;
+  color:#52645b !important;
+}
+.kpiGrid .kpi .value{
+  margin-top:8px !important;
+  margin-bottom:4px !important;
+  font-size:clamp(30px,3.4vw,43px) !important;
+  line-height:.98 !important;
+  font-weight:950 !important;
+  letter-spacing:-.055em !important;
+  white-space:nowrap !important;
+  color:#10221a !important;
+}
+.kpiGrid .kpi:nth-child(4) .value{
+  font-size:clamp(24px,3vw,38px) !important;
+}
+.kpiGrid .kpi .delta{
+  margin-top:5px !important;
+  font-size:10px !important;
+  font-weight:850 !important;
+}
+.kpiGrid .kpi .small{
+  font-size:9px !important;
+  line-height:1.2 !important;
+  color:#718078 !important;
+}
+.kpiGrid .kpi .confidence{
+  top:15px !important;
+  right:15px !important;
+  z-index:4 !important;
+}
+.kpiGrid .kpi:nth-child(1),
+.kpiGrid .kpi:nth-child(2){
+  border-top:3px solid #24a875 !important;
+}
+.kpiGrid .kpi:nth-child(3),
+.kpiGrid .kpi:nth-child(4){
+  border-top:3px solid #d6a52d !important;
+}
+
+/* Trend — 2x2 on mobile like the reference */
+.trendPanel{
+  margin-top:14px !important;
+  padding:16px !important;
+  border-radius:20px !important;
+  border:1px solid #d7e5dd !important;
+  border-top:3px solid #16835a !important;
+  background:linear-gradient(145deg,#ffffff,#f9fcfa) !important;
+  box-shadow:0 12px 30px rgba(16,67,46,.07) !important;
+}
+.trendHead{
+  margin-bottom:12px !important;
+}
+.trendHead h2{
+  font-size:20px !important;
+  letter-spacing:-.02em !important;
+}
+.trendGrid{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:10px !important;
+}
+.trendCard{
+  padding:12px !important;
+  min-height:180px !important;
+  border-radius:15px !important;
+  background:#fff !important;
+  border:1px solid #dfe9e3 !important;
+}
+.trendCardTitle{
+  font-size:10px !important;
+  min-height:25px !important;
+}
+.trendValue{
+  font-size:20px !important;
+  color:#147b54 !important;
+}
+.trendCanvasWrap{
+  height:132px !important;
+}
+
+/* All engines: same visual family without changing their structure */
+.section .panel,
+.section .notice,
+.section .upload,
+.section .peopleKpi,
+.section .miniCard{
+  border-color:#dce8e1 !important;
+  box-shadow:0 7px 22px rgba(16,67,46,.055) !important;
+}
+.section .panelHead h2,
+.section .title{
+  color:#17372b !important;
+}
+.section .eyebrow{
+  color:#16815a !important;
+}
+.section table th{
+  background:#edf7f1 !important;
+  color:#416255 !important;
+}
+.section .btn{
+  border-radius:10px !important;
+}
+.section .downloadBtn{
+  background:linear-gradient(135deg,#f0ca68,#dba52e) !important;
+  color:#172218 !important;
+  border:1px solid #c99828 !important;
+  font-weight:900 !important;
+}
+
+/* Navigation: dark green / gold active state */
+.nav{
+  gap:6px !important;
+}
+.nav button{
+  border-radius:10px !important;
+}
+.nav button.active{
+  background:linear-gradient(135deg,#087b52,#075a3e) !important;
+  box-shadow:inset 0 0 0 1px rgba(217,167,45,.55),0 7px 18px rgba(3,55,37,.22) !important;
+}
+
+/* Phone proportions */
+@media(max-width:760px){
+  .main{
+    padding:20px 14px 92px !important;
+  }
+  .astraHead{
+    height:78px !important;
+    min-height:78px !important;
+    margin:-20px -14px 16px !important;
+    padding:7px 12px !important;
+  }
+  .adrianaMainLogo{
+    width:126px !important;
+    height:52px !important;
+  }
+  .astra50Logo{
+    width:82px !important;
+    height:47px !important;
+  }
+  .astraLestariLogo{
+    width:92px !important;
+    height:48px !important;
+  }
+  #dashboard .top{
+    padding:17px 16px !important;
+    border-radius:18px !important;
+  }
+  #dashboard .top .title{
+    font-size:24px !important;
+  }
+  .kpiGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+  }
+  .kpiGrid .kpi{
+    min-height:184px !important;
+    padding:13px 10px !important;
+    border-radius:18px !important;
+  }
+  .kpiGrid .kpiIcon{
+    left:10px !important;
+    top:14px !important;
+    width:82px !important;
+    height:82px !important;
+    min-height:82px !important;
+    border-radius:18px !important;
+  }
+  .kpiGrid .kpiIcon img{
+    width:76px !important;
+    height:76px !important;
+    max-width:76px !important;
+    max-height:76px !important;
+  }
+  .kpiGrid .kpi .label,
+  .kpiGrid .kpi .value,
+  .kpiGrid .kpi .delta,
+  .kpiGrid .kpi .small,
+  .kpiGrid .kpi .spark{
+    margin-left:98px !important;
+    max-width:calc(100% - 106px) !important;
+  }
+  .kpiGrid .kpi .label{
+    margin-top:13px !important;
+    font-size:9px !important;
+  }
+  .kpiGrid .kpi .value{
+    font-size:clamp(24px,7vw,31px) !important;
+    margin-top:7px !important;
+  }
+  .kpiGrid .kpi:nth-child(4) .value{
+    font-size:clamp(21px,6vw,27px) !important;
+  }
+  .kpiGrid .kpi .delta{
+    font-size:8px !important;
+  }
+  .kpiGrid .kpi .small{
+    font-size:7.5px !important;
+  }
+  .kpiGrid .kpi .confidence{
+    right:9px !important;
+    top:9px !important;
+  }
+  .trendGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:8px !important;
+  }
+  .trendCard{
+    min-height:170px !important;
+    padding:10px !important;
+  }
+  .trendCanvasWrap{
+    height:118px !important;
+  }
+  .trendHead{
+    gap:10px !important;
+  }
+  .trendControls{
+    width:100% !important;
+  }
+  .trendControls label{
+    flex:1 !important;
+  }
+  .trendControls .downloadBtn{
+    width:auto !important;
+    flex:1 1 100% !important;
+  }
+}
+
+@media(max-width:420px){
+  .adrianaMainLogo{width:112px !important}
+  .astra50Logo{width:74px !important}
+  .astraLestariLogo{width:82px !important}
+  .kpiGrid .kpi{
+    min-height:176px !important;
+  }
+  .kpiGrid .kpiIcon{
+    width:76px !important;
+    height:76px !important;
+    min-height:76px !important;
+  }
+  .kpiGrid .kpiIcon img{
+    width:71px !important;
+    height:71px !important;
+    max-width:71px !important;
+    max-height:71px !important;
+  }
+  .kpiGrid .kpi .label,
+  .kpiGrid .kpi .value,
+  .kpiGrid .kpi .delta,
+  .kpiGrid .kpi .small,
+  .kpiGrid .kpi .spark{
+    margin-left:88px !important;
+    max-width:calc(100% - 95px) !important;
+  }
+  .kpiGrid .kpi .value{
+    font-size:24px !important;
+  }
+  .kpiGrid .kpi:nth-child(4) .value{
+    font-size:21px !important;
+  }
+}
+
 </style>
 </head>
 <body>
