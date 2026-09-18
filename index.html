@@ -1416,7 +1416,8 @@ body{
     <button data-target="transport">Transport & Restan</button>
     <button data-target="exception">Exception & Priority</button>
     <button data-target="infield">Infield Control</button>
-    <button data-target="people">People Performance</button>
+    \1
+
     <button data-target="ai">AI Analysis</button>
     <button data-target="pdca">PDCA / Decision Log</button>
     <button data-target="history">History & Effectiveness</button>
@@ -1623,6 +1624,9 @@ body{
       <div class="classBox classA"><small>CLASS A</small><strong id="classACount">—</strong><span>≥100% basis</span></div>
       <div class="classBox classB"><small>CLASS B</small><strong id="classBCount">—</strong><span>85–&lt;100% basis</span></div>
       <div class="classBox classC"><small>CLASS C</small><strong id="classCCount">—</strong><span>&lt;85% basis</span></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin:10px 0 12px;">
+      <button class="btn" type="button" onclick="downloadPeoplePerformancePDF()" style="border:1px solid #0b6b4b;background:#0b6b4b;color:#fff;border-radius:10px;padding:9px 14px;font-weight:700;cursor:pointer;">📄 Download People Performance PDF</button>
     </div>
     <div class="peopleTableWrap">
       <table>
@@ -3175,6 +3179,141 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
       {title:'KKP Summary',lines:[textVal('kkpProductionSummary')]},
       {title:'KKP Harvest Production Ranking',table:tableRows('kkpProductionBody')}
     ],`ADRIANA_KKP_Production_${date}.pdf`);
+  };
+})();
+</script>
+
+
+<script>
+/* ADRIANA — People Performance PDF
+   Uses the same rendered People Performance table as the dashboard.
+   Keeps one ADRIANA logo only (the logo image itself; no duplicate text wordmark).
+*/
+(function(){
+  function _ppTableRows(){
+    const candidates = [
+      document.querySelector('#peopleBody')?.closest('table'),
+      document.querySelector('#peoplePeriodBody')?.closest('table'),
+      document.querySelector('#peopleTable')?.closest('table'),
+      ...Array.from(document.querySelectorAll('table')).filter(t =>
+        /PREMI|MORE BASIS|JJG\/HK|ACHIEVEMENT|CLASS/i.test(t.innerText || '')
+      )
+    ].filter(Boolean);
+    const table = candidates[0];
+    if(!table) return {head:[], body:[]};
+    const head = Array.from(table.querySelectorAll('thead tr')).map(tr =>
+      Array.from(tr.cells).map(c => (c.innerText || '').trim())
+    ).filter(r => r.length);
+    const body = Array.from(table.querySelectorAll('tbody tr')).map(tr =>
+      Array.from(tr.cells).map(c => (c.innerText || '').trim())
+    ).filter(r => r.length);
+    return {head: head[0] || [], body};
+  }
+
+  function _ppLogoData(){
+    const img = document.querySelector('.adrianaMainLogo');
+    if(!img) return null;
+    try{
+      const c = document.createElement('canvas');
+      const w = img.naturalWidth || img.width || 300;
+      const h = img.naturalHeight || img.height || 80;
+      const scale = Math.min(1, 900 / w);
+      c.width = Math.round(w*scale); c.height = Math.round(h*scale);
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img,0,0,c.width,c.height);
+      return c.toDataURL('image/png');
+    }catch(e){ return null; }
+  }
+
+  function _ppVal(id){
+    const el = document.getElementById(id);
+    return el ? (el.innerText || el.textContent || '').trim() : '';
+  }
+
+  window.downloadPeoplePerformancePDF = function(){
+    const js = window.jspdf && window.jspdf.jsPDF;
+    if(!js){ alert('PDF engine belum siap. Coba lagi setelah halaman selesai dimuat.'); return; }
+
+    const doc = new js({orientation:'landscape', unit:'mm', format:'a4'});
+    const margin = 10;
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+
+    const logo = _ppLogoData();
+    if(logo){
+      // Only the actual ADRIANA logo image. No extra "ADRIANA" text.
+      doc.addImage(logo,'PNG',margin,7,48,14);
+    }
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(15);
+    doc.text('People Performance', margin, 29);
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+    const meta = [
+      _ppVal('peoplePeriodDetail'),
+      _ppVal('peoplePeriodStatus')
+    ].filter(Boolean).join(' · ');
+    if(meta) doc.text(meta, margin, 34);
+
+    // KPI cards
+    const cards = [
+      ['TOTAL PEMANEN AKTIF', _ppVal('peopleCount')],
+      ['TOTAL JJG TODAY', _ppVal('peopleJjg')],
+      ['MORE BASIS TODAY', _ppVal('peopleMore')],
+      ['MORE BASIS PERIODE', _ppVal('peoplePeriodMore')],
+      ['PREMI HARI INI', _ppVal('peoplePremi')],
+      ['PREMI PERIODE', _ppVal('peoplePremiMtd')]
+    ].filter(x=>x[1]);
+
+    let cx = margin, cy = 39;
+    const cw = 43, ch = 13, gap = 3;
+    cards.slice(0,6).forEach((c,i)=>{
+      const col=i%3, row=Math.floor(i/3);
+      const x=margin+col*(cw+gap), y=cy+row*(ch+3);
+      doc.setDrawColor(210,220,215);
+      doc.roundedRect(x,y,cw,ch,2,2,'S');
+      doc.setFontSize(6);
+      doc.setFont('helvetica','normal');
+      doc.text(c[0],x+3,y+4);
+      doc.setFontSize(9);
+      doc.setFont('helvetica','bold');
+      doc.text(c[1],x+3,y+9.5);
+    });
+
+    const rows = _ppTableRows();
+    let startY = cy + (cards.length > 3 ? 33 : 17);
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica','bold');
+    doc.text('People Performance — Pemanen', margin, startY);
+    startY += 3;
+
+    if(rows.head.length && rows.body.length && typeof doc.autoTable === 'function'){
+      doc.autoTable({
+        head:[rows.head],
+        body:rows.body,
+        startY:startY+2,
+        margin:{left:margin,right:margin},
+        theme:'grid',
+        styles:{font:'helvetica',fontSize:7,cellPadding:2,overflow:'linebreak'},
+        headStyles:{fontStyle:'bold',halign:'center'},
+        alternateRowStyles:{},
+        didDrawPage:function(){
+          doc.setFont('helvetica','normal');
+          doc.setFontSize(7);
+          doc.text('ADRIANA · Assistant Daily Reporting & Analytics',margin,pageH-5);
+          doc.text('Page '+doc.internal.getNumberOfPages(),pageW-margin,pageH-5,{align:'right'});
+        }
+      });
+    } else {
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8);
+      doc.text('Data tabel People Performance belum tersedia pada halaman aktif.',margin,startY+10);
+    }
+
+    doc.save('ADRIANA_People_Performance_'+new Date().toISOString().slice(0,10)+'.pdf');
   };
 })();
 </script>
