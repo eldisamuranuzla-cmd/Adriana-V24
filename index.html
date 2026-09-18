@@ -3532,3 +3532,49 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   }
 }
 </style>
+
+
+<style id="adriana-engine-horizontal-scroll-fix">
+/* ENGINE NAV SCROLL FIX — visual/input only, no JS/data/logic changes */
+.app > .side .nav{
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  justify-content:flex-start !important;
+  touch-action:pan-x !important;
+  overscroll-behavior-x:contain !important;
+  -webkit-overflow-scrolling:touch !important;
+  scrollbar-width:none !important;
+}
+.app > .side .nav::-webkit-scrollbar{display:none !important;}
+
+@media screen and (max-width:700px){
+  .app > .side{
+    overflow:hidden !important;
+  }
+
+  .app > .side .nav{
+    justify-content:flex-start !important;
+    width:100% !important;
+    max-width:100% !important;
+    flex-wrap:nowrap !important;
+    touch-action:pan-x !important;
+    padding-left:2px !important;
+    padding-right:2px !important;
+  }
+
+  .app > .side .nav button{
+    flex:0 0 auto !important;
+    white-space:nowrap !important;
+  }
+}
+
+@media screen and (min-width:701px){
+  .app > .side{
+    overflow:hidden !important;
+  }
+
+  .app > .side .nav{
+    justify-content:flex-start !important;
+  }
+}
+</style>
