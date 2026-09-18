@@ -2000,7 +2000,7 @@ function renderEvalHistory(){const el=document.getElementById('evalHistory');if(
 // Build by-mandoran data after core is built
 const oldBuildData=buildData;buildData=function(snap){const d=oldBuildData(snap);d.byMandoran={};const p=d.sections.PRODUKSIBLOK;if(p){const h=p.header,mi=h.indexOf('KEMANDORAN'),ni=h.indexOf('NPK'),ji=h.indexOf('JJG');p.rows.forEach(r=>{const m=r[mi]||'—';d.byMandoran[m]??={j:0,n:new Set()};d.byMandoran[m].j+=num(r[ji]);if(r[ni])d.byMandoran[m].n.add(r[ni])})}return d}
 document.getElementById('amantaFiles').addEventListener('change',()=>{const n=document.getElementById('amantaFiles').files.length;document.getElementById('processBtn').disabled=!n;document.getElementById('uploadMsg').textContent=n?`${n} file dipilih.`:'Belum ada file.'});
-renderDecisionHistory();renderEvalHistory();const bootDates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(bootDates[0]){const boot=JSON.parse(localStorage.getItem(lockKey(bootDates[0]))||'null');if(boot)renderAll(boot);}
+renderDecisionHistory();renderEvalHistory();
 
 /* ================= V22.6 HYBRID: MULTI-AFD + LOCKED HISTORY ================= */
 function detectAFDHybrid(sections,filename=''){
@@ -2613,7 +2613,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
       if(typeof renderAfdSelectorHybrid==='function') renderAfdSelectorHybrid();
       if(typeof renderHistory==='function') renderHistory();
       const afd=ACTIVE_AFD||'OC',arr=getAfdSnapshotsHybrid(afd==='ALL'?'':afd);
-      if(!ACTIVE && arr.length){ACTIVE=arr[arr.length-1];window.ADRIANA_DATA=buildData(ACTIVE);renderAll(ACTIVE);}
+      if(arr.length){const latest=arr[arr.length-1];if(!ACTIVE||String(ACTIVE.date)!==String(latest.date)||(ACTIVE.afd||'OC')!==(latest.afd||'OC')){ACTIVE=latest;window.ADRIANA_DATA=buildData(ACTIVE);renderAll(ACTIVE);}}
     }catch(e){console.warn('ADRIANA IDB refresh:',e)}
   };
   window.ADRIANA_LOCK_IDB_READY=openDB().then(async()=>{await refreshLockIdbCache();return true;}).catch(e=>{console.warn('ADRIANA IDB:',e);return false;});
