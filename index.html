@@ -1334,6 +1334,9 @@ body{
 }
 
 </style>
+<style id="adriana-ai-historical-style">
+.aiHistWrap{margin-top:14px}.aiHistControls{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-bottom:12px}.aiHistControls label{font-size:10px;font-weight:800;color:var(--neo-muted);display:flex;flex-direction:column;gap:5px}.aiHistControls select,.aiHistControls input{border:1px solid var(--neo-line);background:var(--neo-surface);border-radius:9px;padding:8px 10px;font:inherit;color:var(--neo-deep);min-width:105px}.aiHistGrid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}.aiHistTable{width:100%;border-collapse:collapse;font-size:10px}.aiHistTable th,.aiHistTable td{padding:8px 7px;border-bottom:1px solid var(--neo-line);text-align:right}.aiHistTable th:first-child,.aiHistTable td:first-child{text-align:left}.aiHistTable th{font-size:8px;text-transform:uppercase;color:var(--neo-muted)}.aiHistLow{background:#fff8e8}.aiHistCard{background:var(--neo-surface2);border:1px solid var(--neo-line);border-radius:12px;padding:12px}.aiHistCard h3{margin:0 0 8px;font-size:13px}.aiHistBig{font-size:24px;font-weight:900;color:var(--neo-deep)}.aiHistMuted{font-size:9px;line-height:1.5;color:var(--neo-muted)}.aiHistRec{background:linear-gradient(145deg,#073f2c,#0b7650);color:#fff;border-radius:12px;padding:14px}.aiHistRec .aiHistMuted{color:#d2eee3}.aiHistRec b{color:#fff}.aiHistBadge{display:inline-block;padding:4px 7px;border-radius:999px;background:#eaf4ed;color:#1d8050;font-size:8px;font-weight:900}.aiHistRec .aiHistBadge{background:rgba(255,255,255,.13);color:#d8f2e6}@media(max-width:760px){.aiHistGrid{grid-template-columns:1fr}.aiHistTable{font-size:9px}.aiHistTable th,.aiHistTable td{padding:7px 4px}}
+</style>
 </head>
 <body>
 <div class="app">
@@ -1634,6 +1637,22 @@ body{
 <div class="two">
 <div class="panel"><h2>Generated Analysis</h2><div id="aiAnalysis" class="notice">No active dataset.</div></div>
 <div class="panel decision"><h2>Recommended Decision</h2><div class="muted">Priority</div><div id="aiDecision" style="font-size:25px;font-weight:800;margin:6px 0">—</div><div class="muted" style="font-size:12px;line-height:1.6">Validate the operational context, assign an owner and record the next-day check.</div><button class="btn" onclick="show('pdca')">OPEN PDCA</button></div>
+</div>
+<div class="panel aiHistWrap">
+  <div class="panelHead"><h2>Historical Block Intelligence</h2><span>7–30 DAYS · AI PLAN</span></div>
+  <div class="aiHistControls">
+    <label>Historical window<select id="aiHistDays"><option value="7">7 Hari</option><option value="14">14 Hari</option><option value="30" selected>30 Hari</option></select></label>
+    <label>Target tonase / hari (T)<input id="aiHistTargetTon" type="number" min="0" step="0.1" placeholder="Auto: historical avg"></label>
+    <button class="btn" id="aiHistRunBtn" type="button">ANALYZE HISTORY</button>
+  </div>
+  <div class="aiHistGrid">
+    <div>
+      <div class="notice" id="aiHistSummary">Belum ada analisis historical.</div>
+      <div style="overflow:auto;margin-top:10px"><table class="aiHistTable"><thead><tr><th>Block</th><th>Hari</th><th>Avg JJG</th><th>Avg HK</th><th>Avg T</th><th>kg/HK</th><th>Signal</th></tr></thead><tbody id="aiHistBody"><tr><td colspan="7" class="small">Close & Lock dataset lalu jalankan analisis.</td></tr></tbody></table></div>
+    </div>
+    <div class="aiHistRec" id="aiHistRecommendation"><span class="aiHistBadge">AI RECOMMENDATION</span><h3 style="margin:9px 0 5px">Menunggu historical</h3><div class="aiHistMuted">AI akan membaca JJG/blok, HK/blok, BJR harian, dan total tonase historical untuk menyusun kebutuhan HK plan.</div></div>
+  </div>
+  <div class="aiHistMuted" style="margin-top:10px">Catatan: AMANTA pada baseline ini menyimpan JJG per blok dan total berat transport harian, bukan tonase per blok. Estimasi tonase blok dihitung dari JJG blok × BJR harian. Rekomendasi HK adalah decision support berbasis historical, bukan prediksi absolut.</div>
 </div>
 </section>
 
@@ -2860,6 +2879,76 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
       window.renderAll=function(snap){original(snap);setTimeout(renderTrend,0);}
     }
   },50);
+})();
+</script>
+<script id="adriana-ai-historical-block">
+(function(){
+  const $=id=>document.getElementById(id);
+  const esc=v=>{const s=String(v??'');return (window.html&&html.escape)?html.escape(s):s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))};
+  function isoPrev(d,n){const x=new Date(d+'T00:00:00');x.setDate(x.getDate()-n);return x.toISOString().slice(0,10)}
+  function snaps(afd,days){
+    let all=[];try{all=(typeof getAfdSnapshotsHybrid==='function'?getAfdSnapshotsHybrid(afd||'OC'):[])||[]}catch(e){}
+    const active=(window.ADRIANA_DATA&&window.ADRIANA_DATA.date)||((typeof ACTIVE!=='undefined'&&ACTIVE)?ACTIVE.date:null);
+    if(!active)return [];
+    const from=isoPrev(active,days-1);
+    return all.filter(s=>s&&s.date>=from&&s.date<=active&&(s.afd||'OC')===(afd||'OC')).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  }
+  function blockDay(s){
+    let d;try{d=buildData(s)}catch(e){return null}
+    const p=s.sections&&s.sections.PRODUKSIBLOK;if(!p)return null;
+    const h=p.header||[],bi=h.indexOf('BLOK'),ji=h.indexOf('JJG'),ni=h.indexOf('NPK');
+    if(bi<0||ji<0)return null;
+    const out={};
+    (p.rows||[]).forEach(r=>{
+      const b=String(r[bi]??'').trim()||'—';
+      const j=num(r[ji]);
+      if(!out[b])out[b]={jjg:0,npk:new Set()};
+      out[b].jjg+=j;
+      if(ni>=0&&r[ni])out[b].npk.add(String(r[ni]).trim());
+    });
+    const bjr=+d.bjrKgPerJjg||0;
+    return Object.entries(out).map(([b,x])=>({date:s.date,b,jjg:x.jjg,hk:x.npk.size,bjr,ton:x.jjg*bjr/1000}));
+  }
+  function analyze(){
+    const days=+$('aiHistDays')?.value||30;
+    const afd=(typeof ACTIVE_AFD!=='undefined'&&ACTIVE_AFD!=='ALL'?ACTIVE_AFD:((window.ADRIANA_DATA&&window.ADRIANA_DATA.afd)||'OC'))||'OC';
+    const ss=snaps(afd,days), daily=ss.flatMap(blockDay).filter(Boolean);
+    const map={};daily.forEach(x=>{const q=map[x.b]??={b:x.b,days:0,jjg:0,ton:0,hkDays:0,validProd:[]};q.days++;q.jjg+=x.jjg;q.ton+=x.ton;q.hkDays+=x.hk;if(x.hk>0&&x.ton>0)q.validProd.push(x.ton*1000/x.hk)});
+    const rows=Object.values(map).map(x=>({...x,avgJjg:x.jjg/x.days,avgTon:x.ton/x.days,avgHK:x.hkDays/x.days,kgPerHK:x.validProd.length?x.validProd.reduce((a,b)=>a+b,0)/x.validProd.length:0})).filter(x=>x.days>0);
+    rows.sort((a,b)=>a.kgPerHK-b.kgPerHK||a.avgTon-b.avgTon);
+    const totalTon=ss.reduce((a,s)=>{try{return a+(buildData(s).netTransportKg||0)/1000}catch(e){return a}},0);
+    const totalHK=ss.reduce((a,s)=>{try{return a+(buildData(s).producingHK||0)}catch(e){return a}},0);
+    const avgDailyTon=ss.length?totalTon/ss.length:0,avgDailyHK=ss.length?totalHK/ss.length:0;
+    const targetVal=parseFloat($('aiHistTargetTon')?.value);const targetTon=Number.isFinite(targetVal)&&targetVal>0?targetVal:avgDailyTon;
+    const valid=rows.filter(x=>x.kgPerHK>0);const weightedKgHK=valid.length?(valid.reduce((a,x)=>a+x.ton*1000,0)/valid.reduce((a,x)=>a+x.hkDays,0)):0;
+    const requiredHK=weightedKgHK>0?Math.ceil(targetTon*1000/weightedKgHK):null;
+    const currentHK=Math.round(avgDailyHK);
+    const gap=requiredHK==null?null:requiredHK-currentHK;
+    const top=valid[0]||rows[0];
+    const body=$('aiHistBody');
+    if(body)body.innerHTML=rows.length?rows.slice(0,12).map((x,i)=>`<tr class="${i===0?'aiHistLow':''}"><td><b>${esc(x.b)}</b></td><td>${x.days}</td><td>${x.avgJjg.toFixed(1)}</td><td>${x.avgHK.toFixed(1)}</td><td>${x.avgTon.toFixed(2)}</td><td>${x.kgPerHK?x.kgPerHK.toFixed(0):'—'}</td><td>${i===0?'<span class="aiHistBadge">FOCUS</span>':'—'}</td></tr>`).join(''):'<tr><td colspan="7" class="small">Historical belum cukup.</td></tr>';
+    if($('aiHistSummary'))$('aiHistSummary').innerHTML=`<b>${days}-day analysis · ${esc(afd)}</b><br>${ss.length} snapshot tersedia · Avg total ${avgDailyTon.toFixed(2)} T/hari · Avg producing ${avgDailyHK.toFixed(1)} HK/hari · productivity basis ${weightedKgHK?weightedKgHK.toFixed(0)+' kg/HK':'unavailable'}.`;
+    if($('aiHistRecommendation')){
+      if(!top){$('aiHistRecommendation').innerHTML='<span class="aiHistBadge">AI RECOMMENDATION</span><h3 style="margin:9px 0 5px">Historical belum cukup</h3><div class="aiHistMuted">Belum ada blok dengan data JJG + HK + BJR yang cukup untuk rekomendasi.</div>'}
+      else {
+        const gapText=gap==null?'HK tidak dapat dihitung':gap>0?`Tambah sekitar <b>${gap} HK</b> dari baseline rata-rata ${currentHK} HK/hari.`:gap<0?`Baseline historis menunjukkan kebutuhan sekitar <b>${requiredHK} HK</b>; saat ini rata-rata ${currentHK} HK/hari.`:'Kebutuhan sekitar sama dengan baseline: <b>'+requiredHK+' HK</b>.';
+        $('aiHistRecommendation').innerHTML=`<span class="aiHistBadge">AI RECOMMENDATION</span><h3 style="margin:9px 0 5px">Fokus blok ${esc(top.b)}</h3><div style="font-size:13px;line-height:1.5"><b>${top.kgPerHK?top.kgPerHK.toFixed(0):'—'} kg/HK</b> rata-rata estimated productivity · ${top.avgTon.toFixed(2)} T/hari · ${top.avgHK.toFixed(1)} HK/hari.</div><div class="aiHistMuted" style="margin-top:8px"><b>Plan ${targetTon.toFixed(2)} T/hari:</b> ${gapText}</div><div class="aiHistMuted" style="margin-top:8px">Prioritaskan pengecekan rotasi, luas ancak, komposisi HK dan kondisi blok ${esc(top.b)} sebelum menetapkan penambahan HK.</div>`;
+      }
+    }
+    // Feed the existing Assistant Decision card without replacing its existing calculation functions.
+    const dd=$('dashboardDecision'),dt=$('dashboardDecisionText');
+    if(dd&&dt&&top){dd.textContent=`Fokus ${top.b} · Plan ${targetTon.toFixed(1)} T/hari`;dt.innerHTML=`Historical ${days} hari menunjukkan produktivitas estimated terendah di <b>${esc(top.b)}</b> (${top.kgPerHK?top.kgPerHK.toFixed(0):'—'} kg/HK). Kebutuhan baseline untuk target ${targetTon.toFixed(1)} T/hari: <b>${requiredHK==null?'—':requiredHK+' HK'}</b>. Current avg: ${currentHK} HK/hari.`}
+    window.ADRIANA_AI_HIST={days,afd,rows,targetTon,requiredHK,currentHK,weightedKgHK,focusBlock:top?.b||null};
+  }
+  window.ADRIANA_RUN_HISTORICAL_AI=analyze;
+  document.addEventListener('click',e=>{if(e.target&&e.target.id==='aiHistRunBtn')analyze()});
+  document.addEventListener('change',e=>{if(e.target&&(e.target.id==='aiHistDays'||e.target.id==='aiHistTargetTon'||e.target.id==='afdFilter'))setTimeout(()=>{try{analyze()}catch(e){}},80)});
+  // Re-run after the existing render/history flow so the recommendation follows active date/AFD.
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{analyze()}catch(e){}},700));
+  const tryHook=()=>{try{if(window.ADRIANA_DATA)analyze()}catch(e){}};
+  window.addEventListener('load',()=>setTimeout(tryHook,900));
+  const activeDateEl=$('activeDate');
+  if(activeDateEl&&window.MutationObserver){new MutationObserver(()=>setTimeout(tryHook,120)).observe(activeDateEl,{childList:true,subtree:true,characterData:true});}
 })();
 </script>
 </body></html>
