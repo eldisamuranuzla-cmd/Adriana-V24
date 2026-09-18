@@ -3064,10 +3064,13 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   }
   function esc(v){return String(v??'').replace(/\s+/g,' ').trim();}
   function tableRows(id){
-    const t=document.querySelector('#'+id); if(!t) return {head:[],body:[]};
-    const head=[...t.querySelectorAll('thead tr:first-child th')].map(x=>esc(x.innerText));
-    const body=[...t.querySelectorAll('tbody tr')].map(tr=>[...tr.children].map(td=>esc(td.innerText)))
-      .filter(r=>r.length&&r.some(Boolean)&&!r.join(' ').toLowerCase().includes('no active dataset')&&!r.join(' ').toLowerCase().includes('belum ada dataset')&&!r.join(' ').toLowerCase().includes('upload & lock'));
+    const el=document.querySelector('#'+id); if(!el) return {head:[],body:[]};
+    const table = el.tagName==='TABLE' ? el : el.closest('table');
+    const tbody = el.tagName==='TBODY' ? el : (table ? table.querySelector('tbody') : null);
+    if(!table || !tbody) return {head:[],body:[]};
+    const head=[...table.querySelectorAll('thead tr:first-child th')].map(x=>esc(x.innerText));
+    const body=[...tbody.querySelectorAll(':scope > tr')].map(tr=>[...tr.children].map(td=>esc(td.innerText)))
+      .filter(r=>r.length&&r.some(Boolean)&&!r.join(' ').toLowerCase().includes('no active dataset')&&!r.join(' ').toLowerCase().includes('belum ada dataset')&&!r.join(' ').toLowerCase().includes('upload & lock')&&!r.join(' ').toLowerCase().includes('upload &amp; lock'));
     return {head,body};
   }
   function textVal(id){const e=document.getElementById(id);return e?esc(e.innerText):'—';}
@@ -3087,6 +3090,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   }
   async function makePDF(title,subtitle,sections,filename){
     if(!pdfReady()){alert('PDF engine belum termuat. Pastikan internet aktif lalu coba lagi.');return;}
+    await new Promise(r=>setTimeout(r,120));
     const {jsPDF}=window.jspdf;
     const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
     const logo=await logoData();
