@@ -623,6 +623,305 @@ body{
   .astraRight:before{width:88px;height:34px}
 }
 
+
+/* =========================================================
+   ADRIANA POLISHED UI — VISUAL ONLY
+   No JavaScript / calculation / storage / historical logic changes.
+   ========================================================= */
+:root{
+  --ui-deep:#064c37;
+  --ui-green:#087a50;
+  --ui-green2:#18a56d;
+  --ui-light:#e9f7ef;
+  --ui-gold:#d9a52e;
+  --ui-gold2:#f2cc68;
+  --ui-white:#ffffff;
+  --ui-ink:#12231c;
+}
+
+/* Corporate header */
+.astraHead{
+  min-height:88px !important;
+  background:
+    radial-gradient(circle at 82% 20%,rgba(218,235,226,.85) 0 17%,transparent 17.5%),
+    linear-gradient(105deg,#ffffff 0%,#f7fbf8 58%,#edf7f1 100%) !important;
+  padding:10px 24px !important;
+}
+.astraHead:before{
+  content:"";
+  position:absolute;
+  right:19%;
+  top:-40px;
+  width:240px;height:130px;
+  background:linear-gradient(135deg,transparent 45%,rgba(21,120,80,.08) 46% 62%,transparent 63%);
+  transform:rotate(-12deg);
+  pointer-events:none;
+}
+.astraLestariLogo{
+  position:relative;
+  z-index:3;
+  width:126px;
+  height:60px;
+  object-fit:contain;
+  margin-left:auto;
+  margin-right:10px;
+  filter:drop-shadow(0 4px 8px rgba(10,70,48,.10));
+}
+.brandPair{
+  position:relative;
+  z-index:3;
+}
+
+/* Main KPI grid */
+.kpiGrid{
+  gap:14px !important;
+}
+.kpiGrid .kpi{
+  min-height:188px !important;
+  padding:18px 18px 15px !important;
+  border:1px solid rgba(14,94,62,.12) !important;
+  border-radius:20px !important;
+  background:
+    radial-gradient(circle at 10% 8%,rgba(231,248,238,.95) 0 13%,transparent 13.5%),
+    linear-gradient(145deg,#ffffff 0%,#ffffff 72%,#f2faf5 100%) !important;
+  box-shadow:0 12px 32px rgba(10,69,46,.09) !important;
+}
+.kpiGrid .kpi:after{
+  content:"";
+  position:absolute;
+  right:-30px;
+  bottom:-42px;
+  width:112px;height:112px;
+  border-radius:50%;
+  background:rgba(21,137,91,.08);
+  pointer-events:none;
+}
+.kpiGrid .kpi:nth-child(3),
+.kpiGrid .kpi:nth-child(4){
+  background:
+    radial-gradient(circle at 10% 8%,rgba(255,248,225,.98) 0 13%,transparent 13.5%),
+    linear-gradient(145deg,#ffffff 0%,#ffffff 72%,#fffaf0 100%) !important;
+}
+.kpiGrid .kpi:nth-child(3):after,
+.kpiGrid .kpi:nth-child(4):after{
+  background:rgba(217,165,46,.10);
+}
+
+/* Large KPI illustration zone */
+.kpiGrid .kpiIcon{
+  position:absolute !important;
+  left:16px !important;
+  top:17px !important;
+  width:106px !important;
+  height:106px !important;
+  min-height:106px !important;
+  border-radius:24px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:linear-gradient(145deg,#eef9f2,#dff1e7) !important;
+  opacity:1 !important;
+  z-index:2;
+  box-shadow:inset 0 0 0 1px rgba(21,121,80,.06);
+}
+.kpiGrid .kpi:nth-child(3) .kpiIcon,
+.kpiGrid .kpi:nth-child(4) .kpiIcon{
+  background:linear-gradient(145deg,#fff9e9,#f8edc9) !important;
+  box-shadow:inset 0 0 0 1px rgba(205,155,42,.12);
+}
+.kpiGrid .kpiIcon img{
+  width:98px !important;
+  height:98px !important;
+  max-width:98px !important;
+  max-height:98px !important;
+  object-fit:contain !important;
+  filter:drop-shadow(0 6px 7px rgba(20,65,44,.16));
+}
+
+/* KPI text: large but constrained so it never escapes the card */
+.kpiGrid .kpi .label,
+.kpiGrid .kpi .value,
+.kpiGrid .kpi .delta,
+.kpiGrid .kpi .small,
+.kpiGrid .kpi .spark{
+  margin-left:136px !important;
+  max-width:calc(100% - 148px);
+  position:relative;
+  z-index:2;
+}
+.kpiGrid .kpi .label{
+  margin-top:18px !important;
+  font-size:11px !important;
+  line-height:1.15 !important;
+  letter-spacing:.11em !important;
+  font-weight:900 !important;
+}
+.kpiGrid .kpi .value{
+  font-size:clamp(28px,3.2vw,42px) !important;
+  line-height:1.02 !important;
+  letter-spacing:-.055em !important;
+  font-weight:950 !important;
+  white-space:nowrap;
+  margin-top:8px !important;
+  margin-bottom:4px !important;
+}
+.kpiGrid .kpi:nth-child(4) .value{
+  font-size:clamp(24px,2.8vw,38px) !important;
+  letter-spacing:-.045em !important;
+}
+.kpiGrid .kpi .delta{
+  margin-top:3px !important;
+  font-size:10px !important;
+  line-height:1.15 !important;
+}
+.kpiGrid .kpi .small{
+  font-size:9px !important;
+  line-height:1.2 !important;
+  color:#687a71 !important;
+}
+.kpiGrid .kpi .spark{
+  margin-top:9px !important;
+  height:22px !important;
+}
+.kpiGrid .kpi .confidence{
+  top:16px !important;
+  right:16px !important;
+  z-index:4;
+  border:1px solid rgba(15,110,73,.10);
+}
+
+/* Gold/green accents */
+.kpiGrid .kpi:nth-child(1),
+.kpiGrid .kpi:nth-child(2){
+  border-top:3px solid rgba(24,165,109,.35) !important;
+}
+.kpiGrid .kpi:nth-child(3),
+.kpiGrid .kpi:nth-child(4){
+  border-top:3px solid rgba(217,165,46,.45) !important;
+}
+
+/* Trend/dashboard panels */
+.trendPanel{
+  border:1px solid rgba(8,122,80,.18) !important;
+  border-top:3px solid var(--ui-green) !important;
+  border-radius:20px !important;
+  background:linear-gradient(145deg,#ffffff,#f8fcf9) !important;
+  box-shadow:0 12px 32px rgba(10,69,46,.07) !important;
+}
+.trendHead h2{
+  font-size:20px !important;
+  color:var(--ui-ink) !important;
+}
+.trendEyebrow{
+  color:var(--ui-green) !important;
+  font-weight:900 !important;
+  letter-spacing:.13em !important;
+}
+.trendValue{
+  color:var(--ui-green) !important;
+  font-weight:950 !important;
+}
+.downloadBtn{
+  background:linear-gradient(135deg,#e8bd4f,#d79e20) !important;
+  color:#182219 !important;
+  border-color:#c99726 !important;
+  font-weight:900 !important;
+}
+
+/* All engines inherit the same corporate visual language */
+.section .panel,
+.section .upload,
+.section .notice,
+.section .miniCard,
+.section .peopleKpi{
+  border-radius:18px;
+}
+.section .panelHead h2,
+.section .top .title{
+  color:var(--ui-ink);
+}
+.section .btn:not(.downloadBtn){
+  border-color:rgba(8,122,80,.18);
+}
+.section table th{
+  background:#edf7f1;
+}
+.section .tag{
+  background:#fff6dc;
+  color:#9b7116;
+}
+
+/* Navigation */
+.nav button.active{
+  background:linear-gradient(135deg,#0a7951,#075d3f) !important;
+  border-color:#2aa979 !important;
+  box-shadow:0 6px 18px rgba(7,93,63,.25) !important;
+}
+.nav button:hover{
+  border-color:rgba(217,165,46,.65) !important;
+}
+
+/* Mobile KPI balance */
+@media(max-width:760px){
+  .astraHead{
+    min-height:78px !important;
+    padding:8px 14px !important;
+  }
+  .astraLestariLogo{
+    width:92px;
+    height:48px;
+    margin-right:0;
+  }
+  .kpiGrid{
+    gap:10px !important;
+  }
+  .kpiGrid .kpi{
+    min-height:178px !important;
+    padding:14px 12px !important;
+    border-radius:18px !important;
+  }
+  .kpiGrid .kpiIcon{
+    left:12px !important;
+    top:14px !important;
+    width:82px !important;
+    height:82px !important;
+    min-height:82px !important;
+    border-radius:19px !important;
+  }
+  .kpiGrid .kpiIcon img{
+    width:77px !important;
+    height:77px !important;
+    max-width:77px !important;
+    max-height:77px !important;
+  }
+  .kpiGrid .kpi .label,
+  .kpiGrid .kpi .value,
+  .kpiGrid .kpi .delta,
+  .kpiGrid .kpi .small,
+  .kpiGrid .kpi .spark{
+    margin-left:99px !important;
+    max-width:calc(100% - 108px);
+  }
+  .kpiGrid .kpi .label{
+    margin-top:12px !important;
+    font-size:9px !important;
+  }
+  .kpiGrid .kpi .value{
+    font-size:clamp(24px,7vw,31px) !important;
+    margin-top:7px !important;
+  }
+  .kpiGrid .kpi:nth-child(4) .value{
+    font-size:clamp(21px,6vw,27px) !important;
+  }
+  .kpiGrid .kpi .small{
+    font-size:8px !important;
+  }
+  .kpiGrid .kpi .confidence{
+    right:10px !important;
+    top:10px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -646,7 +945,7 @@ body{
   </div>
 </aside>
 <main class="main">
-<div class="astraHead"><div class="brandPair"><img class="adrianaMainLogo" src="adriana-logo-main.png" alt="ADRIANA — Assistant Daily Reporting & Analytics"><span class="brandDivider"></span><img class="astra50Logo" src="astra-agro-50-header.png" alt="Astra Agro 50"></div><div class="astraRight"><b>Sustainable Plantation</b><span>Operational Intelligence · ADRIANA</span></div></div>
+<div class="astraHead"><div class="brandPair"><img class="adrianaMainLogo" src="adriana-logo-main.png" alt="ADRIANA — Assistant Daily Reporting & Analytics"><span class="brandDivider"></span><img class="astra50Logo" src="astra-agro-50-header.png" alt="Astra Agro 50"></div><div class="astraRight"><b>Sustainable Plantation</b><span>Operational Intelligence · ADRIANA</span></div><img class="astraLestariLogo" src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"></div>
 <section id="dashboard" class="section active">
 <div class="dashWelcome"><div><div class="eyebrow">DAILY OPERATIONAL VIEW</div><div class="title">Welcome, <span class="welcomeName">Afdeling Head SYM!</span></div><div class="meta" id="activeMeta">Upload AMANTA files in Daily Closing</div><div class="afdFilter"><label>AFDELING</label><select id="afdFilter"><option value="ALL">Semua Afdeling</option><option value="OC">OCYM</option><option value="OE">OEYM</option></select></div></div><div class="dashControls"><div class="dateBox"><span>▣</span><div><small>Daily Operational View</small><strong id="activeDate">No dataset</strong></div><b>⌄</b></div><div class="lock" id="lockState">● NO DATASET</div></div></div>
 <div class="grid kpiGrid">
