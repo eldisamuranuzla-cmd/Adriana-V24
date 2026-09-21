@@ -1451,12 +1451,6 @@ body{
           <option value="accum" selected>Akumulasi</option>
         </select>
       </label>
-      <label>Afdeling
-        <select id="trendAfd">
-          <option value="OC">OCYM</option>
-          <option value="OE">OEYM</option>
-        </select>
-      </label>
       <button type="button" class="btn downloadBtn" onclick="downloadProductionTrendCSV()">Download Trend CSV ↓</button>
     </div>
   </div>
@@ -1495,11 +1489,11 @@ body{
   </div>
   <div class="peopleTableWrap">
     <table>
-      <thead><tr><th>Pemanen</th><th>JJG Today</th><th>Basis/HK (Weighted)</th><th>More Basis</th><th>More Basis Periode</th><th>Premi Today</th><th>Premi Periode</th><th>Class</th></tr></thead>
+      <thead><tr><th>Pemanen</th><th>JJG Today</th><th>Basis Blok (Avg)</th><th>More Basis</th><th>More Basis Periode</th><th>Premi Today</th><th>Premi Periode</th><th>Class</th></tr></thead>
       <tbody id="dashPeopleBody"><tr><td colspan="7" class="small">Upload &amp; lock AMANTA untuk melihat People Performance.</td></tr></tbody>
     </table>
   </div>
-  <div class="peopleNote">Premi dihitung per pemanen-per blok: 1 HK/hari dibagi rata ke blok yang dikerjakan; Basis Efektif Blok = Basis Blok × HK Blok; More Basis = max(0, JJG pemanen pada blok − Basis Efektif Blok). More Basis dan Premi kemudian dijumlahkan ke level pemanen. More Basis dan Premi Periode diakumulasi berdasarkan Open Book–Closing Book. Periode payroll: tanggal 21 sampai tanggal 20 bulan berikutnya. Minggu: Rp2.500/JJG.</div>
+  <div class="peopleNote">Premi dihitung harian per pemanen: seluruh JJG pemanen dari blok yang benar-benar dipanen dikurangi rata-rata basis blok yang dipanen pemanen tersebut. More Basis dan Premi Periode diakumulasi berdasarkan Open Book–Closing Book. Periode payroll: tanggal 21 sampai tanggal 20 bulan berikutnya. Minggu: Rp2.500/JJG.</div>
 </div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
 <div class="footer">ADRIANA v24 · Rotation Production additive &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
@@ -1633,7 +1627,7 @@ body{
       <table>
         <thead>
           <tr>
-            <th>Pemanen</th><th>JJG Today</th><th>Basis/HK (Weighted)</th><th>More Basis</th>
+            <th>Pemanen</th><th>JJG Today</th><th>Basis Blok (Avg)</th><th>More Basis</th>
             <th>Premi Today</th><th>More Basis Periode</th><th>Premi Periode</th><th>JJG/HK MTD</th><th>Achievement</th><th>Class</th>
           </tr>
         </thead>
@@ -1651,6 +1645,7 @@ body{
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
           <div id="peoplePeriodStatus" class="periodStatus">—</div>
           <button class="btn downloadBtn" type="button" onclick="downloadPremiClosingPeriodCSV()">Download Premi Closing CSV ↓</button>
+          <button class="btn downloadBtn" type="button" onclick="downloadPeoplePerformancePDF()">Download People Performance PDF ↓</button>
         </div>
       </div>
       <div class="peopleKpis periodKpis">
@@ -1684,7 +1679,7 @@ body{
       <div class="notice">
         <b>Hari efektif:</b> Premi = max(0, JJG aktual − Basis Blok) × Rp1.500.<br>
         <b>Minggu:</b> seluruh JJG × Rp2.500, tanpa basis.<br>
-        <b>Basis Efektif Blok:</b> basis setiap blok dikalikan HK pemanen pada blok tersebut. 1 HK/hari dibagi rata ke seluruh blok yang benar-benar dikerjakan.<br>
+        <b>Basis Blok:</b> rata-rata basis blok yang benar-benar dipanen oleh pemanen tersebut pada hari itu.<br>
         <b>Catatan:</b> JJG/HK digunakan untuk performance, bukan untuk menghitung premi. Tidak ada premi negatif.
       </div>
     </div>
@@ -1839,79 +1834,28 @@ function buildDailyRotationProduction(d){
  const p=d?.sections?.PRODUKSIBLOK;if(!p)return[];
  const h=p.header||[],bi=h.indexOf('BLOK'),ji=h.indexOf('JJG'),ni=h.indexOf('NPK');
  if(bi<0||ji<0)return[];
-
- // One harvester = 1 HK/day. If a harvester works N blocks that day,
- // allocate 1/N HK to each of those blocks.
- const harvesterBlocks={};
- (p.rows||[]).forEach(r=>{
-   const npk=ni>=0?cleanCell(r[ni]):'—', block=normalizeRotationBlock(r[bi],afd), jjg=num(r[ji]);
-   if(!block||npk==='—'||jjg<=0)return;
-   (harvesterBlocks[npk]??=new Set()).add(block);
- });
- const blockHk={};
- Object.entries(harvesterBlocks).forEach(([npk,blocks])=>{
-   const share=blocks.size?1/blocks.size:0;
-   blocks.forEach(block=>{blockHk[block]=(blockHk[block]||0)+share;});
- });
-
  const agg={};
- (p.rows||[]).forEach(r=>{
-   const raw=normalizeRotationBlock(r[bi],afd);if(!raw)return;
-   const key=raw.replace(/^(OC|OE)/,'').replace(/^0+(?=\d)/,'');
-   const rec=agg[key]??={key,block:raw,jjg:0};
-   rec.jjg+=num(r[ji]);
- });
+ (p.rows||[]).forEach(r=>{const raw=normalizeRotationBlock(r[bi],afd);if(!raw)return;const key=raw.replace(/^(OC|OE)/,'').replace(/^0+(?=\d)/,'');const rec=agg[key]??={key,block:raw,jjg:0,npk:new Set()};rec.jjg+=num(r[ji]);if(ni>=0&&cleanCell(r[ni])!=='—')rec.npk.add(cleanCell(r[ni]));});
  const secOf=key=>{for(const [sec,blocks] of Object.entries(sections))if(blocks.includes(key))return sec;return 'Other';};
- return Object.values(agg).map(x=>{
-   const r=rotMaster[x.key]||null,m=hesti[prefix+x.key]||null;
-   const ha=Number.isFinite(r?.ha)?r.ha:null;
-   const plantedHa=Number.isFinite(m?.luasTanam)&&m.luasTanam>0?m.luasTanam:null;
-   const pokok=Number.isFinite(m?.pokok)?m.pokok:null;
-   const pph=plantedHa&&pokok?pokok/plantedHa:null;
-   const pop=pph&&ha?pph*ha:null;
-   const hk=blockHk[x.block]||0;
-   return {...x,date:d.date,afd,seksi:secOf(x.key),rotasi:x.key,ha,populasiRotasi:pop,hk,jjgPerHK:hk?x.jjg/hk:null};
- }).sort((a,b)=>Object.keys(sections).indexOf(a.seksi)-Object.keys(sections).indexOf(b.seksi)||String(a.rotasi).localeCompare(String(b.rotasi),undefined,{numeric:true}));
+ return Object.values(agg).map(x=>{const r=rotMaster[x.key]||null,m=hesti[prefix+x.key]||null;const ha=Number.isFinite(r?.ha)?r.ha:null;const plantedHa=Number.isFinite(m?.luasTanam)&&m.luasTanam>0?m.luasTanam:null;const pokok=Number.isFinite(m?.pokok)?m.pokok:null;const pph=plantedHa&&pokok?pokok/plantedHa:null;const pop=pph&&ha?pph*ha:null;return {...x,date:d.date,afd,seksi:secOf(x.key),rotasi:x.key,ha,populasiRotasi:pop,hk:x.npk.size,jjgPerHK:x.npk.size?x.jjg/x.npk.size:null};}).sort((a,b)=>Object.keys(sections).indexOf(a.seksi)-Object.keys(sections).indexOf(b.seksi)||String(a.rotasi).localeCompare(String(b.rotasi),undefined,{numeric:true}));
 }
 function buildRotationProductionCalendar(d){
  const afd=ACTIVE_AFD==='ALL'?(d?.afd||'OC'):ACTIVE_AFD,activeDate=d?.date||ACTIVE.date;
  const dates=rotationDatesForView(activeDate),sections=rotationSectionsForAfd(afd),prefix=afd==='OE'?'OE':'OC',snaps=rotationVisibleSnapshots(afd,activeDate);
  const byBlockDate={};
-
  for(const snap of snaps){
   const p=snap.sections?.PRODUKSIBLOK;if(!p)continue;
   const h=p.header||[],bi=h.indexOf('BLOK'),hi=h.indexOf('HARVDATE'),ji=h.indexOf('JJG'),ni=h.indexOf('NPK');
-  if(bi<0||hi<0||ji<0||ni<0)continue;
-
-  // Identify the unique blocks worked by each harvester on each date.
-  const harvesterBlocks={}, relevantRows=[];
+  if(bi<0||hi<0||ji<0)continue;
+  const hkByBlock={};
   for(const r of p.rows||[]){
-   const block=normalizeRotationBlock(r[bi],afd),date=normalizeAmantaDate(r[hi]),npk=cleanCell(r[ni]),jjg=num(r[ji]);
-   if(!block||!date||!dates.includes(date)||npk==='—'||jjg<=0)continue;
-   relevantRows.push({block,date,npk,jjg});
-   const hKey=npk+'|'+date;
-   (harvesterBlocks[hKey]??=new Set()).add(block);
+   const block=normalizeRotationBlock(r[bi],afd),date=normalizeAmantaDate(r[hi]);
+   if(!block||!date||!dates.includes(date))continue;
+   const key=block+'|'+date;
+   const rec=byBlockDate[key]??={block,date,jjg:0,hk:new Set()};
+   rec.jjg+=num(r[ji]);
+   if(ni>=0&&cleanCell(r[ni])!=='—')rec.hk.add(cleanCell(r[ni]));
   }
-
-  // One harvester = 1 HK/day, split equally across all blocks worked that day.
-  const blockHk={};
-  Object.entries(harvesterBlocks).forEach(([hKey,blocks])=>{
-   const share=blocks.size?1/blocks.size:0;
-   const sep=hKey.lastIndexOf('|'),date=hKey.slice(sep+1);
-   blocks.forEach(block=>{
-     const key=block+'|'+date;
-     blockHk[key]=(blockHk[key]||0)+share;
-   });
-  });
-
-  for(const r of relevantRows){
-   const key=r.block+'|'+r.date;
-   const rec=byBlockDate[key]??={block:r.block,date:r.date,jjg:0,hk:0};
-   rec.jjg+=r.jjg;
-  }
-  Object.entries(blockHk).forEach(([key,hk])=>{
-   if(byBlockDate[key])byBlockDate[key].hk=hk;
-  });
  }
  const hist=harvestHistoryFromSnapshots(afd,activeDate);
  const rows=[];
@@ -1938,7 +1882,7 @@ function renderRotationProductionCalendar(d){
    body+=`<tr><td><b>${html.escape(r.block)}</b></td>`;
    for(const dt of dates){
      const key=r.block+'|'+dt,rec=cal.byBlockDate[key];
-     if(rec){const hk=Number.isFinite(rec.hk)?rec.hk.toFixed(2):'—';body+=`<td><span class="rpCell harvest"><span class="rpJjg">${rec.jjg.toLocaleString()}</span><span class="rpHk">${hk} HK</span></span></td>`;continue;}
+     if(rec){const hk=rec.hk.size||'—';body+=`<td><span class="rpCell harvest"><span class="rpJjg">${rec.jjg.toLocaleString()}</span><span class="rpHk">${hk} HK</span></span></td>`;continue;}
      const prior=r.dates.filter(x=>x<=dt); 
      if(!prior.length){body+='<td><span class="rpCell future">—</span></td>';continue;}
      const age=Math.max(0,daysBetween(prior[prior.length-1],dt)),st=rotationStatus(age);
@@ -1949,7 +1893,7 @@ function renderRotationProductionCalendar(d){
  host.innerHTML=`<div class="rpMonthNav"><button class="btn" type="button" onclick="renderRotationProductionCalendarMonth(-1)" ${viewMonth<='2026-08'?'disabled':''}>‹</button><span class="small" style="min-width:140px;text-align:center"><b>${html.escape(rotationMonthLabel(viewMonth))}</b></span><button class="btn" type="button" onclick="renderRotationProductionCalendarMonth(1)" ${viewMonth>=activeKey?'disabled':''}>›</button></div><div class="rpLegend"><span class="tag green">Sel panen = JJG/HK</span><span class="tag">Sel lain = AGE rotasi</span></div><div style="overflow:auto"><table class="rpCalTable"><thead><tr><th>BLOCK</th>${header}</tr></thead><tbody>${body}</tbody></table></div>`;
  const detailed=document.getElementById('rotationProductionBody');
  const detailRows=buildDailyRotationProduction(d);
- if(detailed)detailed.innerHTML=detailRows.length?detailRows.map(x=>`<tr><td>${fmtDate(x.date)}</td><td>${html.escape(x.seksi)}</td><td>R-${html.escape(x.rotasi)}</td><td><b>${html.escape(x.block)}</b></td><td>${x.ha!=null?x.ha.toFixed(2):'—'}</td><td>${x.populasiRotasi!=null?Math.round(x.populasiRotasi).toLocaleString():'—'}</td><td>${x.jjg.toLocaleString()}</td><td>${x.hk!=null?x.hk.toFixed(2):'—'}</td><td>${x.jjgPerHK!=null?x.jjgPerHK.toFixed(2):'—'}</td></tr>`).join(''):'<tr><td colspan="9">No mapped production data.</td></tr>';
+ if(detailed)detailed.innerHTML=detailRows.length?detailRows.map(x=>`<tr><td>${fmtDate(x.date)}</td><td>${html.escape(x.seksi)}</td><td>R-${html.escape(x.rotasi)}</td><td><b>${html.escape(x.block)}</b></td><td>${x.ha!=null?x.ha.toFixed(2):'—'}</td><td>${x.populasiRotasi!=null?Math.round(x.populasiRotasi).toLocaleString():'—'}</td><td>${x.jjg.toLocaleString()}</td><td>${x.hk}</td><td>${x.jjgPerHK!=null?x.jjgPerHK.toFixed(2):'—'}</td></tr>`).join(''):'<tr><td colspan="9">No mapped production data.</td></tr>';
 }
 function renderDailyRotationProduction(d){
  const rows=buildDailyRotationProduction(d),notice=document.getElementById('rotationProductionNotice');
@@ -2424,6 +2368,62 @@ function peopleMtdRows(activeDate,currentSnap){
  const rows=active.rows.map(x=>{const a=map[x.npk]||{jjg:0,hkDays:0,premi:0,more:0,avgBasis:null};const achievement=a.avgBasis&&a.avgBasis>0?(a.jjgPerHK/a.avgBasis*100):null;return {...x,mtdMore:a.more||0,mtdPremi:a.premi||0,mtdJjg:a.jjg||0,mtdHk:a.hkDays||0,mtdJjgPerHK:a.jjgPerHK||0,achievement,cluster:peopleClass(achievement)};});
  return {history:h,rows};
 }
+
+async function ensurePeoplePdfLib(){
+ if(window.jspdf?.jsPDF)return window.jspdf.jsPDF;
+ if(window.__ADRIANA_PDF_LOADING)return window.__ADRIANA_PDF_LOADING;
+ window.__ADRIANA_PDF_LOADING=new Promise((resolve,reject)=>{
+   const sc=document.createElement('script');
+   sc.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+   sc.onload=()=>window.jspdf?.jsPDF?resolve(window.jspdf.jsPDF):reject(new Error('jsPDF tidak tersedia'));
+   sc.onerror=()=>reject(new Error('Gagal memuat jsPDF'));
+   document.head.appendChild(sc);
+ });
+ try{return await window.__ADRIANA_PDF_LOADING;}catch(e){window.__ADRIANA_PDF_LOADING=null;throw e;}
+}
+async function downloadPeoplePerformancePDF(){
+ const d=window.ADRIANA_DATA;
+ if(!d?.date){alert('Belum ada dataset aktif.');return;}
+ let hist,day;
+ try{
+   hist=typeof window.ADRIANA_BUILD_PREMI_HISTORY==='function'?window.ADRIANA_BUILD_PREMI_HISTORY(d.date,d):null;
+   day=hist?.daily?.find(x=>x.date===d.date)||((typeof window.ADRIANA_BUILD_PREMI_DAY==='function')?window.ADRIANA_BUILD_PREMI_DAY(d):null);
+ }catch(e){console.error(e);alert('Data People Performance belum siap.');return;}
+ if(!hist||!day||!Array.isArray(day.rows)){alert('Data People Performance belum tersedia.');return;}
+ const bookEl=document.getElementById('peoplePeriod'), statusEl=document.getElementById('peoplePeriodStatus');
+ const book=bookEl?.textContent?.trim()||'—', status=statusEl?.textContent?.trim()||'—';
+ const rows=day.rows.slice().sort((a,b)=>(b.jjg||0)-(a.jjg||0));
+ const map=Object.fromEntries((hist.agg||[]).map(x=>[x.npk,x]));
+ const table=rows.map(x=>{const a=map[x.npk]||{};return [x.name&&x.name!=='—'?x.name:x.npk||'—',x.jjg||0,x.avgBasis==null?'—':Number(x.avgBasis).toFixed(2),Number(x.more||0).toFixed(2),moneyRp(x.premi||0),Number(a.more||0).toFixed(2),moneyRp(a.premi||0),a.hkDays||0,a.jjg&&a.hkDays?Number(a.jjg/a.hkDays).toFixed(2):'0.00',x.achievement==null?'—':Number(x.achievement).toFixed(1)+'%',x.cluster?.label||'—'];});
+ const periodRows=(hist.agg||[]).slice().sort((a,b)=>(b.premi||0)-(a.premi||0)).map((x,i)=>[i+1,x.name||x.npk||'—',x.jjg||0,x.hkDays||0,Number(x.more||0).toFixed(2),moneyRp(x.premi||0),x.hkDays?Number(x.jjg/x.hkDays).toFixed(2):'0.00']);
+ try{
+   const jsPDF=await ensurePeoplePdfLib(),doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+   const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),M=10;
+   const fmt=s=>String(s??'').replace(/\s+/g,' ').trim();
+   const text=(t,x,y,size=8,bold=false)=>{doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(size);doc.text(fmt(t),x,y);};
+   const title=()=>{text('ADRIANA — PEOPLE PERFORMANCE',M,13,15,true);text('People Performance & Premi · OCYM',M,19,9,false);text(`Tanggal: ${fmtDate(d.date)}   |   Book: ${book}   |   Status: ${status}`,M,25,8,false);doc.line(M,28,W-M,28);};
+   const kpi=(label,value,x,y,w)=>{doc.rect(x,y,w,13);text(label,x+3,y+4,6,true);text(value,x+3,y+10,9,true);};
+   title();
+   const totalPremi=(day.totalPremi||0),totalMore=(day.totalMore||0),mtdPremi=rows.reduce((a,x)=>a+(map[x.npk]?.premi||0),0),mtdMore=rows.reduce((a,x)=>a+(map[x.npk]?.more||0),0);
+   const gap=4,kw=(W-2*M-gap*3)/4;
+   kpi('PEMANEN AKTIF',rows.length,M,32,kw);kpi('JJG TODAY',(day.totalJjg||0).toLocaleString('id-ID'),M+kw+gap,32,kw);kpi('MORE BASIS TODAY',Number(totalMore).toFixed(2),M+(kw+gap)*2,32,kw);kpi('PREMI TODAY',moneyRp(totalPremi),M+(kw+gap)*3,32,kw);
+   let y=51;
+   text('RINGKASAN HARIAN',M,y,10,true); y+=5;
+   const headers=['Pemanen','JJG Today','Basis/Avg','More Basis','Premi Today','More Periode','Premi Periode','Hari','JJG/HK','Achv.','Class'];
+   const widths=[49,18,20,19,29,23,31,12,19,20,13];
+   const drawHeader=()=>{let x=M;doc.setFont('helvetica','bold');doc.setFontSize(6.5);headers.forEach((h,i)=>{doc.rect(x,y,widths[i],7);doc.text(h,x+1.5,y+4.5);x+=widths[i];});y+=7;};
+   const drawRow=r=>{let x=M;doc.setFont('helvetica','normal');doc.setFontSize(6.5);r.forEach((v,i)=>{const lines=doc.splitTextToSize(fmt(v),widths[i]-3);doc.rect(x,y,widths[i],Math.max(6,lines.length*3.2));doc.text(lines.slice(0,2),x+1.5,y+3);x+=widths[i];});y+=Math.max(6,r.reduce((m,v,i)=>Math.max(m,doc.splitTextToSize(fmt(v),widths[i]-3).slice(0,2).length*3.2),6));};
+   drawHeader();
+   for(const r of table){if(y>H-18){doc.addPage();title();y=32;drawHeader();}drawRow(r);}
+   y+=6;if(y>H-40){doc.addPage();title();y=34;}
+   text('RINGKASAN PERIODE BOOK',M,y,10,true);y+=5;
+   const ph=['Rank','Pemanen','JJG Periode','Hari','More Basis','Premi Periode','JJG/HK'];const pw=[12,70,25,15,28,35,25];let x=M;doc.setFont('helvetica','bold');doc.setFontSize(7);ph.forEach((h,i)=>{doc.rect(x,y,pw[i],7);doc.text(h,x+1.5,y+4.5);x+=pw[i];});y+=7;
+   for(const r of periodRows){if(y>H-18){doc.addPage();title();y=32;let xx=M;ph.forEach((h,i)=>{doc.rect(xx,y,pw[i],7);doc.text(h,xx+1.5,y+4.5);xx+=pw[i];});y+=7;}x=M;doc.setFont('helvetica','normal');doc.setFontSize(7);r.forEach((v,i)=>{doc.rect(x,y,pw[i],6);doc.text(fmt(v),x+1.5,y+3.8);x+=pw[i];});y+=6;}
+   text(`Generated by ADRIANA · Actual through ${fmtDate(d.date)}`,M,H-7,6,false);
+   const fileDate=String(d.date).replace(/[^0-9-]/g,'')||'dataset';doc.save(`ADRIANA_People_Performance_${fileDate}.pdf`);
+ }catch(e){console.error('People PDF:',e);alert('PDF belum bisa dibuat. Pastikan koneksi internet aktif untuk memuat engine PDF.');}
+}
+
 function moneyRp(v){return Number(v||0).toLocaleString('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0});}
 function renderPeoplePerformance(d){
  const host=document.getElementById('peopleBody'),dashHost=document.getElementById('dashPeopleBody');
@@ -2459,57 +2459,23 @@ function renderPeopleAI(d){
       block:cleanCell(r[ix.block]), jjg:num(r[ix.jjg]), mandor:ix.mandor>=0?cleanCell(r[ix.mandor]):'—'
     })).filter(r=>r.npk!=='—' && r.block!=='—' && r.jjg>0 && _blockBasis(r.block)!=null);
   };
-  /* V26 PREMI — PER HARVESTER x BLOCK
-     1 harvester = 1 HK/day, split equally across the unique blocks harvested that day.
-     Effective block basis = Basis Blok x HK share.
-     Block More Basis = max(0, JJG harvester pada blok - Effective Block Basis).
-     Daily More Basis / Premi = SUM seluruh blok.
-     Sunday rule is preserved: seluruh JJG x Rp2.500/JJG.
-  */
   window.ADRIANA_BUILD_PREMI_DAY=function(snap){
-    const rows=_dayRows(snap), sunday=peopleDateSunday(snap?.date), byHarvester={};
+    const rows=_dayRows(snap), sunday=peopleDateSunday(snap?.date), by={};
     rows.forEach(r=>{
-      const b=peopleBlockKey(r.block), basis=_blockBasis(r.block);
-      if(!b||basis==null)return;
       const k=r.npk;
-      byHarvester[k] ||= {npk:r.npk,name:r.name,blocks:{},mandors:[]};
-      const h=byHarvester[k];
-      h.blocks[b] ||= {block:b,basis:Number(basis),jjg:0};
-      h.blocks[b].jjg += r.jjg;
-      if(r.mandor && !h.mandors.includes(r.mandor)) h.mandors.push(r.mandor);
+      by[k] ||= {npk:r.npk,name:r.name,jjg:0,blocks:[],bases:[],mandors:[]};
+      const x=by[k]; x.jjg+=r.jjg;
+      const b=peopleBlockKey(r.block), basis=_blockBasis(r.block);
+      if(!x.blocks.includes(b)){x.blocks.push(b);x.bases.push(basis);}
+      if(r.mandor && !x.mandors.includes(r.mandor)) x.mandors.push(r.mandor);
     });
-
-    const transactions=Object.values(byHarvester).map(h=>{
-      const blockList=Object.values(h.blocks);
-      const blockCount=blockList.length;
-      const hkShare=blockCount?1/blockCount:0;
-      const blockDetails=blockList.map(b=>{
-        const hk=hkShare;
-        const effectiveBasis=b.basis*hk;
-        const more=sunday?0:Math.max(0,b.jjg-effectiveBasis);
-        const premi=sunday?b.jjg*2500:more*1500;
-        return {
-          block:b.block,jjg:b.jjg,basis:b.basis,hk,effectiveBasis,more,premi
-        };
-      });
-      const jjg=blockDetails.reduce((a,b)=>a+b.jjg,0);
-      const effectiveBasis=blockDetails.reduce((a,b)=>a+b.effectiveBasis,0);
-      const more=blockDetails.reduce((a,b)=>a+b.more,0);
-      const premi=blockDetails.reduce((a,b)=>a+b.premi,0);
-      const weightedBasis=blockCount?effectiveBasis: null; // basis per 1 HK after fractional HK allocation
-      return {
-        npk:h.npk,name:h.name,jjg,blocks:blockList.map(x=>x.block),
-        blockBases:blockList.map(x=>x.basis),blockDetails,
-        hk:1,avgBasis:weightedBasis,more,premi,isSunday:sunday,mandors:h.mandors
-      };
+    const transactions=Object.values(by).map(x=>{
+      const avg=x.bases.length ? x.bases.reduce((a,b)=>a+b,0)/x.bases.length : null;
+      const more=sunday?0:Math.max(0,x.jjg-(avg??0));
+      const premi=sunday?x.jjg*2500:more*1500;
+      return {npk:x.npk,name:x.name,jjg:x.jjg,blocks:x.blocks,blockBases:x.bases,avgBasis:avg,more,premi,isSunday:sunday,mandors:x.mandors};
     });
-    return {
-      date:snap?.date||null,rows:transactions,transactions,
-      totalJjg:transactions.reduce((a,r)=>a+r.jjg,0),
-      totalMore:transactions.reduce((a,r)=>a+r.more,0),
-      totalPremi:transactions.reduce((a,r)=>a+r.premi,0),
-      isSunday:sunday
-    };
+    return {date:snap?.date||null,rows:transactions,transactions,totalJjg:rows.reduce((a,r)=>a+r.jjg,0),totalMore:transactions.reduce((a,r)=>a+r.more,0),totalPremi:transactions.reduce((a,r)=>a+r.premi,0),isSunday:sunday};
   };
   window.ADRIANA_BUILD_PREMI_HISTORY=function(activeDate,currentSnap){
     const d=new Date(activeDate+'T00:00:00'), y=d.getFullYear(), m=d.getMonth();
@@ -2537,7 +2503,7 @@ function renderPeopleAI(d){
       ['Periode Book',`${hist.open} - ${hist.close}`],
       ['Actual Through',hist.end],
       [],
-      ['Rank','Pemanen','NPK','JJG Periode','Hari Panen','More Basis Periode','Premi Periode','JJG/HK','Basis/HK Weighted']
+      ['Rank','Pemanen','NPK','JJG Periode','Hari Panen','More Basis Periode','Premi Periode','JJG/HK','Avg Basis']
     ];
     rows.forEach((x,i)=>out.push([i+1,x.name||'—',x.npk||'—',x.jjg||0,x.hkDays||0,Number(x.more||0).toFixed(2),Number(x.premi||0).toFixed(0),Number(x.jjgPerHK||0).toFixed(2),x.avgBasis==null?'—':Number(x.avgBasis).toFixed(2)]));
     downloadCSV(`ADRIANA_Premi_Closing_${hist.bookMonth||activeDate}.csv`,out);
@@ -2569,7 +2535,6 @@ function renderPeopleAI(d){
 })();
 
 
-/* V26 PREMI LOGIC: per harvester-per block, fractional HK, block-level basis. */
 /* ADRIANA PERIOD BOOK UPGRADE
    Book September 2026 = 21 Aug 2026 through 20 Sep 2026.
    Every daily premi transaction remains deterministic; aggregation is by Open Book–Closing Book.
@@ -2721,10 +2686,8 @@ function renderPeopleAI(d){
     set('dashPeoplePremi',moneyRp(day.totalPremi));
     set('dashPeoplePremiMtd',moneyRp(hist.agg.reduce((a,x)=>a+x.premi,0)));
 
-    if(host)host.innerHTML=rows.map(x=>{
-      const detail=(x.blockDetails||[]).map(b=>`${html.escape(b.block)} ${b.jjg.toLocaleString('id-ID')} JJG / ${b.hk.toFixed(2)} HK · Basis ${b.basis.toFixed(0)} × ${b.hk.toFixed(2)} = ${b.effectiveBasis.toFixed(2)} · Premi ${b.more.toFixed(2)} JJG`).join('<br>');
-      return `<tr>
-      <td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b><div class="small" style="margin-top:4px;line-height:1.35">${detail}</div></td>
+    if(host)host.innerHTML=rows.map(x=>`<tr>
+      <td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td>
       <td>${x.jjg.toLocaleString('id-ID')}</td>
       <td>${x.avgBasis==null?'—':x.avgBasis.toFixed(2)}</td>
       <td>${x.more.toFixed(2)}</td>
@@ -2734,10 +2697,10 @@ function renderPeopleAI(d){
       <td>${x.mtdJjgPerHK.toFixed(2)}</td>
       <td>${x.achievement==null?'—':x.achievement.toFixed(1)+'%'}</td>
       <td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td>
-    </tr>`;}).join('')||'<tr><td colspan="10">No producing harvester.</td></tr>';
+    </tr>`).join('')||'<tr><td colspan="10">No producing harvester.</td></tr>';
 
     if(dashHost)dashHost.innerHTML=rows.map(x=>`<tr>
-      <td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b><div class="small" style="margin-top:3px">${(x.blockDetails||[]).map(b=>`${html.escape(b.block)}: +${b.more.toFixed(2)} JJG`).join(' · ')}</div></td>
+      <td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td>
       <td>${x.jjg.toLocaleString('id-ID')}</td>
       <td>${x.avgBasis==null?'—':x.avgBasis.toFixed(2)}</td>
       <td>${x.more.toFixed(2)}</td>
@@ -3073,9 +3036,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   }
   function renderTrend(){
     const d=window.ADRIANA_DATA;if(!d||!d.date)return;
-    const days=+$('trendPeriod')?.value||30, engineDays=+$('engineTrendPeriod')?.value||days;
-    const trendAfd=$('trendAfd')?.value||((typeof ACTIVE_AFD!=='undefined'&&ACTIVE_AFD!=='ALL')?ACTIVE_AFD:(d.afd||'OC'));
-    const afd=trendAfd==='ALL'?(d.afd||'OC'):trendAfd;
+    const days=+$('trendPeriod')?.value||30, engineDays=+$('engineTrendPeriod')?.value||days, afd=(typeof ACTIVE_AFD!=='undefined'?ACTIVE_AFD:(d.afd||'OC'));
     const actualDays=engineDays;
     const rows=snapsFor(afd,actualDays).map(metrics).filter(Boolean);
     lastTrendRows=rows;
@@ -3097,35 +3058,22 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   window.downloadProductionTrendCSV=function(){
     if(!lastTrendRows.length){alert('Belum ada historical snapshot untuk grafik.');return;}
     let aTon=0,aHK=0,aJJG=0;
-    const afd=$('trendAfd')?.value||'OC';
-    const rows=[['ADRIANA PRODUCTION TREND'],['AFD',afd],[],['Tanggal','Akumulasi Tonase (T)','Akumulasi HK','Akumulasi JJG','BJR (kg/JJG)']];
+    const rows=[['ADRIANA PRODUCTION TREND'],['Tanggal','Akumulasi Tonase (T)','Akumulasi HK','Akumulasi JJG','BJR (kg/JJG)']];
     lastTrendRows.forEach(x=>{aTon+=x.ton;aHK+=x.hk;aJJG+=x.jjg;rows.push([x.date,aTon.toFixed(3),aHK,aJJG,x.bjr.toFixed(2)])});
     const esc=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
     const blob=new Blob(['\uFEFF'+rows.map(r=>r.map(esc).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`ADRIANA_Production_Trend_${afd}_${($('trendPeriod')?.value||$('engineTrendPeriod')?.value||30)}D.csv`;a.click();
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`ADRIANA_Production_Trend_${($('trendPeriod')?.value||$('engineTrendPeriod')?.value||30)}D.csv`;a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),500);
   };
-  document.addEventListener('change',e=>{
-    if(e.target&&(e.target.id==='trendPeriod'||e.target.id==='engineTrendPeriod'||e.target.id==='trendAfd'))renderTrend();
-    if(e.target?.id==='afdFilter'){
-      const t=$('trendAfd');
-      if(t && e.target.value!=='ALL')t.value=e.target.value;
-      renderTrend();
-    }
-  });
+  document.addEventListener('change',e=>{if(e.target&&(e.target.id==='trendPeriod'||e.target.id==='engineTrendPeriod'))renderTrend();});
   window.addEventListener('resize',()=>{if(window.ADRIANA_DATA)renderTrend();});
 
-  // Keep Trend AFD aligned with the active dashboard dataset.
+  // Wrap the existing renderAll without replacing its logic.
   const wait=setInterval(()=>{
     if(typeof window.renderAll==='function'){
       clearInterval(wait);
       const original=window.renderAll;
-      window.renderAll=function(snap){
-        original(snap);
-        const t=$('trendAfd');
-        if(t)t.value=((typeof ACTIVE_AFD!=='undefined'&&ACTIVE_AFD==='OE')?'OE':'OC');
-        setTimeout(renderTrend,0);
-      }
+      window.renderAll=function(snap){original(snap);setTimeout(renderTrend,0);}
     }
   },50);
 })();
