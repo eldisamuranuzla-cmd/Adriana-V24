@@ -100,7 +100,7 @@ body{background:#f4f7f3}
 .peopleDashPanel .peopleTableWrap td:nth-child(10){text-align:center}
 .peopleDashPanel .peopleTableWrap .premiMoney{font-weight:900;color:#155c3b}
 
-.peopleDashPanel{margin-top:12px}.peopleKpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.peopleKpi{background:#f7fbf8;border:1px solid #dce9e1;border-radius:12px;padding:12px}.peopleKpi small{display:block;color:#718277;font-size:9px;font-weight:800;letter-spacing:.04em}.peopleKpi strong{display:block;color:#164a32;font-size:21px;margin-top:5px}.peopleTableWrap{overflow-x:auto;margin-top:12px}.peopleTableWrap table{min-width:900px}.peopleTableWrap th,.peopleTableWrap td{white-space:nowrap}.peopleNote{font-size:10px;color:#718077;margin-top:9px}.peoplePeriodBar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.peopleKpisLarge{margin-top:14px}.peopleClassGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.classBox{border:1px solid var(--line);border-radius:12px;padding:12px}.classBox small{display:block;font-size:9px;font-weight:900}.classBox strong{display:block;font-size:24px;margin-top:3px}.classBox span{font-size:10px;color:var(--muted)}.classA{background:#eaf5ee;color:#155c3b}.classB{background:#fff8e8;color:#8b6118}.classC{background:#fbeceb;color:#a94332}.premiMoney{font-weight:900;color:#155c3b}.classPill{display:inline-block;padding:4px 8px;border-radius:8px;font-size:9px;font-weight:900}.classPill.A{background:#dcfce7;color:#166534}.classPill.B{background:#fef3c7;color:#92400e}.classPill.C{background:#fee2e2;color:#991b1b}.classPill.NA{background:#eef2f0;color:#64746a}
+.section>.top{gap:12px;flex-wrap:wrap}.section>.top>.downloadBtn{margin-top:0}.peopleDashPanel{margin-top:12px}.peopleKpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.peopleKpi{background:#f7fbf8;border:1px solid #dce9e1;border-radius:12px;padding:12px}.peopleKpi small{display:block;color:#718277;font-size:9px;font-weight:800;letter-spacing:.04em}.peopleKpi strong{display:block;color:#164a32;font-size:21px;margin-top:5px}.peopleTableWrap{overflow-x:auto;margin-top:12px}.peopleTableWrap table{min-width:900px}.peopleTableWrap th,.peopleTableWrap td{white-space:nowrap}.peopleNote{font-size:10px;color:#718077;margin-top:9px}.peoplePeriodBar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.peopleKpisLarge{margin-top:14px}.peopleClassGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.classBox{border:1px solid var(--line);border-radius:12px;padding:12px}.classBox small{display:block;font-size:9px;font-weight:900}.classBox strong{display:block;font-size:24px;margin-top:3px}.classBox span{font-size:10px;color:var(--muted)}.classA{background:#eaf5ee;color:#155c3b}.classB{background:#fff8e8;color:#8b6118}.classC{background:#fbeceb;color:#a94332}.premiMoney{font-weight:900;color:#155c3b}.classPill{display:inline-block;padding:4px 8px;border-radius:8px;font-size:9px;font-weight:900}.classPill.A{background:#dcfce7;color:#166534}.classPill.B{background:#fef3c7;color:#92400e}.classPill.C{background:#fee2e2;color:#991b1b}.classPill.NA{background:#eef2f0;color:#64746a}
 @media(max-width:1000px){.peopleKpis{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.peopleKpis,.peopleClassGrid{grid-template-columns:1fr 1fr}.peopleKpi strong{font-size:19px}}
 
 /* BOOK PERIOD / CLOSING */
@@ -1561,7 +1561,7 @@ More Basis dan Premi periode mengikuti Open Book–Closing Book.
 
 
 <section id="rotation" class="section">
-<div class="top"><div><div class="eyebrow">ENGINE 01</div><div class="title">Harvest Rotation</div><div class="meta">Rotation Matrix berbasis Seksi &amp; Block · Actual dari histori AMANTA.</div></div></div>
+<div class="top"><div><div class="eyebrow">ENGINE 01</div><div class="title">Harvest Rotation</div><div class="meta">Rotation Matrix berbasis Seksi &amp; Block · Actual dari histori AMANTA.</div></div><button class="btn downloadBtn" type="button" onclick="downloadRotationPDF()">Download Rotation PDF ↓</button></div>
 <div class="panel">
     <div class="notice">
     <b>Rotation Source: AMANTA history</b><br>
@@ -1616,11 +1616,11 @@ More Basis dan Premi periode mengikuti Open Book–Closing Book.
   </div>
 </section>
 
-<section id="production" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Production</div><div class="meta">Actual production from reconciled AMANTA records.</div></div><button class="btn" type="button" onclick="downloadProductionCSV()">Download Production CSV</button></div><div id="bjrNotice" class="notice" style="margin-top:14px"><b>BJR:</b> —</div><div class="panel" style="margin-top:14px"><div class="panelHead"><h2>Harvest Performance — Mandoran</h2><span>AMANTA</span></div><table><thead><tr><th>Mandoran</th><th>HK</th><th>JJG</th><th>JJG/HK</th></tr></thead><tbody id="productionBody"><tr><td colspan="4" class="small">No active dataset.</td></tr></tbody></table></div><div class="panel" style="margin-top:14px"><div class="panelHead"><h2>Production Rotation Calendar</h2><span>DATE · SEKSI · ROTASI · BLOK · JJG · HK</span></div><div id="rotationProductionNotice" class="notice">Menunggu dataset aktif.</div><div id="rotationProductionCalendar" class="rotationProductionCalendar" style="margin-top:10px"></div><details class="rotationMatrixDetails" style="margin-top:12px"><summary>View detailed production by date</summary><div style="overflow:auto;margin-top:0"><table><thead><tr><th>Tanggal</th><th>Seksi Panen</th><th>Rotasi</th><th>Blok</th><th>Ha Rotasi</th><th>Pokok Rotasi</th><th>JJG Actual</th><th>HK Actual</th><th>JJG/HK</th></tr></thead><tbody id="rotationProductionBody"><tr><td colspan="9" class="small">No active dataset.</td></tr></tbody></table></div></details><div class="densityNote">Kalender mengikuti master Seksi Panen + Rotasi yang sudah ada. Pada tanggal panen, sel menampilkan JJG/HK aktual dari AMANTA yang sudah CLOSE &amp; LOCK; tanggal lain menampilkan umur rotasi.</div></div><div class="panel harvestPerf"><div class="panelHead"><h2>Harvest Performance — Pemanen</h2><span>JJG per pemanen</span></div><div class="miniGrid"><div class="miniCard"><h3>Top Performer</h3><div id="topHarvester" class="big">—</div><div id="topHarvesterSub" class="small">—</div></div><div class="miniCard"><h3>Bottom Performer</h3><div id="bottomHarvester" class="big">—</div><div id="bottomHarvesterSub" class="small">—</div></div></div><div class="perfTable"><table><thead><tr><th>Rank</th><th>Pemanen</th><th>NPK</th><th>JJG</th><th>JJG/HK</th><th>Block</th><th>Mandoran</th></tr></thead><tbody id="harvesterBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table></div><div class="perfNote">Ranking menggunakan JJG aktual dari AMANTA. Peringkat rendah adalah signal untuk review, bukan otomatis penilaian kinerja.</div></div></section>
+<section id="production" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Production</div><div class="meta">Actual production from reconciled AMANTA records.</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn downloadBtn" type="button" onclick="downloadProductionPDF()">Download Production PDF ↓</button><button class="btn" type="button" onclick="downloadProductionCSV()">Download Production CSV</button></div></div><div id="bjrNotice" class="notice" style="margin-top:14px"><b>BJR:</b> —</div><div class="panel" style="margin-top:14px"><div class="panelHead"><h2>Harvest Performance — Mandoran</h2><span>AMANTA</span></div><table><thead><tr><th>Mandoran</th><th>HK</th><th>JJG</th><th>JJG/HK</th></tr></thead><tbody id="productionBody"><tr><td colspan="4" class="small">No active dataset.</td></tr></tbody></table></div><div class="panel" style="margin-top:14px"><div class="panelHead"><h2>Production Rotation Calendar</h2><span>DATE · SEKSI · ROTASI · BLOK · JJG · HK</span></div><div id="rotationProductionNotice" class="notice">Menunggu dataset aktif.</div><div id="rotationProductionCalendar" class="rotationProductionCalendar" style="margin-top:10px"></div><details class="rotationMatrixDetails" style="margin-top:12px"><summary>View detailed production by date</summary><div style="overflow:auto;margin-top:0"><table><thead><tr><th>Tanggal</th><th>Seksi Panen</th><th>Rotasi</th><th>Blok</th><th>Ha Rotasi</th><th>Pokok Rotasi</th><th>JJG Actual</th><th>HK Actual</th><th>JJG/HK</th></tr></thead><tbody id="rotationProductionBody"><tr><td colspan="9" class="small">No active dataset.</td></tr></tbody></table></div></details><div class="densityNote">Kalender mengikuti master Seksi Panen + Rotasi yang sudah ada. Pada tanggal panen, sel menampilkan JJG/HK aktual dari AMANTA yang sudah CLOSE &amp; LOCK; tanggal lain menampilkan umur rotasi.</div></div><div class="panel harvestPerf"><div class="panelHead"><h2>Harvest Performance — Pemanen</h2><span>JJG per pemanen</span></div><div class="miniGrid"><div class="miniCard"><h3>Top Performer</h3><div id="topHarvester" class="big">—</div><div id="topHarvesterSub" class="small">—</div></div><div class="miniCard"><h3>Bottom Performer</h3><div id="bottomHarvester" class="big">—</div><div id="bottomHarvesterSub" class="small">—</div></div></div><div class="perfTable"><table><thead><tr><th>Rank</th><th>Pemanen</th><th>NPK</th><th>JJG</th><th>JJG/HK</th><th>Block</th><th>Mandoran</th></tr></thead><tbody id="harvesterBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table></div><div class="perfNote">Ranking menggunakan JJG aktual dari AMANTA. Peringkat rendah adalah signal untuk review, bukan otomatis penilaian kinerja.</div></div></section>
 
 <section id="quality" class="section"><div class="title">Harvest Quality</div><div class="meta">Recorded quality evidence, not a block-wide conclusion.</div><div class="panel" style="margin-top:14px"><table><thead><tr><th>Block</th><th>Mandoran</th><th>Sample Pokok</th><th>Piringan Non-Std</th><th>Buah Tinggal</th></tr></thead><tbody id="qualityBody"><tr><td colspan="5" class="small">No active dataset.</td></tr></tbody></table></div></section>
 
-<section id="transport" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Transport & Restan</div><div class="meta">Net weight calculated from reconciled scale records. BJR = total net TBS (kg) ÷ total JJG. READY → GO uses DTREADY to DT_GO.</div></div><button class="btn" type="button" onclick="downloadTransportCSV()">Download Transport CSV</button></div><div class="panel" style="margin-top:14px"><table><thead><tr><th>KAB Number</th><th>Rit</th><th>Ready → Go</th><th>Weight In</th><th>Weight Out</th><th>Net</th><th>Duration</th></tr></thead><tbody id="transportBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table><div id="restanNotice" class="notice" style="margin-top:14px">Restan: unavailable.</div></div></section>
+<section id="transport" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Transport & Restan</div><div class="meta">Net weight calculated from reconciled scale records. BJR = total net TBS (kg) ÷ total JJG. READY → GO uses DTREADY to DT_GO.</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn downloadBtn" type="button" onclick="downloadTransportPDF()">Download Transport PDF ↓</button><button class="btn" type="button" onclick="downloadTransportCSV()">Download Transport CSV</button></div></div><div class="panel" style="margin-top:14px"><table><thead><tr><th>KAB Number</th><th>Rit</th><th>Ready → Go</th><th>Weight In</th><th>Weight Out</th><th>Net</th><th>Duration</th></tr></thead><tbody id="transportBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table><div id="restanNotice" class="notice" style="margin-top:14px">Restan: unavailable.</div></div></section>
 
 
 <section id="exception" class="section">
@@ -1641,6 +1641,7 @@ More Basis dan Premi periode mengikuti Open Book–Closing Book.
 
 
 <section id="infield" class="section">
+<div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn downloadBtn" type="button" onclick="downloadInfieldPDF()">Download Infield Control PDF ↓</button></div>
 <div class="panel" style="margin-top:12px">
 <div class="panelHead"><h2>Infield Control — Real AMANTA</h2><span>PRODUKSI UNIT AMANTA · BJR Aktual</span></div>
 <div class="notice">Penginfield dikunci dari KODEUNIT. Tim Infield dibentuk dari NPK utama + NPKUTAMA (helper). JJG Infield berasal dari PRODUKSIUNIT.JJG berdasarkan KODEUNIT. JJG Langsir tidak dikurangkan karena data absen langsir tidak menyediakan JJG.</div>
@@ -1661,6 +1662,7 @@ More Basis dan Premi periode mengikuti Open Book–Closing Book.
       <div class="title">People Performance</div>
       <div class="meta">Pemanen Cluster, Performance &amp; Development · mengikuti Open Book–Closing Book.</div>
     </div>
+    <button class="btn downloadBtn" type="button" onclick="downloadPeoplePDF()">Download People Performance PDF ↓</button>
   </div>
   <div class="panel">
     <div class="peoplePeriodBar">
@@ -3181,6 +3183,67 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   const activeDateEl=$('activeDate');
   if(activeDateEl&&window.MutationObserver)new MutationObserver(()=>setTimeout(tryHook,120)).observe(activeDateEl,{childList:true,subtree:true,characterData:true});
 })();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+async function downloadSectionPDF(sectionId, title, fileName){
+  const section=document.getElementById(sectionId);
+  if(!section){alert('Section PDF tidak ditemukan.');return;}
+  if(!window.jspdf?.jsPDF || !window.html2canvas){alert('Engine PDF belum termuat. Periksa koneksi internet lalu coba lagi.');return;}
+  const btns=[...section.querySelectorAll('button')];
+  const oldDisabled=btns.map(b=>b.disabled);
+  btns.forEach(b=>b.disabled=true);
+  const clone=section.cloneNode(true);
+  clone.style.display='block';
+  clone.style.position='absolute';
+  clone.style.left='-100000px';
+  clone.style.top='0';
+  clone.style.width=Math.max(section.scrollWidth,1100)+'px';
+  clone.style.background='#fff';
+  clone.style.padding='20px';
+  clone.querySelectorAll('button').forEach(b=>b.remove());
+  clone.querySelectorAll('.downloadBtn').forEach(b=>b.remove());
+  const details=clone.querySelectorAll('details');
+  details.forEach(d=>d.open=true);
+  const stamp=document.createElement('div');
+  stamp.style.cssText='font:700 18px Arial,sans-serif;color:#064c37;margin:0 0 14px;padding-bottom:8px;border-bottom:2px solid #19b89d';
+  stamp.textContent='ADRIANA · '+title+' · '+(window.ADRIANA_DATA?.date||'');
+  clone.prepend(stamp);
+  document.body.appendChild(clone);
+  try{
+    const canvas=await html2canvas(clone,{scale:1.5,useCORS:true,backgroundColor:'#ffffff',logging:false,windowWidth:clone.scrollWidth});
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:canvas.width>canvas.height?'landscape':'portrait',unit:'mm',format:'a4',compress:true});
+    const pageW=pdf.internal.pageSize.getWidth();
+    const pageH=pdf.internal.pageSize.getHeight();
+    const margin=7;
+    const usableW=pageW-margin*2;
+    const pxPerMm=canvas.width/usableW;
+    const pagePx=Math.floor((pageH-margin*2)*pxPerMm);
+    let y=0, page=0;
+    while(y<canvas.height){
+      if(page>0)pdf.addPage();
+      const h=Math.min(pagePx,canvas.height-y);
+      const pageCanvas=document.createElement('canvas');
+      pageCanvas.width=canvas.width; pageCanvas.height=h;
+      const ctx=pageCanvas.getContext('2d');
+      ctx.fillStyle='#fff'; ctx.fillRect(0,0,pageCanvas.width,h);
+      ctx.drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
+      const img=pageCanvas.toDataURL('image/jpeg',0.88);
+      const imgH=h/pxPerMm;
+      pdf.addImage(img,'JPEG',margin,margin,usableW,imgH,'','FAST');
+      y+=h; page++;
+    }
+    pdf.save((fileName||title.replace(/[^a-z0-9]+/gi,'_'))+'_'+(window.ADRIANA_DATA?.date||'')+'.pdf');
+  }catch(err){console.error(err);alert('PDF gagal dibuat: '+(err?.message||err));}
+  finally{clone.remove();btns.forEach((b,i)=>b.disabled=oldDisabled[i]);}
+}
+function downloadRotationPDF(){return downloadSectionPDF('rotation','Harvest Rotation','ADRIANA_Harvest_Rotation');}
+function downloadProductionPDF(){return downloadSectionPDF('production','Production','ADRIANA_Production');}
+function downloadTransportPDF(){return downloadSectionPDF('transport','Transport & Restan','ADRIANA_Transport_Restan');}
+function downloadInfieldPDF(){return downloadSectionPDF('infield','Infield Control','ADRIANA_Infield_Control');}
+function downloadPeoplePDF(){return downloadSectionPDF('people','People Performance & Premi','ADRIANA_People_Performance');}
 </script>
 </body></html>
 
