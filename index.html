@@ -62,6 +62,44 @@ body{background:#f4f7f3}
 @media(max-width:900px){.kpiGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.densitySummary{grid-template-columns:repeat(2,minmax(0,1fr))}.astra50Logo{width:180px;height:58px}}
 @media(max-width:520px){.kpiGrid{grid-template-columns:1fr}.kpi{min-height:150px}.brandPair{gap:8px}.astra50Logo{width:145px}.dashWelcome .title{font-size:24px}}
 
+/* People Performance dashboard — PDF reference match */
+.peopleDashPanel .peopleTableWrap{margin-top:14px;overflow-x:auto}
+.peopleDashPanel .peopleTableWrap table{min-width:1450px;font-size:10px}
+.peopleDashPanel .peopleTableWrap th{
+  background:#19b89d;
+  color:#fff;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  padding:10px 9px;
+  border-bottom:0;
+}
+.peopleDashPanel .peopleTableWrap td{
+  padding:10px 9px;
+  vertical-align:top;
+  white-space:nowrap;
+  border-bottom:1px solid #dfe8e3;
+}
+.peopleDashPanel .peopleTableWrap tbody tr:hover td{background:#f7fbf9}
+.peopleHarvesterCell{white-space:normal!important;min-width:520px;line-height:1.35}
+.peopleBlockDetail{
+  font-size:9px;
+  color:#5d6d64;
+  padding-top:3px;
+  line-height:1.35;
+}
+.peopleDashPanel .peopleTableWrap td:nth-child(2),
+.peopleDashPanel .peopleTableWrap td:nth-child(3),
+.peopleDashPanel .peopleTableWrap td:nth-child(4),
+.peopleDashPanel .peopleTableWrap td:nth-child(5),
+.peopleDashPanel .peopleTableWrap td:nth-child(6),
+.peopleDashPanel .peopleTableWrap td:nth-child(7),
+.peopleDashPanel .peopleTableWrap td:nth-child(8),
+.peopleDashPanel .peopleTableWrap td:nth-child(9),
+.peopleDashPanel .peopleTableWrap td:nth-child(10){text-align:center}
+.peopleDashPanel .peopleTableWrap .premiMoney{font-weight:900;color:#155c3b}
+
 .peopleDashPanel{margin-top:12px}.peopleKpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.peopleKpi{background:#f7fbf8;border:1px solid #dce9e1;border-radius:12px;padding:12px}.peopleKpi small{display:block;color:#718277;font-size:9px;font-weight:800;letter-spacing:.04em}.peopleKpi strong{display:block;color:#164a32;font-size:21px;margin-top:5px}.peopleTableWrap{overflow-x:auto;margin-top:12px}.peopleTableWrap table{min-width:900px}.peopleTableWrap th,.peopleTableWrap td{white-space:nowrap}.peopleNote{font-size:10px;color:#718077;margin-top:9px}.peoplePeriodBar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.peopleKpisLarge{margin-top:14px}.peopleClassGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.classBox{border:1px solid var(--line);border-radius:12px;padding:12px}.classBox small{display:block;font-size:9px;font-weight:900}.classBox strong{display:block;font-size:24px;margin-top:3px}.classBox span{font-size:10px;color:var(--muted)}.classA{background:#eaf5ee;color:#155c3b}.classB{background:#fff8e8;color:#8b6118}.classC{background:#fbeceb;color:#a94332}.premiMoney{font-weight:900;color:#155c3b}.classPill{display:inline-block;padding:4px 8px;border-radius:8px;font-size:9px;font-weight:900}.classPill.A{background:#dcfce7;color:#166534}.classPill.B{background:#fef3c7;color:#92400e}.classPill.C{background:#fee2e2;color:#991b1b}.classPill.NA{background:#eef2f0;color:#64746a}
 @media(max-width:1000px){.peopleKpis{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.peopleKpis,.peopleClassGrid{grid-template-columns:1fr 1fr}.peopleKpi strong{font-size:19px}}
 
@@ -1489,11 +1527,30 @@ body{
   </div>
   <div class="peopleTableWrap">
     <table>
-      <thead><tr><th>Pemanen</th><th>JJG Today</th><th>Basis Blok (Avg)</th><th>More Basis</th><th>More Basis Periode</th><th>Premi Today</th><th>Premi Periode</th><th>Class</th></tr></thead>
-      <tbody id="dashPeopleBody"><tr><td colspan="7" class="small">Upload &amp; lock AMANTA untuk melihat People Performance.</td></tr></tbody>
+      <thead><tr>
+<th>PEMANEN</th>
+<th>JJG TODAY</th>
+<th>BASIS/HK (WEIGHTED)</th>
+<th>MORE BASIS</th>
+<th>PREMI TODAY</th>
+<th>MORE BASIS PERIODE</th>
+<th>PREMI PERIODE</th>
+<th>JJG/HK MTD</th>
+<th>ACHIEVEMENT</th>
+<th>CLASS</th>
+</tr></thead>
+      <tbody id="dashPeopleBody"><tr><td colspan="10" class="small">Upload &amp; lock AMANTA untuk melihat People Performance.</td></tr></tbody>
     </table>
   </div>
-  <div class="peopleNote">Premi dihitung harian per pemanen: seluruh JJG pemanen dari blok yang benar-benar dipanen dikurangi rata-rata basis blok yang dipanen pemanen tersebut. More Basis dan Premi Periode diakumulasi berdasarkan Open Book–Closing Book. Periode payroll: tanggal 21 sampai tanggal 20 bulan berikutnya. Minggu: Rp2.500/JJG.</div>
+  <div class="peopleNote">
+<b>Logic sesuai People Performance PDF:</b>
+1 HK/hari dibagi rata ke jumlah blok yang benar-benar dipanen pemanen.
+Basis efektif per blok = Basis Blok × HK Blok.
+Jumat: Basis efektif per blok × 20%.
+More Basis = max(0, JJG blok − Basis efektif).
+Tarif: Basis 90 = Rp1.550/JJG; Basis 70 = Rp2.000/JJG. Minggu = Rp2.500/JJG tanpa basis.
+More Basis dan Premi periode mengikuti Open Book–Closing Book.
+</div>
 </div>
 <div class="sustainBanner"><div><strong>Sustainable Plantation<br>for a Better Tomorrow</strong><span>Operational intelligence built from AMANTA.</span></div><div class="leafStrip"></div><div class="bannerLogo"><img src="astra-agro-logo-compact.png" alt="Astra Agro Lestari"><div><b>ASTRA AGRO LESTARI</b><small>Prosper with the Nation</small></div></div></div>
 <div class="footer">ADRIANA v24 · Rotation Production additive &nbsp;|&nbsp; AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
@@ -2283,74 +2340,43 @@ function peopleProductionRows(snap){
 /*
  PREMI RULE (final):
  - For EACH HARVESTER on EACH DATE, find only the blocks that harvester actually harvested.
- - Divide 1 HK equally by the number of blocks harvested; calculate each block basis as block basis × HK per block, then sum them as the harvester's weighted Basis/HK.
- - More Basis = max(0, JJG harvester that day - that harvester's average block basis).
- - Mon-Sat: Premi = More Basis * Rp1,500/JJG.
+ - Basis dihitung per blok: 1 HK dibagi jumlah blok yang dipanen, lalu basis blok dikalikan HK per blok.
+ - More Basis dihitung per blok dari JJG blok dikurangi basis blok. Pada Jumat, basis blok normal dikalikan 20%.
+ - Senin-Kamis & Sabtu: Basis 90 = Rp1.550/JJG dan Basis 70 = Rp2.000/JJG. Jumat memakai basis yang sudah dikalikan 20%.
  - Sunday: no basis; every JJG earns Rp2,500/JJG.
  - MTD: sum each harvester's daily More Basis and daily Premi from the 1st of the month through active date.
 */
 function buildPeopleDay(snap){
  if(!snap||snap.afd&&snap.afd!=='OC')return{date:snap?.date||null,afd:snap?.afd||null,rows:[],transactions:[],totalJjg:0,totalMore:0,totalPremi:0,isSunday:false};
  const rows=peopleProductionRows(snap), isSun=peopleDateSunday(snap.date), grouped={};
-
- /* FINAL PREMI RULE:
-    Fokus hanya pada BLOK yang benar-benar dipanen oleh masing-masing PEMANEN.
-    Tidak ada penguncian / averaging per seksi.
-    Untuk satu pemanen pada satu tanggal:
-      1) kumpulkan semua blok yang dia panen;
-      2) ambil basis setiap blok;
-      3) HK per blok = 1 / jumlah blok unik;
-      4) Basis blok = Basis blok × HK per blok;
-      5) Basis/HK weighted = jumlah basis seluruh blok;
-      6) More Basis = max(0, total JJG pemanen - Basis/HK weighted).
-    Premi Mon-Sat = More Basis x Rp1.500.
-    Premi Sunday = seluruh JJG x Rp2.500.
- */
  rows.forEach(r=>{
    const block=peopleBlockKey(r.block), basis=peopleBasisForBlock(r.block);
    if(!block||basis==null)return;
    const key=r.npk;
-   grouped[key]??={npk:r.npk,name:r.name,jjg:0,blocks:[],blockBases:[],mandors:[]};
+   grouped[key]??={npk:r.npk,name:r.name,jjg:0,blocks:[],blockRows:[],mandors:[]};
    const x=grouped[key];
    x.jjg+=r.jjg;
-   if(!x.blocks.includes(block)){
-     x.blocks.push(block);
-     x.blockBases.push(`${block}: ${basis}`);
-   }
+   let br=x.blockRows.find(v=>v.block===block);
+   if(!br){br={block,basis,jjg:0};x.blockRows.push(br);x.blocks.push(block);}
+   br.jjg+=r.jjg;
    if(r.mandor&&!x.mandors.includes(r.mandor))x.mandors.push(r.mandor);
  });
-
  const transactions=Object.values(grouped).map(x=>{
-   const blockCount=x.blocks.length;
-   const hkPerBlock=blockCount?1/blockCount:0;
-   const blockDetails=x.blocks.map(block=>{
-     const blockBasis=peopleBasisForBlock(block);
-     const basisHK=Number.isFinite(blockBasis)?blockBasis*hkPerBlock:0;
-     return {block,basis:blockBasis,hk:hkPerBlock,basisHK};
+   const hk=x.blocks.length?1/x.blocks.length:0;
+   const details=x.blockRows.map(br=>{
+     const normalBasis=br.basis*hk;
+     const adjustedBasis=isSun?0:normalBasis*(String(snap.date||'').length?new Date(snap.date+'T00:00:00').getDay()===5?0.20:1:1);
+     const more=isSun?0:Math.max(0,br.jjg-adjustedBasis);
+     const rate=br.basis===90?1550:br.basis===70?2000:0;
+     return {...br,hk,normalBasis,adjustedBasis,more,rate,premi:isSun?br.jjg*2500:more*rate};
    });
-   const basis=blockDetails.length?blockDetails.reduce((sum,d)=>sum+d.basisHK,0):null;
-   const more=isSun?0:(basis==null?0:Math.max(0,x.jjg-basis));
-   const premi=isSun?x.jjg*2500:more*1500;
-   return {
-     npk:x.npk,name:x.name,jjg:x.jjg,section:null,
-     blocks:[...x.blocks],blockBases:[...x.blockBases],blockDetails,mandors:[...x.mandors],
-     basis,weightedBasis:basis,hkPerBlock,more,premi,isSunday:isSun
-   };
+   const basis=details.reduce((a,b)=>a+b.adjustedBasis,0);
+   const more=details.reduce((a,b)=>a+b.more,0);
+   const premi=details.reduce((a,b)=>a+b.premi,0);
+   return {npk:x.npk,name:x.name,jjg:x.jjg,section:null,blocks:[...x.blocks],blockBases:x.blocks.map(b=>`${b}: ${peopleBasisForBlock(b)}`),mandors:[...x.mandors],basis,more,premi,isSunday:isSun,blockDetails:details};
  });
-
- const summary=transactions.map(x=>({
-   ...x,
-   sections:[...new Set(x.blocks.map(b=>peopleSectionForBlock(b)).filter(Boolean))],
-   sectionBases:[x.basis==null?'—':`AVG ${x.basis.toFixed(2)}`]
- }));
-
- return {
-   date:snap.date,afd:'OC',rows:summary,transactions,
-   totalJjg:rows.reduce((a,r)=>a+r.jjg,0),
-   totalMore:transactions.reduce((a,r)=>a+r.more,0),
-   totalPremi:transactions.reduce((a,r)=>a+r.premi,0),
-   isSunday:isSun
-};
+ const summary=transactions.map(x=>({...x,sections:[...new Set(x.blocks.map(b=>peopleSectionForBlock(b)).filter(Boolean))],sectionBases:[x.basis==null?'—':x.basis.toFixed(2)]}));
+ return {date:snap.date,afd:'OC',rows:summary,transactions,totalJjg:rows.reduce((a,r)=>a+r.jjg,0),totalMore:transactions.reduce((a,x)=>a+x.more,0),totalPremi:transactions.reduce((a,x)=>a+x.premi,0),isSunday:isSun};
 }
 function peopleHistorySnapshots(activeDate,currentSnap){
  const active=new Date(activeDate+'T00:00:00'),y=active.getFullYear(),m=active.getMonth();
@@ -2391,7 +2417,7 @@ function renderPeopleAI(d){
 
 /* V25 HARD FIX — PREMI IS PER HARVESTER, PER DAY, BASED ONLY ON THE BLOCKS THAT HARVESTER ACTUALLY HARVESTED.
    No section basis is used in the premi comparison.
-   Mon-Sat: max(0, harvester JJG - average of that harvester's harvested-block bases) * 1500.
+   Per blok: HK = 1 / jumlah blok panen pemanen; basis blok = basis x HK; Jumat basis blok x 20%; More Basis = max(0, JJG blok - basis blok); tarif Basis 90 Rp1.550/JJG, Basis 70 Rp2.000/JJG.
    Sunday: harvester JJG * 2500.
    MTD: sum of each daily premi transaction from day 1 through active date in the active month. */
 (function(){
@@ -2411,27 +2437,30 @@ function renderPeopleAI(d){
     })).filter(r=>r.npk!=='—' && r.block!=='—' && r.jjg>0 && _blockBasis(r.block)!=null);
   };
   window.ADRIANA_BUILD_PREMI_DAY=function(snap){
-    const rows=_dayRows(snap), sunday=peopleDateSunday(snap?.date), by={};
+    const rows=_dayRows(snap), sunday=peopleDateSunday(snap?.date), friday=new Date((snap?.date||'')+'T00:00:00').getDay()===5, by={};
     rows.forEach(r=>{
       const k=r.npk;
-      by[k] ||= {npk:r.npk,name:r.name,jjg:0,blocks:[],bases:[],mandors:[]};
+      by[k] ||= {npk:r.npk,name:r.name,jjg:0,blocks:[],blockRows:[],mandors:[]};
       const x=by[k]; x.jjg+=r.jjg;
       const b=peopleBlockKey(r.block), basis=_blockBasis(r.block);
-      if(!x.blocks.includes(b)){x.blocks.push(b);x.bases.push(basis);}
+      let br=x.blockRows.find(v=>v.block===b);
+      if(!br){br={block:b,basis,jjg:0};x.blockRows.push(br);x.blocks.push(b);}
+      br.jjg+=r.jjg;
       if(r.mandor && !x.mandors.includes(r.mandor)) x.mandors.push(r.mandor);
     });
     const transactions=Object.values(by).map(x=>{
-      const blockCount=x.blocks.length;
-      const hkPerBlock=blockCount?1/blockCount:0;
-      const blockDetails=x.blocks.map((block,i)=>{
-        const blockBasis=Number(x.bases[i]);
-        const basisHK=Number.isFinite(blockBasis)?blockBasis*hkPerBlock:0;
-        return {block,basis:blockBasis,hk:hkPerBlock,basisHK};
+      const hk=x.blocks.length ? 1/x.blocks.length : 0;
+      const details=x.blockRows.map(br=>{
+        const normalBasis=br.basis*hk;
+        const adjustedBasis=sunday?0:normalBasis*(friday?0.20:1);
+        const more=sunday?0:Math.max(0,br.jjg-adjustedBasis);
+        const rate=br.basis===90?1550:br.basis===70?2000:0;
+        return {...br,hk,normalBasis,adjustedBasis,more,rate,premi:sunday?br.jjg*2500:more*rate};
       });
-      const weightedBasis=blockDetails.length?blockDetails.reduce((sum,d)=>sum+d.basisHK,0):null;
-      const more=sunday?0:Math.max(0,x.jjg-(weightedBasis??0));
-      const premi=sunday?x.jjg*2500:more*1500;
-      return {npk:x.npk,name:x.name,jjg:x.jjg,blocks:x.blocks,blockBases:x.bases,blockDetails,avgBasis:weightedBasis,weightedBasis,hkPerBlock,more,premi,isSunday:sunday,mandors:x.mandors};
+      const basis=details.reduce((a,b)=>a+b.adjustedBasis,0);
+      const more=details.reduce((a,b)=>a+b.more,0);
+      const premi=details.reduce((a,b)=>a+b.premi,0);
+      return {npk:x.npk,name:x.name,jjg:x.jjg,blocks:x.blocks,blockBases:x.blockRows.map(v=>v.basis),basis,avgBasis:basis,more,premi,isSunday:sunday,isFriday:friday,mandors:x.mandors,blockDetails:details};
     });
     return {date:snap?.date||null,rows:transactions,transactions,totalJjg:rows.reduce((a,r)=>a+r.jjg,0),totalMore:transactions.reduce((a,r)=>a+r.more,0),totalPremi:transactions.reduce((a,r)=>a+r.premi,0),isSunday:sunday};
   };
@@ -2657,16 +2686,30 @@ function renderPeopleAI(d){
       <td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td>
     </tr>`).join('')||'<tr><td colspan="10">No producing harvester.</td></tr>';
 
-    if(dashHost)dashHost.innerHTML=rows.map(x=>`<tr>
-      <td><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b></td>
-      <td>${x.jjg.toLocaleString('id-ID')}</td>
-      <td>${x.avgBasis==null?'—':x.avgBasis.toFixed(2)}</td>
-      <td>${x.more.toFixed(2)}</td>
-      <td>${x.mtdMore.toFixed(2)}</td>
-      <td>${moneyRp(x.premi)}</td>
-      <td>${moneyRp(x.mtdPremi)}</td>
-      <td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td>
-    </tr>`).join('')||'<tr><td colspan="8">No producing harvester.</td></tr>';
+    if(dashHost)dashHost.innerHTML=rows.map(x=>{
+      const blockDetail=(x.blockDetails||[]).map(br=>{
+        const hk=Number(br.hk||0).toFixed(2);
+        const nb=Number(br.normalBasis||0).toFixed(2);
+        const ab=Number(br.adjustedBasis||0).toFixed(2);
+        const more=Number(br.more||0).toFixed(2);
+        const label=(x.isSunday)
+          ? `${br.block} ${Number(br.jjg||0).toLocaleString('id-ID')} JJG / ${hk} HK · Sunday · Premi ${Number(br.premi||0).toLocaleString('id-ID')}`
+          : `${br.block} ${Number(br.jjg||0).toLocaleString('id-ID')} JJG / ${hk} HK · Basis ${br.basis} × ${hk} = ${nb}${x.isFriday?` → Jumat ×20% = ${ab}`:''} · Premi ${more} JJG`;
+        return `<div class="peopleBlockDetail">${label}</div>`;
+      }).join('');
+      return `<tr>
+        <td class="peopleHarvesterCell"><b>${html.escape(x.name!=='—'?x.name:x.npk)}</b>${blockDetail}</td>
+        <td><strong>${x.jjg.toLocaleString('id-ID')}</strong></td>
+        <td><strong>${x.avgBasis==null?'—':x.avgBasis.toFixed(2)}</strong></td>
+        <td>${x.more.toFixed(2)}</td>
+        <td class="premiMoney">${moneyRp(x.premi)}</td>
+        <td>${x.mtdMore.toFixed(2)}</td>
+        <td class="premiMoney">${moneyRp(x.mtdPremi)}</td>
+        <td>${x.mtdJjgPerHK.toFixed(2)}</td>
+        <td>${x.achievement==null?'—':x.achievement.toFixed(1)+'%'}</td>
+        <td><span class="classPill ${x.cluster.key}">${x.cluster.label}</span></td>
+      </tr>`;
+    }).join('')||'<tr><td colspan="10">No producing harvester.</td></tr>';
 
     renderPeriodClosing(hist,d.date);
   };
