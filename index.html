@@ -1399,6 +1399,9 @@ body{
   .nav button{min-height:43px!important;padding:7px 10px!important;font-size:9px!important;}
   .main{padding:0 10px 16px!important;}
 }
+
+#harvesterQuality .miniGrid{grid-template-columns:repeat(3,minmax(0,1fr));}
+@media(max-width:800px){#harvesterQuality .miniGrid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -1412,6 +1415,7 @@ body{
     <button data-target="production">Production</button>
     <button data-target="trend">Trend</button>
     <button data-target="quality">Harvest Quality</button>
+    <button data-target="harvesterQuality">Kualitas Pemanen</button>
     <button data-target="transport">Transport & Restan</button>
     <button data-target="exception">Exception & Priority</button>
     <button data-target="infield">Infield Control</button>
@@ -1569,6 +1573,8 @@ body{
 
 <section id="quality" class="section"><div class="title">Harvest Quality</div><div class="meta">Recorded quality evidence, not a block-wide conclusion.</div><div class="panel" style="margin-top:14px"><table><thead><tr><th>Block</th><th>Mandoran</th><th>Sample Pokok</th><th>Piringan Non-Std</th><th>Buah Tinggal</th></tr></thead><tbody id="qualityBody"><tr><td colspan="5" class="small">No active dataset.</td></tr></tbody></table></div></section>
 
+<section id="harvesterQuality" class="section"><div class="top"><div><div class="eyebrow">ENGINE · HARVESTER QUALITY</div><div class="title">Kualitas Panen per Pemanen</div><div class="meta">Akumulasi BB, BM, dan TP per pemanen pada dataset/hari aktif dari PRODBLOK AMANTA.</div></div></div><div class="panel" style="margin-top:14px"><div class="miniGrid" style="margin-bottom:14px"><div class="miniCard"><h3>Top Buah Mentah (BM)</h3><div id="hqTopBM" class="big">—</div><div id="hqTopBMSub" class="small">—</div></div><div class="miniCard"><h3>Top Buah Busuk (BB)</h3><div id="hqTopBB" class="big">—</div><div id="hqTopBBSub" class="small">—</div></div><div class="miniCard"><h3>Top Tangkai Panjang (TP)</h3><div id="hqTopTP" class="big">—</div><div id="hqTopTPSub" class="small">—</div></div></div><div class="notice" id="hqNotice">Belum ada dataset aktif.</div><div style="overflow:auto;margin-top:14px"><table><thead><tr><th>Rank</th><th>Pemanen</th><th>NPK</th><th>JJG</th><th>BM</th><th>% BM</th><th>BB</th><th>% BB</th><th>TP</th><th>% TP</th><th>Total Temuan</th></tr></thead><tbody id="harvesterQualityBody"><tr><td colspan="11" class="small">No active dataset.</td></tr></tbody></table></div><div style="overflow:auto;margin-top:14px"><table><thead><tr><th>Rank BM</th><th>Pemanen</th><th>BM</th><th>JJG</th><th>% BM</th><th>Rank BB</th><th>Pemanen</th><th>BB</th><th>JJG</th><th>% BB</th><th>Rank TP</th><th>Pemanen</th><th>TP</th><th>JJG</th><th>% TP</th></tr></thead><tbody id="harvesterQualityRankBody"><tr><td colspan="15" class="small">No active dataset.</td></tr></tbody></table></div><div class="small" style="margin-top:10px">Sumber: section PRODUKSIBLOK AMANTA. BB = Buah Busuk, BM = Buah Mentah, TP = Tangkai Panjang. Persentase dihitung terhadap JJG pemanen pada hari/dataset aktif.</div><div style="margin-top:12px"><button class="btn" type="button" onclick="downloadHarvesterQualityCSV()">Download Kualitas Pemanen CSV</button></div></div></section>
+
 <section id="transport" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Transport & Restan</div><div class="meta">Net weight calculated from reconciled scale records. BJR = total net TBS (kg) ÷ total JJG. READY → GO uses DTREADY to DT_GO.</div></div><button class="btn" type="button" onclick="downloadTransportCSV()">Download Transport CSV</button></div><div class="panel" style="margin-top:14px"><table><thead><tr><th>KAB Number</th><th>Rit</th><th>Ready → Go</th><th>Weight In</th><th>Weight Out</th><th>Net</th><th>Duration</th></tr></thead><tbody id="transportBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table><div id="restanNotice" class="notice" style="margin-top:14px">Restan: unavailable.</div></div></section>
 
 
@@ -1682,12 +1688,11 @@ body{
     <div class="panel" style="margin-top:14px;background:#f8fbf9">
       <h2 style="margin-bottom:8px">Aturan Premi</h2>
       <div class="notice">
-         <b>Hari efektif:</b> Premi = max(0, JJG aktual − Basis Efektif Blok) × tarif sesuai basis: Basis 70 = Rp1.550/JJG; Basis 90 = Rp2.000/JJG.<br>
-         <b>Jumat:</b> Basis Efektif Blok dikalikan 20% sebelum menghitung More Basis.<br>
-         <b>Minggu:</b> seluruh JJG × Rp2.500, tanpa basis.<br>
-         <b>Basis Efektif Blok:</b> basis setiap blok dikalikan HK pemanen pada blok tersebut. 1 HK/hari dibagi rata ke seluruh blok yang benar-benar dikerjakan.<br>
-         <b>Catatan:</b> JJG/HK digunakan untuk performance, bukan untuk menghitung premi. Tidak ada premi negatif.
-       </div>
+        <b>Hari efektif:</b> Premi = max(0, JJG aktual − Basis Blok) × Rp1.500.<br>
+        <b>Minggu:</b> seluruh JJG × Rp2.500, tanpa basis.<br>
+        <b>Basis Efektif Blok:</b> basis setiap blok dikalikan HK pemanen pada blok tersebut. 1 HK/hari dibagi rata ke seluruh blok yang benar-benar dikerjakan.<br>
+        <b>Catatan:</b> JJG/HK digunakan untuk performance, bukan untuk menghitung premi. Tidak ada premi negatif.
+      </div>
     </div>
 
     <div class="panel" style="margin-top:14px">
@@ -3233,6 +3238,32 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   const activeDateEl=$('activeDate');
   if(activeDateEl&&window.MutationObserver)new MutationObserver(()=>setTimeout(tryHook,120)).observe(activeDateEl,{childList:true,subtree:true,characterData:true});
 })();
+</script>
+<script>
+(function(){
+function n(v){const x=Number(String(v??'').replace(/[^0-9.-]/g,''));return Number.isFinite(x)?x:0}
+function c(v){const x=String(v??'').trim();return (!x||/^null$|^undefined$/i.test(x))?'—':x}
+function e(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function get(d){const p=d?.sections?.PRODUKSIBLOK;if(!p)return [];const h=p.header||[],ni=h.indexOf('NPK'),name=h.indexOf('NAMA'),ji=h.indexOf('JJG'),bbi=h.indexOf('BB'),bmi=h.indexOf('BM'),tpi=h.indexOf('TP');if(ni<0||ji<0)return [];const m={};(p.rows||[]).forEach(r=>{const k=c(r[ni]);if(k==='—')return;m[k]??={npk:k,name:c(r[name]),jjg:0,bm:0,bb:0,tp:0};const x=m[k];x.jjg+=n(r[ji]);x.bm+=n(r[bmi]);x.bb+=n(r[bbi]);x.tp+=n(r[tpi])});return Object.values(m).map(x=>({...x,total:x.bm+x.bb+x.tp,bmPct:x.jjg?x.bm/x.jjg*100:0,bbPct:x.jjg?x.bb/x.jjg*100:0,tpPct:x.jjg?x.tp/x.jjg*100:0}))}
+function f(x){return Number(x||0).toLocaleString('id-ID')};function p(x){return Number(x||0).toFixed(2)+'%'}
+function render(d){const rows=get(d),body=document.getElementById('harvesterQualityBody'),rb=document.getElementById('harvesterQualityRankBody');if(!body||!rb)return;if(!rows.length){body.innerHTML='<tr><td colspan="11">Data kualitas pemanen belum tersedia pada PRODUKSIBLOK.</td></tr>';rb.innerHTML='<tr><td colspan="15">Data kualitas pemanen belum tersedia.</td></tr>';return}const all=rows.slice().sort((a,b)=>b.total-a.total||b.jjg-a.jjg);body.innerHTML=all.map((x,i)=>`<tr><td>${i+1}</td><td><b>${e(x.name)}</b></td><td>${e(x.npk)}</td><td>${f(x.jjg)}</td><td>${f(x.bm)}</td><td>${p(x.bmPct)}</td><td>${f(x.bb)}</td><td>${p(x.bbPct)}</td><td>${f(x.tp)}</td><td>${p(x.tpPct)}</td><td><b>${f(x.total)}</b></td></tr>`).join('');const bm=rows.slice().sort((a,b)=>b.bm-a.bm||b.bmPct-a.bmPct),bb=rows.slice().sort((a,b)=>b.bb-a.bb||b.bbPct-a.bbPct),tp=rows.slice().sort((a,b)=>b.tp-a.tp||b.tpPct-a.tpPct);const out=[];for(let i=0;i<rows.length;i++){const a=bm[i],b=bb[i],t=tp[i];out.push(`<tr><td>${i+1}</td><td>${a?e(a.name):'—'}</td><td>${a?f(a.bm):'—'}</td><td>${a?f(a.jjg):'—'}</td><td>${a?p(a.bmPct):'—'}</td><td>${b?i+1:'—'}</td><td>${b?e(b.name):'—'}</td><td>${b?f(b.bb):'—'}</td><td>${b?f(b.jjg):'—'}</td><td>${b?p(b.bbPct):'—'}</td><td>${t?i+1:'—'}</td><td>${t?e(t.name):'—'}</td><td>${t?f(t.tp):'—'}</td><td>${t?f(t.jjg):'—'}</td><td>${t?p(t.tpPct):'—'}</td></tr>`)}rb.innerHTML=out.join('');const A=bm[0],B=bb[0],T=tp[0];document.getElementById('hqTopBM').textContent=A?`${A.name} · ${f(A.bm)} BM`:'—';document.getElementById('hqTopBMSub').textContent=A?`${f(A.jjg)} JJG · ${p(A.bmPct)}`:'—';document.getElementById('hqTopBB').textContent=B?`${B.name} · ${f(B.bb)} BB`:'—';document.getElementById('hqTopBBSub').textContent=B?`${f(B.jjg)} JJG · ${p(B.bbPct)}`:'—';document.getElementById('hqTopTP').textContent=T?`${T.name} · ${f(T.tp)} TP`:'—';document.getElementById('hqTopTPSub').textContent=T?`${f(T.jjg)} JJG · ${p(T.tpPct)}`:'—';document.getElementById('hqNotice').innerHTML=`<b>${rows.length}</b> pemanen · tanggal/dataset aktif <b>${e(d?.date||'—')}</b> · seluruh BB/BM/TP diakumulasi per NPK pemanen.`;window.ADRIANA_HARVESTER_QUALITY=rows}
+window.renderHarvesterQuality=render;window.downloadHarvesterQualityCSV=function(){const rows=window.ADRIANA_HARVESTER_QUALITY||[];if(!rows.length){alert('Belum ada data kualitas pemanen.');return}const q=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};const out=[['ADRIANA HARVESTER QUALITY'],['Tanggal',window.ADRIANA_DATA?.date||''],[],['Pemanen','NPK','JJG','BM','% BM','BB','% BB','TP','% TP','Total Temuan']];rows.slice().sort((a,b)=>b.total-a.total).forEach(x=>out.push([x.name,x.npk,x.jjg,x.bm,x.bmPct.toFixed(2)+'%',x.bb,x.bbPct.toFixed(2)+'%',x.tp,x.tpPct.toFixed(2)+'%',x.total]));const blob=new Blob(['\uFEFF'+out.map(r=>r.map(q).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=`ADRIANA_Kualitas_Pemanen_${window.ADRIANA_DATA?.date||'daily'}.csv`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),500)};
+const old=window.renderAll;if(typeof old==='function')window.renderAll=function(s){old(s);try{render(window.ADRIANA_DATA||buildData(s))}catch(err){console.warn('Harvester Quality',err)}};document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{if(window.ADRIANA_DATA)render(window.ADRIANA_DATA)},500));
+})();
+</script>
+
+<script>
+function downloadQualityHarvestPDF(){
+ const root=document.querySelector('#qualityHarvestEngine, #engineQualityHarvest, [data-engine="quality-harvest"]')||document.body;
+ const w=window.open('','_blank');
+ if(!w){alert('Popup diblokir browser. Izinkan popup untuk membuat PDF.');return;}
+ w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>ADRIANA - Kualitas Panen</title><style>body{font-family:Arial,sans-serif;padding:24px;color:#111}h1{font-size:20px}table{border-collapse:collapse;width:100%;font-size:11px}th,td{border:1px solid #999;padding:6px;text-align:center}th{background:#eee}@media print{body{padding:8px}}</style></head><body>');
+ w.document.write('<h1>ADRIANA - KUALITAS PANEN PER PEMANEN</h1>');
+ w.document.write('<p>Akumulasi kualitas TBS per pemanen pada hari/dataset aktif.</p>');
+ w.document.write(root.innerHTML);
+ w.document.write('<script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script></body></html>');
+ w.document.close();
+}
 </script>
 </body></html>
 
