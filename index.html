@@ -1412,8 +1412,7 @@ body{
     <button data-target="production">Production</button>
     <button data-target="trend">Trend</button>
     <button data-target="quality">Harvest Quality</button>
-    <button data-target="harvesterQuality">Kualitas Pemanen</button>
-    <button data-target="mandoranQuality">Kualitas Kemandoran</button>
+    <button data-target="qualityPeople">Kualitas Pemanen</button>
     <button data-target="transport">Transport & Restan</button>
     <button data-target="exception">Exception & Priority</button>
     <button data-target="infield">Infield Control</button>
@@ -1570,6 +1569,45 @@ body{
 <section id="production" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Production</div><div class="meta">Actual production from reconciled AMANTA records.</div></div><button class="btn" type="button" onclick="downloadProductionCSV()">Download Production CSV</button></div><div id="bjrNotice" class="notice" style="margin-top:14px"><b>BJR:</b> —</div><div class="panel" style="margin-top:14px"><div class="panelHead"><h2>Harvest Performance — Mandoran</h2><span>AMANTA</span></div><table><thead><tr><th>Mandoran</th><th>HK</th><th>JJG</th><th>JJG/HK</th></tr></thead><tbody id="productionBody"><tr><td colspan="4" class="small">No active dataset.</td></tr></tbody></table></div><div class="panel" style="margin-top:14px"><div class="panelHead"><h2>Production Rotation Calendar</h2><span>DATE · SEKSI · ROTASI · BLOK · JJG · HK</span></div><div id="rotationProductionNotice" class="notice">Menunggu dataset aktif.</div><div id="rotationProductionCalendar" class="rotationProductionCalendar" style="margin-top:10px"></div><details class="rotationMatrixDetails" style="margin-top:12px"><summary>View detailed production by date</summary><div style="overflow:auto;margin-top:0"><table><thead><tr><th>Tanggal</th><th>Seksi Panen</th><th>Rotasi</th><th>Blok</th><th>Ha Rotasi</th><th>Pokok Rotasi</th><th>JJG Actual</th><th>HK Actual</th><th>JJG/HK</th></tr></thead><tbody id="rotationProductionBody"><tr><td colspan="9" class="small">No active dataset.</td></tr></tbody></table></div></details><div class="densityNote">Kalender mengikuti master Seksi Panen + Rotasi yang sudah ada. Pada tanggal panen, sel menampilkan JJG/HK aktual dari AMANTA yang sudah CLOSE &amp; LOCK; tanggal lain menampilkan umur rotasi.</div></div><div class="panel harvestPerf"><div class="panelHead"><h2>Harvest Performance — Pemanen</h2><span>JJG per pemanen</span></div><div class="miniGrid"><div class="miniCard"><h3>Top Performer</h3><div id="topHarvester" class="big">—</div><div id="topHarvesterSub" class="small">—</div></div><div class="miniCard"><h3>Bottom Performer</h3><div id="bottomHarvester" class="big">—</div><div id="bottomHarvesterSub" class="small">—</div></div></div><div class="perfTable"><table><thead><tr><th>Rank</th><th>Pemanen</th><th>NPK</th><th>JJG</th><th>JJG/HK</th><th>Block</th><th>Mandoran</th></tr></thead><tbody id="harvesterBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table></div><div class="perfNote">Ranking menggunakan JJG aktual dari AMANTA. Peringkat rendah adalah signal untuk review, bukan otomatis penilaian kinerja.</div></div></section>
 
 <section id="quality" class="section"><div class="title">Harvest Quality</div><div class="meta">Recorded quality evidence, not a block-wide conclusion.</div><div class="panel" style="margin-top:14px"><table><thead><tr><th>Block</th><th>Mandoran</th><th>Sample Pokok</th><th>Piringan Non-Std</th><th>Buah Tinggal</th></tr></thead><tbody id="qualityBody"><tr><td colspan="5" class="small">No active dataset.</td></tr></tbody></table></div></section>
+<section id="qualityPeople" class="section">
+  <div class="top">
+    <div>
+      <div class="eyebrow">HARVEST QUALITY · PRODUKSBLOK</div>
+      <div class="title">Kualitas Pemanen &amp; Kualitas Mandoran</div>
+      <div class="meta">Kualitas dihitung langsung dari data PRODUKSIBLOK aktif: JJG, BB, BM dan TP.</div>
+    </div>
+    <div class="qualityPeopleActions" style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" type="button" onclick="downloadQualityPeopleCSV()">Download CSV</button>
+      <button class="btn" type="button" onclick="downloadQualityPeoplePDF()">Download PDF</button>
+    </div>
+  </div>
+  <div class="peopleKpis" style="margin-top:12px">
+    <div class="peopleKpi"><small>JJG QUALITY</small><strong id="qpTotalJJG">—</strong></div>
+    <div class="peopleKpi"><small>BUAH BUSUK (BB)</small><strong id="qpTotalBB">—</strong></div>
+    <div class="peopleKpi"><small>BUAH MENTAH (BM)</small><strong id="qpTotalBM">—</strong></div>
+    <div class="peopleKpi"><small>TANGKAI PANJANG (TP)</small><strong id="qpTotalTP">—</strong></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <div class="panelHead"><h2>Kualitas Panen per Pemanen</h2><span id="qpHarvesterNote">Belum ada dataset aktif</span></div>
+    <div class="peopleTableWrap">
+      <table>
+        <thead><tr><th>Rank</th><th>NPK</th><th>Pemanen</th><th>Kemandoran</th><th>JJG</th><th>BB</th><th>BM</th><th>TP</th><th>Issue</th><th>Issue %</th></tr></thead>
+        <tbody id="harvesterQualityBody"><tr><td colspan="10" class="small">Belum ada dataset aktif.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <div class="panelHead"><h2>Kualitas Panen per Kemandoran</h2><span id="qpMandoranNote">Belum ada dataset aktif</span></div>
+    <div class="peopleTableWrap">
+      <table>
+        <thead><tr><th>Rank</th><th>Kemandoran</th><th>HK</th><th>JJG</th><th>BB</th><th>BM</th><th>TP</th><th>Issue</th><th>Issue %</th></tr></thead>
+        <tbody id="mandoranQualityBody"><tr><td colspan="9" class="small">Belum ada dataset aktif.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="notice" id="qualityPeopleNotice" style="margin-top:12px">Sumber data: PRODUKSIBLOK. Issue = BB + BM + TP.</div>
+</section>
+
 
 <section id="transport" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Transport & Restan</div><div class="meta">Net weight calculated from reconciled scale records. BJR = total net TBS (kg) ÷ total JJG. READY → GO uses DTREADY to DT_GO.</div></div><button class="btn" type="button" onclick="downloadTransportCSV()">Download Transport CSV</button></div><div class="panel" style="margin-top:14px"><table><thead><tr><th>KAB Number</th><th>Rit</th><th>Ready → Go</th><th>Weight In</th><th>Weight Out</th><th>Net</th><th>Duration</th></tr></thead><tbody id="transportBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table><div id="restanNotice" class="notice" style="margin-top:14px">Restan: unavailable.</div></div></section>
 
@@ -1605,34 +1643,6 @@ body{
 <div class="peopleTableWrap"><table><thead><tr><th>Rank</th><th>Tim Infield (NPK + Helper)</th><th>Kode Alat</th><th>Blok Summary</th><th>JJG TAP</th><th>Langsir</th><th>JJG Infield Real</th><th>BJR Aktual</th><th>Tonase</th></tr></thead><tbody id="infieldBody"><tr><td colspan="9" class="small">Upload &amp; lock AMANTA untuk melihat Infield.</td></tr></tbody></table></div>
 <div class="perfNote">Ranking diurutkan dari JJG Infield Real paling sedikit. Sumber JJG: PRODUKSIUNIT.JJG berdasarkan KODEUNIT. NPKUTAMA digunakan untuk menghubungkan helper. Langsir tidak menjadi deduction JJG.</div>
 </div></section>
-
-<section id="harvesterQuality" class="section">
-<div class="title">Kualitas Panen per Pemanen</div>
-<div class="meta">Akumulasi BB, BM, dan TP per pemanen pada tanggal/dataset aktif dari PRODUKSIBLOK AMANTA.</div>
-<div class="panel" style="margin-top:14px">
-<div class="miniGrid" style="margin-bottom:14px">
-<div class="miniCard"><h3>Top Buah Mentah (BM)</h3><div id="hqTopBM" class="big">—</div><div id="hqTopBMSub" class="small">—</div></div>
-<div class="miniCard"><h3>Top Buah Busuk (BB)</h3><div id="hqTopBB" class="big">—</div><div id="hqTopBBSub" class="small">—</div></div>
-<div class="miniCard"><h3>Top Tangkai Panjang (TP)</h3><div id="hqTopTP" class="big">—</div><div id="hqTopTPSub" class="small">—</div></div>
-</div>
-<div class="notice" id="hqNotice">Menunggu dataset aktif.</div>
-<div style="overflow:auto;margin-top:14px"><table><thead><tr><th>Rank</th><th>Pemanen</th><th>NPK</th><th>JJG</th><th>BM</th><th>% BM</th><th>BB</th><th>% BB</th><th>TP</th><th>% TP</th><th>Total Temuan</th></tr></thead><tbody id="harvesterQualityBody"><tr><td colspan="11" class="small">No active dataset.</td></tr></tbody></table></div>
-<div style="overflow:auto;margin-top:14px"><table><thead><tr><th>Rank BM</th><th>Pemanen</th><th>BM</th><th>JJG</th><th>% BM</th><th>Rank BB</th><th>Pemanen</th><th>BB</th><th>JJG</th><th>% BB</th><th>Rank TP</th><th>Pemanen</th><th>TP</th><th>JJG</th><th>% TP</th></tr></thead><tbody id="harvesterQualityRankBody"><tr><td colspan="15" class="small">No active dataset.</td></tr></tbody></table></div>
-<div class="small" style="margin-top:10px">Sumber: PRODUKSIBLOK AMANTA. BB = Buah Busuk, BM = Buah Mentah, TP = Tangkai Panjang. Akumulasi berdasarkan NPK pemanen pada dataset aktif.</div>
-<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" onclick="downloadHarvesterQualityCSV()">Download Kualitas Pemanen CSV</button><button class="btn" type="button" onclick="downloadHarvesterQualityPDF()">Download Kualitas Pemanen PDF</button></div>
-</div></section>
-
-<section id="mandoranQuality" class="section">
-<div class="title">Kualitas Panen per Kemandoran</div>
-<div class="meta">Akumulasi kualitas TBS seluruh pemanen di setiap kemandoran pada tanggal/dataset aktif.</div>
-<div class="panel" style="margin-top:14px">
-<div class="notice" id="mqNotice">Menunggu dataset aktif.</div>
-<div style="overflow:auto;margin-top:14px"><table><thead><tr><th>Rank</th><th>Kemandoran</th><th>HK/Pemanen</th><th>JJG</th><th>BM</th><th>% BM</th><th>BB</th><th>% BB</th><th>TP</th><th>% TP</th><th>Total Temuan</th></tr></thead><tbody id="mandoranQualityBody"><tr><td colspan="11" class="small">No active dataset.</td></tr></tbody></table></div>
-<div class="notice" id="mqTotal" style="margin-top:14px">Belum ada dataset aktif.</div>
-<div class="small" style="margin-top:10px">Akumulasi dibuat dari seluruh baris PRODUKSIBLOK berdasarkan field KEMANDORAN. Jika terdapat 2 kemandoran, tabel menampilkan keduanya sekaligus beserta total gabungan.</div>
-<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" onclick="downloadMandoranQualityCSV()">Download Kualitas Kemandoran CSV</button><button class="btn" type="button" onclick="downloadMandoranQualityPDF()">Download Kualitas Kemandoran PDF</button></div>
-</div></section>
-
 <section id="people" class="section">
   <div class="top">
     <div>
@@ -1712,11 +1722,12 @@ body{
     <div class="panel" style="margin-top:14px;background:#f8fbf9">
       <h2 style="margin-bottom:8px">Aturan Premi</h2>
       <div class="notice">
-        <b>Hari efektif:</b> Premi = max(0, JJG aktual − Basis Blok) × Rp1.500.<br>
-        <b>Minggu:</b> seluruh JJG × Rp2.500, tanpa basis.<br>
-        <b>Basis Efektif Blok:</b> basis setiap blok dikalikan HK pemanen pada blok tersebut. 1 HK/hari dibagi rata ke seluruh blok yang benar-benar dikerjakan.<br>
-        <b>Catatan:</b> JJG/HK digunakan untuk performance, bukan untuk menghitung premi. Tidak ada premi negatif.
-      </div>
+         <b>Hari efektif:</b> Premi = max(0, JJG aktual − Basis Efektif Blok) × tarif sesuai basis: Basis 70 = Rp1.550/JJG; Basis 90 = Rp2.000/JJG.<br>
+         <b>Jumat:</b> Basis Efektif Blok dikalikan 20% sebelum menghitung More Basis.<br>
+         <b>Minggu:</b> seluruh JJG × Rp2.500, tanpa basis.<br>
+         <b>Basis Efektif Blok:</b> basis setiap blok dikalikan HK pemanen pada blok tersebut. 1 HK/hari dibagi rata ke seluruh blok yang benar-benar dikerjakan.<br>
+         <b>Catatan:</b> JJG/HK digunakan untuk performance, bukan untuk menghitung premi. Tidak ada premi negatif.
+       </div>
     </div>
 
     <div class="panel" style="margin-top:14px">
@@ -2468,6 +2479,13 @@ function renderPeopleAI(d){
  const host=document.getElementById('aiAnalysis');if(!host||!d?.date||d.date<PEOPLE_START_DATE||ACTIVE_AFD!=='OC')return;const pm=peopleMtdRows(d.date,d),rows=pm.rows,under=rows.filter(x=>x.cluster.key==='C').sort((a,b)=>(a.achievement??999)-(b.achievement??999)).slice(0,5);const blockTotals={};(d.sections?.PRODUKSIBLOK?.rows||[]).forEach(r=>{const h=d.sections.PRODUKSIBLOK.header,bi=h.indexOf('BLOK'),ji=h.indexOf('JJG'),b=cleanCell(r[bi]);if(b!=='—')blockTotals[b]=(blockTotals[b]||0)+num(r[ji]);});const focusBlock=Object.entries(blockTotals).sort((a,b)=>a[1]-b[1])[0];const peopleText=under.length?under.map(x=>`<b>${html.escape(x.name!=='—'?x.name:x.npk)}</b> — ${x.jjg.toLocaleString('id-ID')} JJG today, achievement ${x.achievement?.toFixed(1)}%, Class C. Coaching: verify harvest execution with Mandor Panen/Mandor 1.`).join('<br>'):'No Class C harvester signal today.';const blockText=focusBlock?`<b>${html.escape(focusBlock[0])}</b> — ${focusBlock[1].toLocaleString('id-ID')} JJG today; use as intervention review point alongside rotation and quality evidence.`:'No block intervention signal available.';host.innerHTML=`<b>People coaching signal</b><br><br>${peopleText}<br><br><b>Block intervention signal</b><br><br>${blockText}<br><br><span class="small">AI is a coaching/support signal only. Premi is deterministic and is not calculated by AI.</span>`;
 }
 
+function peoplePremiRate(basis){
+  return Number(basis)===70 ? 1550 : Number(basis)===90 ? 2000 : 0;
+}
+function peopleDateFriday(date){
+  return new Date(date+'T00:00:00').getDay()===5;
+}
+
 /* V25 HARD FIX — PREMI IS PER HARVESTER, PER DAY, BASED ONLY ON THE BLOCKS THAT HARVESTER ACTUALLY HARVESTED.
    No section basis is used in the premi comparison.
    Mon-Sat: max(0, harvester JJG - average of that harvester's harvested-block bases) * 1500.
@@ -2515,9 +2533,10 @@ function renderPeopleAI(d){
       const hkShare=blockCount?1/blockCount:0;
       const blockDetails=blockList.map(b=>{
         const hk=hkShare;
-        const effectiveBasis=b.basis*hk;
+        const friday=peopleDateFriday(snap?.date);
+        const effectiveBasis=b.basis*hk*(friday?0.20:1);
         const more=sunday?0:Math.max(0,b.jjg-effectiveBasis);
-        const premi=sunday?b.jjg*2500:more*1500;
+        const premi=sunday?b.jjg*2500:more*peoplePremiRate(b.basis);
         return {
           block:b.block,jjg:b.jjg,basis:b.basis,hk,effectiveBasis,more,premi
         };
@@ -3263,68 +3282,6 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   if(activeDateEl&&window.MutationObserver)new MutationObserver(()=>setTimeout(tryHook,120)).observe(activeDateEl,{childList:true,subtree:true,characterData:true});
 })();
 </script>
-
-<script>
-(function(){
-  function qNum(v){const x=Number(String(v??'').replace(/[^0-9.-]/g,''));return Number.isFinite(x)?x:0}
-  function qClean(v){const x=String(v??'').trim();return (!x||/^null$|^undefined$/i.test(x))?'—':x}
-  function qEsc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-  function qPct(v){return Number(v||0).toFixed(2)+'%'}
-  function qFmt(v){return Number(v||0).toLocaleString('id-ID')}
-  function activeData(){
-    if(window.ADRIANA_DATA && window.ADRIANA_DATA.sections?.PRODUKSIBLOK) return window.ADRIANA_DATA;
-    try{if(typeof ACTIVE!=='undefined' && ACTIVE && typeof buildData==='function') return buildData(ACTIVE)}catch(e){}
-    return null;
-  }
-  function harvRows(d){
-    const p=d?.sections?.PRODUKSIBLOK;if(!p)return [];
-    const h=p.header||[],ni=h.indexOf('NPK'),name=h.indexOf('NAMA'),ji=h.indexOf('JJG'),bbi=h.indexOf('BB'),bmi=h.indexOf('BM'),tpi=h.indexOf('TP');
-    if(ni<0||ji<0||bbi<0||bmi<0||tpi<0)return [];
-    const m={};
-    (p.rows||[]).forEach(r=>{const k=qClean(r[ni]);if(k==='—')return;m[k]??={npk:k,name:qClean(r[name]),jjg:0,bm:0,bb:0,tp:0};const x=m[k];x.jjg+=qNum(r[ji]);x.bm+=qNum(r[bmi]);x.bb+=qNum(r[bbi]);x.tp+=qNum(r[tpi])});
-    return Object.values(m).map(x=>({...x,total:x.bm+x.bb+x.tp,bmPct:x.jjg?x.bm/x.jjg*100:0,bbPct:x.jjg?x.bb/x.jjg*100:0,tpPct:x.jjg?x.tp/x.jjg*100:0}));
-  }
-  function mandRows(d){
-    const p=d?.sections?.PRODUKSIBLOK;if(!p)return [];
-    const h=p.header||[],mi=h.indexOf('KEMANDORAN'),ni=h.indexOf('NPK'),ji=h.indexOf('JJG'),bbi=h.indexOf('BB'),bmi=h.indexOf('BM'),tpi=h.indexOf('TP');
-    if(mi<0||ji<0||bbi<0||bmi<0||tpi<0)return [];
-    const m={};
-    (p.rows||[]).forEach(r=>{const k=qClean(r[mi]);if(k==='—')return;m[k]??={mandor:k,jjg:0,bm:0,bb:0,tp:0,npk:new Set};const x=m[k];x.jjg+=qNum(r[ji]);x.bm+=qNum(r[bmi]);x.bb+=qNum(r[bbi]);x.tp+=qNum(r[tpi]);if(ni>=0){const np=qClean(r[ni]);if(np!=='—')x.npk.add(np)}});
-    return Object.values(m).map(x=>({...x,hk:x.npk.size,total:x.bm+x.bb+x.tp,bmPct:x.jjg?x.bm/x.jjg*100:0,bbPct:x.jjg?x.bb/x.jjg*100:0,tpPct:x.jjg?x.tp/x.jjg*100:0}));
-  }
-  function renderQuality(){
-    const d=activeData(), body=document.getElementById('harvesterQualityBody'), rank=document.getElementById('harvesterQualityRankBody');
-    if(!body||!rank)return;
-    const rows=harvRows(d);
-    if(!rows.length){body.innerHTML='<tr><td colspan="11" class="small">Belum ada dataset aktif.</td></tr>';rank.innerHTML='<tr><td colspan="15" class="small">Belum ada dataset aktif.</td></tr>';['hqTopBM','hqTopBB','hqTopTP','hqTopBMSub','hqTopBBSub','hqTopTPSub'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='—'});const n=document.getElementById('hqNotice');if(n)n.textContent='Belum ada dataset aktif.';window.ADRIANA_HARVESTER_QUALITY=[];return;}
-    const all=rows.slice().sort((a,b)=>b.total-a.total||b.jjg-a.jjg);body.innerHTML=all.map((x,i)=>`<tr><td>${i+1}</td><td><b>${qEsc(x.name)}</b></td><td>${qEsc(x.npk)}</td><td>${qFmt(x.jjg)}</td><td>${qFmt(x.bm)}</td><td>${qPct(x.bmPct)}</td><td>${qFmt(x.bb)}</td><td>${qPct(x.bbPct)}</td><td>${qFmt(x.tp)}</td><td>${qPct(x.tpPct)}</td><td><b>${qFmt(x.total)}</b></td></tr>`).join('');
-    const bm=rows.slice().sort((a,b)=>b.bm-a.bm||b.bmPct-a.bmPct),bb=rows.slice().sort((a,b)=>b.bb-a.bb||b.bbPct-a.bbPct),tp=rows.slice().sort((a,b)=>b.tp-a.tp||b.tpPct-a.tpPct),out=[];
-    for(let i=0;i<rows.length;i++){const a=bm[i],b=bb[i],t=tp[i];out.push(`<tr><td>${i+1}</td><td>${a?qEsc(a.name):'—'}</td><td>${a?qFmt(a.bm):'—'}</td><td>${a?qFmt(a.jjg):'—'}</td><td>${a?qPct(a.bmPct):'—'}</td><td>${b?i+1:'—'}</td><td>${b?qEsc(b.name):'—'}</td><td>${b?qFmt(b.bb):'—'}</td><td>${b?qFmt(b.jjg):'—'}</td><td>${b?qPct(b.bbPct):'—'}</td><td>${t?i+1:'—'}</td><td>${t?qEsc(t.name):'—'}</td><td>${t?qFmt(t.tp):'—'}</td><td>${t?qFmt(t.jjg):'—'}</td><td>${t?qPct(t.tpPct):'—'}</td></tr>')}
-    rank.innerHTML=out.join('');
-    const A=bm[0],B=bb[0],T=tp[0];document.getElementById('hqTopBM').textContent=A?`${A.name} · ${qFmt(A.bm)} BM`:'—';document.getElementById('hqTopBMSub').textContent=A?`${qFmt(A.jjg)} JJG · ${qPct(A.bmPct)}`:'—';document.getElementById('hqTopBB').textContent=B?`${B.name} · ${qFmt(B.bb)} BB`:'—';document.getElementById('hqTopBBSub').textContent=B?`${qFmt(B.jjg)} JJG · ${qPct(B.bbPct)}`:'—';document.getElementById('hqTopTP').textContent=T?`${T.name} · ${qFmt(T.tp)} TP`:'—';document.getElementById('hqTopTPSub').textContent=T?`${qFmt(T.jjg)} JJG · ${qPct(T.tpPct)}`:'—';
-    document.getElementById('hqNotice').innerHTML=`<b>${rows.length}</b> pemanen · tanggal/dataset <b>${qEsc(d?.date||'—')}</b> · BB/BM/TP diakumulasi per NPK.`;window.ADRIANA_HARVESTER_QUALITY=rows;
-  }
-  function renderMand(){
-    const d=activeData(), body=document.getElementById('mandoranQualityBody'), notice=document.getElementById('mqNotice'), total=document.getElementById('mqTotal');if(!body)return;
-    const rows=mandRows(d);if(!rows.length){body.innerHTML='<tr><td colspan="11" class="small">Belum ada dataset aktif.</td></tr>';if(notice)notice.textContent='Belum ada dataset aktif.';if(total)total.textContent='Belum ada dataset aktif.';window.ADRIANA_MANDORAN_QUALITY=[];return;}
-    const all=rows.slice().sort((a,b)=>b.total-a.total||b.jjg-a.jjg);body.innerHTML=all.map((x,i)=>`<tr><td>${i+1}</td><td><b>${qEsc(x.mandor)}</b></td><td>${qFmt(x.hk)}</td><td>${qFmt(x.jjg)}</td><td>${qFmt(x.bm)}</td><td>${qPct(x.bmPct)}</td><td>${qFmt(x.bb)}</td><td>${qPct(x.bbPct)}</td><td>${qFmt(x.tp)}</td><td>${qPct(x.tpPct)}</td><td><b>${qFmt(x.total)}</b></td></tr>`).join('');
-    const jjg=rows.reduce((a,x)=>a+x.jjg,0),bm=rows.reduce((a,x)=>a+x.bm,0),bb=rows.reduce((a,x)=>a+x.bb,0),tp=rows.reduce((a,x)=>a+x.tp,0),npks=new Set();rows.forEach(x=>x.npk.forEach(n=>npks.add(n)));if(notice)notice.innerHTML=`<b>${rows.length}</b> kemandoran · <b>${npks.size}</b> pemanen · tanggal/dataset <b>${qEsc(d?.date||'—')}</b>`;if(total)total.innerHTML=`<b>Total gabungan:</b> ${qFmt(jjg)} JJG · BM <b>${qFmt(bm)}</b> (${qPct(jjg?bm/jjg*100:0)}) · BB <b>${qFmt(bb)}</b> (${qPct(jjg?bb/jjg*100:0)}) · TP <b>${qFmt(tp)}</b> (${qPct(jjg?tp/jjg*100:0)}) · Total temuan <b>${qFmt(bm+bb+tp)}</b>`;window.ADRIANA_MANDORAN_QUALITY=rows;
-  }
-  function csv(rows,title,headers,filename){if(!rows.length){alert('Belum ada data kualitas.');return}const esc=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};const out=[[title],['Tanggal',window.ADRIANA_DATA?.date||''],[],headers,...rows.map(x=>x)];const blob=new Blob(['\uFEFF'+out.map(r=>r.map(esc).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(u),500)}
-  window.downloadHarvesterQualityCSV=()=>{const r=(window.ADRIANA_HARVESTER_QUALITY||[]).slice().sort((a,b)=>b.total-a.total);csv(r.map(x=>[x.name,x.npk,x.jjg,x.bm,qPct(x.bmPct),x.bb,qPct(x.bbPct),x.tp,qPct(x.tpPct),x.total]),'ADRIANA HARVESTER QUALITY',['Pemanen','NPK','JJG','BM','% BM','BB','% BB','TP','% TP','Total Temuan'],`ADRIANA_Kualitas_Pemanen_${window.ADRIANA_DATA?.date||'daily'}.csv`)};
-  window.downloadMandoranQualityCSV=()=>{const r=(window.ADRIANA_MANDORAN_QUALITY||[]).slice().sort((a,b)=>b.total-a.total);csv(r.map(x=>[x.mandor,x.hk,x.jjg,x.bm,qPct(x.bmPct),x.bb,qPct(x.bbPct),x.tp,qPct(x.tpPct),x.total]),'ADRIANA MANDORAN QUALITY',['Kemandoran','HK/Pemanen','JJG','BM','% BM','BB','% BB','TP','% TP','Total Temuan'],`ADRIANA_Kualitas_Kemandoran_${window.ADRIANA_DATA?.date||'daily'}.csv`)};
-  function pdf(id,title){const root=document.getElementById(id);if(!root){alert('Engine tidak ditemukan.');return}const w=window.open('','_blank');if(!w){alert('Popup diblokir browser. Izinkan popup untuk membuat PDF.');return}w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,sans-serif;padding:24px;color:#111}h1{font-size:20px}table{border-collapse:collapse;width:100%;font-size:10px}th,td{border:1px solid #999;padding:5px;text-align:center}th{background:#eee}.btn{display:none}.small{font-size:10px;color:#555}.notice{border:1px solid #aaa;padding:8px;margin-top:8px}@media print{body{padding:8px}}</style></head><body><h1>'+title+'</h1><p>Dataset/tanggal: '+qEsc(window.ADRIANA_DATA?.date||'—')+'</p>');w.document.write(root.innerHTML);w.document.write('<script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script></body></html>');w.document.close()}
-  window.downloadHarvesterQualityPDF=()=>pdf('harvesterQuality','ADRIANA - KUALITAS PANEN PER PEMANEN');
-  window.downloadMandoranQualityPDF=()=>pdf('mandoranQuality','ADRIANA - KUALITAS PANEN PER KEMANDORAN');
-  function render(){renderQuality();renderMand()}
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(render,500));
-  const activeDate=document.getElementById('activeDate');
-  if(activeDate&&window.MutationObserver)new MutationObserver(()=>setTimeout(render,80)).observe(activeDate,{childList:true,subtree:true,characterData:true});
-  document.addEventListener('click',e=>{if(e.target?.dataset?.target==='harvesterQuality'||e.target?.dataset?.target==='mandoranQuality')setTimeout(render,50)});
-  window.ADRIANA_RENDER_QUALITY_ONLY=render;
-})();
-</script>
-
 </body></html>
 
 <style id="adriana-mobile-top-engine-corrected">
@@ -3858,6 +3815,97 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
 }
 </style>
 
+<script id="adriana-quality-people-addon">
+(function(){
+  'use strict';
+  function qNum(v){
+    const x=Number(String(v??'').replace(/[^0-9.-]/g,''));
+    return Number.isFinite(x)?x:0;
+  }
+  function qClean(v){const x=String(v??'').trim();return (!x||/^null$/i.test(x)||/^undefined$/i.test(x))?'—':x;}
+  function qEsc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+  function qPct(n,d){return d>0?((n/d)*100).toFixed(1)+'%':'0.0%';}
+  function qActiveData(){
+    try{
+      if(window.ADRIANA_DATA?.sections?.PRODUKSIBLOK)return window.ADRIANA_DATA;
+      if(typeof ACTIVE!=='undefined'&&ACTIVE&&typeof buildData==='function')return buildData(ACTIVE);
+    }catch(e){}
+    return null;
+  }
+  function qualityRows(d){
+    const p=d?.sections?.PRODUKSIBLOK;
+    if(!p?.rows?.length)return {harvesters:[],mandorans:[],total:{jjg:0,bb:0,bm:0,tp:0}};
+    const h=p.header||[];
+    const ix={npk:h.indexOf('NPK'),name:h.indexOf('NAMA'),mandor:h.indexOf('KEMANDORAN'),jjg:h.indexOf('JJG'),bb:h.indexOf('BB'),bm:h.indexOf('BM'),tp:h.indexOf('TP')};
+    const hv={},md={};
+    const total={jjg:0,bb:0,bm:0,tp:0};
+    for(const r of p.rows){
+      const npk=qClean(ix.npk>=0?r[ix.npk]:'—');
+      const name=qClean(ix.name>=0?r[ix.name]:'—');
+      const mand=qClean(ix.mandor>=0?r[ix.mandor]:'—');
+      const jjg=qNum(ix.jjg>=0?r[ix.jjg]:0),bb=qNum(ix.bb>=0?r[ix.bb]:0),bm=qNum(ix.bm>=0?r[ix.bm]:0),tp=qNum(ix.tp>=0?r[ix.tp]:0);
+      if(npk==='—'&&name==='—'&&mand==='—')continue;
+      total.jjg+=jjg;total.bb+=bb;total.bm+=bm;total.tp+=tp;
+      const hkKey=npk==='—'?name:npk;
+      hv[hkKey]??={npk,name,mandorans:new Set(),jjg:0,bb:0,bm:0,tp:0};
+      const a=hv[hkKey];a.name=name!=='—'?name:a.name;a.jjg+=jjg;a.bb+=bb;a.bm+=bm;a.tp+=tp;if(mand!=='—')a.mandorans.add(mand);
+      const mk=mand==='—'?'Tanpa Kemandoran':mand;
+      md[mk]??={mandoran:mk,npks:new Set(),jjg:0,bb:0,bm:0,tp:0};
+      const m=md[mk];m.jjg+=jjg;m.bb+=bb;m.bm+=bm;m.tp+=tp;if(npk!=='—')m.npks.add(npk);
+    }
+    const finish=x=>({ ...x, issue:x.bb+x.bm+x.tp, issuePct:x.jjg>0?(x.bb+x.bm+x.tp)/x.jjg*100:0 });
+    return {harvesters:Object.values(hv).map(x=>finish({...x,mandorans:[...x.mandorans]})).sort((a,b)=>b.issuePct-a.issuePct||b.issue-a.issue),mandorans:Object.values(md).map(x=>finish({...x,hk:x.npks.size})).sort((a,b)=>b.issuePct-a.issuePct||b.issue-a.issue),total};
+  }
+  function renderQualityPeople(){
+    const d=qActiveData();
+    const hb=document.getElementById('harvesterQualityBody'),mb=document.getElementById('mandoranQualityBody');
+    if(!hb||!mb)return;
+    if(!d?.sections?.PRODUKSIBLOK){
+      hb.innerHTML='<tr><td colspan="10" class="small">Belum ada dataset aktif.</td></tr>';
+      mb.innerHTML='<tr><td colspan="9" class="small">Belum ada dataset aktif.</td></tr>';
+      ['qpTotalJJG','qpTotalBB','qpTotalBM','qpTotalTP'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='—'});
+      const n=document.getElementById('qpHarvesterNote');if(n)n.textContent='Belum ada dataset aktif';
+      const n2=document.getElementById('qpMandoranNote');if(n2)n2.textContent='Belum ada dataset aktif';
+      return;
+    }
+    const q=qualityRows(d),t=q.total;
+    const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=Number(v).toLocaleString('id-ID');};
+    set('qpTotalJJG',t.jjg);set('qpTotalBB',t.bb);set('qpTotalBM',t.bm);set('qpTotalTP',t.tp);
+    const date=d.date||'';
+    const note=document.getElementById('qpHarvesterNote');if(note)note.textContent=`${q.harvesters.length} pemanen · ${date||'dataset aktif'}`;
+    const note2=document.getElementById('qpMandoranNote');if(note2)note2.textContent=`${q.mandorans.length} kemandoran · ${date||'dataset aktif'}`;
+    hb.innerHTML=q.harvesters.length?q.harvesters.map((x,i)=>`<tr><td>${i+1}</td><td>${qEsc(x.npk)}</td><td>${qEsc(x.name)}</td><td>${qEsc(x.mandorans.join(', ')||'—')}</td><td>${x.jjg.toLocaleString('id-ID')}</td><td>${x.bb.toLocaleString('id-ID')}</td><td>${x.bm.toLocaleString('id-ID')}</td><td>${x.tp.toLocaleString('id-ID')}</td><td><b>${x.issue.toLocaleString('id-ID')}</b></td><td>${qPct(x.issue,x.jjg)}</td></tr>`).join(''):'<tr><td colspan="10" class="small">Tidak ada data kualitas pada PRODUKSIBLOK.</td></tr>';
+    mb.innerHTML=q.mandorans.length?q.mandorans.map((x,i)=>`<tr><td>${i+1}</td><td>${qEsc(x.mandoran)}</td><td>${x.hk.toLocaleString('id-ID')}</td><td>${x.jjg.toLocaleString('id-ID')}</td><td>${x.bb.toLocaleString('id-ID')}</td><td>${x.bm.toLocaleString('id-ID')}</td><td>${x.tp.toLocaleString('id-ID')}</td><td><b>${x.issue.toLocaleString('id-ID')}</b></td><td>${qPct(x.issue,x.jjg)}</td></tr>`).join(''):'<tr><td colspan="9" class="small">Tidak ada data kualitas pada PRODUKSIBLOK.</td></tr>';
+    const notice=document.getElementById('qualityPeopleNotice');if(notice)notice.textContent=`Sumber: PRODUKSIBLOK · JJG ${t.jjg.toLocaleString('id-ID')} · BB ${t.bb.toLocaleString('id-ID')} · BM ${t.bm.toLocaleString('id-ID')} · TP ${t.tp.toLocaleString('id-ID')} · Issue = BB + BM + TP.`;
+  }
+  function csvEsc(v){const x=String(v??'');return /[",\n\r]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x;}
+  function saveCsv(name,rows){const csv='\uFEFF'+rows.map(r=>r.map(csvEsc).join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),500);}
+  window.downloadQualityPeopleCSV=function(){
+    const d=qActiveData(),q=qualityRows(d);if(!d?.sections?.PRODUKSIBLOK){alert('Belum ada dataset aktif.');return;}
+    const date=d.date||'dataset';
+    const rows=[['ADRIANA - KUALITAS PEMANEN'],['Tanggal',date],[],['Rank','NPK','Pemanen','Kemandoran','JJG','BB','BM','TP','Issue','Issue %']];
+    q.harvesters.forEach((x,i)=>rows.push([i+1,x.npk,x.name,x.mandorans.join(' | '),x.jjg,x.bb,x.bm,x.tp,x.issue,qPct(x.issue,x.jjg)]));
+    rows.push([],['ADRIANA - KUALITAS MANDORAN'],[],['Rank','Kemandoran','HK','JJG','BB','BM','TP','Issue','Issue %']);
+    q.mandorans.forEach((x,i)=>rows.push([i+1,x.mandoran,x.hk,x.jjg,x.bb,x.bm,x.tp,x.issue,qPct(x.issue,x.jjg)]));
+    saveCsv(`ADRIANA_Kualitas_Pemanen_Mandoran_${date}.csv`,rows);
+  };
+  window.downloadQualityPeoplePDF=function(){
+    if(typeof window.ADRIANA_DOWNLOAD_PDF==='function'){window.ADRIANA_DOWNLOAD_PDF('qualityPeople','Kualitas Pemanen & Mandoran',`ADRIANA_Kualitas_Pemanen_Mandoran_${(qActiveData()?.date)||'report'}`);return;}
+    alert('Engine PDF belum siap. Coba lagi setelah halaman selesai dimuat.');
+  };
+  function hook(){
+    renderQualityPeople();
+    if(typeof window.renderAll==='function'&&!window.__ADRIANA_QUALITY_HOOKED){
+      const original=window.renderAll;
+      window.renderAll=function(snap){const r=original.apply(this,arguments);setTimeout(renderQualityPeople,30);return r;};
+      window.__ADRIANA_QUALITY_HOOKED=true;
+    }
+  }
+  document.addEventListener('DOMContentLoaded',()=>{hook();setInterval(renderQualityPeople,1200);});
+  document.addEventListener('click',e=>{if(e.target?.dataset?.target==='qualityPeople')setTimeout(renderQualityPeople,50);});
+  window.ADRIANA_RENDER_QUALITY_PEOPLE=renderQualityPeople;
+})();
+</script>
 <script id="adriana-pdf-addon">
 (function(){
   'use strict';
@@ -3919,6 +3967,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
       ['rotation','Download Rotation PDF','Rotation'],
       ['infield','Download Infield PDF','Infield'],
       ['people','Download People Performance PDF','People_Performance'],
+      ['qualityPeople','Download Quality Pemanen & Mandoran PDF','Quality_Pemanen_Mandoran'],
       ['history','Download Historical PDF','Historical']
     ];
     defs.forEach(([id,label,file])=>{
