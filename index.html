@@ -2283,10 +2283,9 @@ function peopleProductionRows(snap){
 /*
  PREMI RULE (final):
  - For EACH HARVESTER on EACH DATE, find only the blocks that harvester actually harvested.
- - HK per block = 1 / jumlah blok yang benar-benar dipanen pemanen tersebut.
- - Basis blok = Basis blok x HK per blok.
- - More Basis dan premi dihitung per blok, lalu dijumlahkan.
- - Basis 90: Rp1.550/JJG; Basis 70: Rp2.000/JJG.
+ - Divide 1 HK equally by the number of blocks harvested; calculate each block basis as block basis × HK per block, then sum them as the harvester's weighted Basis/HK.
+ - More Basis = max(0, JJG harvester that day - that harvester's average block basis).
+ - Mon-Sat: Premi = More Basis * Rp1,500/JJG.
  - Sunday: no basis; every JJG earns Rp2,500/JJG.
  - MTD: sum each harvester's daily More Basis and daily Premi from the 1st of the month through active date.
 */
@@ -2300,8 +2299,10 @@ function buildPeopleDay(snap){
     Untuk satu pemanen pada satu tanggal:
       1) kumpulkan semua blok yang dia panen;
       2) ambil basis setiap blok;
-      3) average = total basis blok unik / jumlah blok unik;
-      4) More Basis = max(0, total JJG pemanen - average basis tersebut).
+      3) HK per blok = 1 / jumlah blok unik;
+      4) Basis blok = Basis blok × HK per blok;
+      5) Basis/HK weighted = jumlah basis seluruh blok;
+      6) More Basis = max(0, total JJG pemanen - Basis/HK weighted).
     Premi Mon-Sat = More Basis x Rp1.500.
     Premi Sunday = seluruh JJG x Rp2.500.
  */
@@ -2309,10 +2310,9 @@ function buildPeopleDay(snap){
    const block=peopleBlockKey(r.block), basis=peopleBasisForBlock(r.block);
    if(!block||basis==null)return;
    const key=r.npk;
-   grouped[key]??={npk:r.npk,name:r.name,jjg:0,blocks:[],blockBases:[],blockJjg:{},mandors:[]};
+   grouped[key]??={npk:r.npk,name:r.name,jjg:0,blocks:[],blockBases:[],mandors:[]};
    const x=grouped[key];
    x.jjg+=r.jjg;
-   x.blockJjg[block]=(x.blockJjg[block]||0)+r.jjg;
    if(!x.blocks.includes(block)){
      x.blocks.push(block);
      x.blockBases.push(`${block}: ${basis}`);
@@ -2323,25 +2323,18 @@ function buildPeopleDay(snap){
  const transactions=Object.values(grouped).map(x=>{
    const blockCount=x.blocks.length;
    const hkPerBlock=blockCount?1/blockCount:0;
-   let weightedBasis=0,more=0,premi=0;
-   x.blocks.forEach((b,i)=>{
-     const basis=peopleBasisForBlock(b);
-     const jjg=x.blockJjg?.[b]||0;
-     const basisHK=basis*hkPerBlock;
-     weightedBasis+=basisHK;
-     if(!isSun){
-       const blockMore=Math.max(0,jjg-basisHK);
-       const rate=basis===90?1550:(basis===70?2000:0);
-       more+=blockMore;
-       premi+=blockMore*rate;
-     }
+   const blockDetails=x.blocks.map(block=>{
+     const blockBasis=peopleBasisForBlock(block);
+     const basisHK=Number.isFinite(blockBasis)?blockBasis*hkPerBlock:0;
+     return {block,basis:blockBasis,hk:hkPerBlock,basisHK};
    });
-   if(isSun){more=0;premi=x.jjg*2500;}
-   const basis=weightedBasis;
+   const basis=blockDetails.length?blockDetails.reduce((sum,d)=>sum+d.basisHK,0):null;
+   const more=isSun?0:(basis==null?0:Math.max(0,x.jjg-basis));
+   const premi=isSun?x.jjg*2500:more*1500;
    return {
      npk:x.npk,name:x.name,jjg:x.jjg,section:null,
-     blocks:[...x.blocks],blockBases:[...x.blockBases],mandors:[...x.mandors],
-     basis,more,premi,isSunday:isSun
+     blocks:[...x.blocks],blockBases:[...x.blockBases],blockDetails,mandors:[...x.mandors],
+     basis,weightedBasis:basis,hkPerBlock,more,premi,isSunday:isSun
    };
  });
 
@@ -2398,7 +2391,7 @@ function renderPeopleAI(d){
 
 /* V25 HARD FIX — PREMI IS PER HARVESTER, PER DAY, BASED ONLY ON THE BLOCKS THAT HARVESTER ACTUALLY HARVESTED.
    No section basis is used in the premi comparison.
-   Mon-Sat: for each harvested block, HK = 1 / number of blocks harvested by the harvester; Basis Block x HK gives block basis; More Basis and premi are calculated per block. Basis 90 = Rp1,550/JJG; Basis 70 = Rp2,000/JJG.
+   Mon-Sat: max(0, harvester JJG - average of that harvester's harvested-block bases) * 1500.
    Sunday: harvester JJG * 2500.
    MTD: sum of each daily premi transaction from day 1 through active date in the active month. */
 (function(){
@@ -2421,38 +2414,24 @@ function renderPeopleAI(d){
     const rows=_dayRows(snap), sunday=peopleDateSunday(snap?.date), by={};
     rows.forEach(r=>{
       const k=r.npk;
-      by[k] ||= {npk:r.npk,name:r.name,jjg:0,blocks:[],blockJjg:{},blockBasis:{},mandors:[]};
+      by[k] ||= {npk:r.npk,name:r.name,jjg:0,blocks:[],bases:[],mandors:[]};
       const x=by[k]; x.jjg+=r.jjg;
       const b=peopleBlockKey(r.block), basis=_blockBasis(r.block);
-      x.blockJjg[b]=(x.blockJjg[b]||0)+r.jjg;
-      x.blockBasis[b]=basis;
-      if(!x.blocks.includes(b)) x.blocks.push(b);
+      if(!x.blocks.includes(b)){x.blocks.push(b);x.bases.push(basis);}
       if(r.mandor && !x.mandors.includes(r.mandor)) x.mandors.push(r.mandor);
     });
     const transactions=Object.values(by).map(x=>{
       const blockCount=x.blocks.length;
       const hkPerBlock=blockCount?1/blockCount:0;
-      let weightedBasis=0, more=0, premi=0;
-      const blockDetails=x.blocks.map(b=>{
-        const basis=Number(x.blockBasis[b]);
-        const jjg=Number(x.blockJjg[b]||0);
-        const hk=hkPerBlock;
-        const basisHK=basis*hk;
-        const blockMore=sunday?0:Math.max(0,jjg-basisHK);
-        const rate=basis===90?1550:(basis===70?2000:0);
-        const blockPremi=sunday?jjg*2500:blockMore*rate;
-        weightedBasis+=basisHK;
-        more+=blockMore;
-        premi+=blockPremi;
-        return {block:b,jjg,basis,hkPerBlock:hk,basisHK,more:blockMore,rate,premi:blockPremi};
+      const blockDetails=x.blocks.map((block,i)=>{
+        const blockBasis=Number(x.bases[i]);
+        const basisHK=Number.isFinite(blockBasis)?blockBasis*hkPerBlock:0;
+        return {block,basis:blockBasis,hk:hkPerBlock,basisHK};
       });
-      if(sunday){more=0;premi=x.jjg*2500;}
-      return {
-        npk:x.npk,name:x.name,jjg:x.jjg,blocks:x.blocks,
-        blockBases:blockDetails.map(d=>`${d.block}: ${d.basis}`),
-        blockDetails,avgBasis:weightedBasis,weightedBasis,
-        more,premi,isSunday:sunday,mandors:x.mandors
-      };
+      const weightedBasis=blockDetails.length?blockDetails.reduce((sum,d)=>sum+d.basisHK,0):null;
+      const more=sunday?0:Math.max(0,x.jjg-(weightedBasis??0));
+      const premi=sunday?x.jjg*2500:more*1500;
+      return {npk:x.npk,name:x.name,jjg:x.jjg,blocks:x.blocks,blockBases:x.bases,blockDetails,avgBasis:weightedBasis,weightedBasis,hkPerBlock,more,premi,isSunday:sunday,mandors:x.mandors};
     });
     return {date:snap?.date||null,rows:transactions,transactions,totalJjg:rows.reduce((a,r)=>a+r.jjg,0),totalMore:transactions.reduce((a,r)=>a+r.more,0),totalPremi:transactions.reduce((a,r)=>a+r.premi,0),isSunday:sunday};
   };
