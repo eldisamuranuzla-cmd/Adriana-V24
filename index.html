@@ -3377,6 +3377,86 @@ html,body{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:1
   setTimeout(()=>clearInterval(hookReady),10000);
 })();
 </script>
+
+<style id="adriana-ui-polish-v1">
+/* ADRIANA UI POLISH — visual/responsive only. No calculation, data, or download logic changes. */
+:root{
+  --ad-ui-bg:#f4f7fb;
+  --ad-ui-surface:#ffffff;
+  --ad-ui-text:#172033;
+  --ad-ui-muted:#667085;
+  --ad-ui-border:#e5e9f0;
+  --ad-ui-accent:#167a52;
+  --ad-ui-accent-soft:#e9f7f0;
+  --ad-ui-shadow:0 8px 24px rgba(16,24,40,.06);
+}
+html{scroll-behavior:smooth}
+body{background:var(--ad-ui-bg)!important;color:var(--ad-ui-text)}
+body,.main,.content{max-width:100%;}
+.main{padding-bottom:32px!important}
+.panel,.card,.kpi,.section,.box,.tableWrap,.chartCard{
+  border-color:var(--ad-ui-border)!important;
+}
+.panel,.card,.section,.box,.chartCard{
+  box-shadow:var(--ad-ui-shadow)!important;
+  border-radius:16px!important;
+}
+.panelHead{min-height:52px!important;padding:13px 16px!important;gap:10px!important}
+.panelHead h2{font-size:15px!important;font-weight:750!important;letter-spacing:-.01em}
+.kpiGrid{gap:12px!important}
+.kpi{min-height:108px!important;padding:16px!important;border-radius:16px!important;background:var(--ad-ui-surface)!important}
+.kpi .value,.kpiValue{font-size:clamp(23px,3vw,32px)!important;font-weight:800!important;letter-spacing:-.025em}
+.kpi .label,.kpiLabel{font-size:11px!important;color:var(--ad-ui-muted)!important;text-transform:uppercase;letter-spacing:.06em}
+.btn,button,select,input{border-radius:10px!important}
+.btn,button{transition:transform .15s ease,box-shadow .15s ease,background .15s ease!important}
+.btn:hover,button:hover{transform:translateY(-1px)}
+.top{gap:10px!important;align-items:center!important}
+.tableWrap{overflow:auto!important;-webkit-overflow-scrolling:touch;border-radius:14px}
+table{min-width:max-content}
+thead th{position:sticky;top:0;z-index:2}
+/* Production / rotation emphasis */
+#production .panelHead,#rotation .panelHead{background:linear-gradient(180deg,#fff,#fbfcfd)}
+#rotation .rotationProductionCalendar{overflow-x:auto!important;-webkit-overflow-scrolling:touch;border-radius:14px}
+#rotation .rpCalTable{min-width:760px}
+#rotation .rpMonthNav{position:sticky;left:0;z-index:3}
+/* Keep charts readable instead of shrinking them on narrow screens. */
+canvas{max-width:100%!important}
+.chart-container,.chartWrap,.chartCard{min-width:0}
+/* Mobile: compact, readable, horizontal tables instead of squeezed columns. */
+@media(max-width:900px){
+  .main{padding-left:12px!important;padding-right:12px!important}
+  .kpiGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .panel,.card,.section,.box,.chartCard{border-radius:14px!important}
+  .panelHead{padding:12px 13px!important}
+  .panelHead h2{font-size:14px!important}
+  .top{flex-wrap:wrap!important}
+}
+@media(max-width:600px){
+  body{font-size:13px!important}
+  .main{padding-left:10px!important;padding-right:10px!important}
+  .kpiGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  .kpi{min-height:94px!important;padding:12px!important;border-radius:13px!important}
+  .kpi .value,.kpiValue{font-size:22px!important}
+  .kpi .label,.kpiLabel{font-size:9px!important}
+  .panelHead{min-height:46px!important;padding:10px 12px!important}
+  .panelHead h2{font-size:13px!important}
+  .btn,button{min-height:38px!important;font-size:12px!important}
+  select,input{min-height:38px!important;max-width:100%}
+  .tableWrap{margin-left:-1px;margin-right:-1px}
+  table{font-size:11px!important}
+  th,td{padding:7px 9px!important;white-space:nowrap}
+  #rotation .rpCalTable{min-width:700px!important}
+  #rotation .rotationProductionCalendar{padding-bottom:3px}
+}
+@media(max-width:390px){
+  .kpiGrid{grid-template-columns:1fr 1fr!important;gap:7px!important}
+  .kpi{min-height:88px!important;padding:10px!important}
+  .kpi .value,.kpiValue{font-size:20px!important}
+}
+/* Prevent accidental global transform/scale effects from making the dashboard look tiny. */
+#app,.app,.main,.content,.dashboard{transform:none!important;zoom:1!important}
+</style>
+
 </body></html>
 
 <style id="adriana-mobile-top-engine-corrected">
