@@ -1414,6 +1414,7 @@ body{
     <button data-target="quality">Harvest Quality</button>
     <button data-target="qualityPeople">Kualitas Pemanen</button>
     <button data-target="transport">Transport & Restan</button>
+    <button data-target="tonaseBjr">Tonase & BJR Harian</button>
     <button data-target="exception">Exception & Priority</button>
     <button data-target="infield">Infield Control</button>
     <button data-target="people">People Performance</button>
@@ -1609,6 +1610,24 @@ body{
   <div class="notice" id="qualityPeopleNotice" style="margin-top:12px">Sumber data: PRODUKSIBLOK. Issue = BB + BM + TP.</div>
 </section>
 
+
+
+<section id="tonaseBjr" class="section">
+ <div class="top"><div><div class="eyebrow">DAILY PRODUCTION CONTROL</div><div class="title">Plan vs Actual Taksasi · Tonase · BJR</div><div class="meta">Input hanya HI. Seluruh nilai SHI dihitung otomatis secara akumulatif.</div></div></div>
+ <div class="panel" style="margin-top:12px">
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end">
+   <label class="small">Periode bulan<br><input id="tbMonth" type="month" style="padding:9px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text)" onchange="renderTonaseBjr()"></label>
+   <label class="small">Afdeling<br><select id="tbAfd" style="padding:9px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text)" onchange="renderTonaseBjr()"><option value="OC">OCYM</option><option value="OE">OEYM</option></select></label>
+   <button class="btn" type="button" onclick="downloadTonaseBjrCSV()">Download Rekap CSV</button>
+  </div>
+  <div class="notice" style="margin:12px 0"><b>Basis:</b> HI = realisasi tanggal tersebut. SHI = akumulasi dari tanggal 1 sampai tanggal tersebut. Achievement = Actual ÷ Plan. BJR = Tonase ÷ JJG. Output panen = Tonase (kg) ÷ HK.</div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(145px,1fr));margin-bottom:12px">
+   <div class="card"><div class="label">TONASE SHI (KG)</div><div class="value" id="tbTotalTon">—</div></div><div class="card"><div class="label">JJG SHI</div><div class="value" id="tbTotalJjg">—</div></div><div class="card"><div class="label">BJR REAL SHI</div><div class="value" id="tbMonthlyBjr">—</div></div><div class="card"><div class="label">ACHIEVEMENT SHI</div><div class="value" id="tbAchShi">—</div></div><div class="card"><div class="label">OUTPUT PANEN SHI</div><div class="value" id="tbOutputShi">—</div></div>
+  </div>
+  <div style="overflow-x:auto"><table><thead><tr><th rowspan="2">Tanggal</th><th colspan="2">Plan Taksasi</th><th colspan="2">Actual Produksi</th><th colspan="2">JJG Real (AMANTA)</th><th colspan="2">Achievement</th><th colspan="2">HK Real (AMANTA)</th><th colspan="2">Tonase Real (kg)</th><th colspan="2">BJR Real</th><th colspan="2">Output Panen (kg/HK)</th><th rowspan="2">Aksi</th></tr><tr><th>HI Input</th><th>SHI Auto</th><th>HI Input</th><th>SHI Auto</th><th>HI Auto</th><th>SHI Auto</th><th>HI</th><th>SHI</th><th>HI</th><th>SHI</th><th>HI</th><th>SHI</th><th>HI</th><th>SHI</th><th>HI</th><th>SHI</th></tr></thead><tbody id="tonaseBjrBody"><tr><td colspan="18">Pilih periode.</td></tr></tbody></table></div>
+  <div class="small" style="margin-top:10px">Input manual hanya Plan HI, Actual HI, dan Tonase HI. Seluruh SHI dihitung otomatis dari akumulasi HI sejak tanggal 1. JJG/HK HI berasal dari snapshot AMANTA. Data manual tersimpan lokal pada browser ini.</div>
+ </div>
+</section>
 
 <section id="transport" class="section"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="title">Transport & Restan</div><div class="meta">Net weight calculated from reconciled scale records. BJR = total net TBS (kg) ÷ total JJG. READY → GO uses DTREADY to DT_GO.</div></div><button class="btn" type="button" onclick="downloadTransportCSV()">Download Transport CSV</button></div><div class="panel" style="margin-top:14px"><table><thead><tr><th>KAB Number</th><th>Rit</th><th>Ready → Go</th><th>Weight In</th><th>Weight Out</th><th>Net</th><th>Duration</th></tr></thead><tbody id="transportBody"><tr><td colspan="7" class="small">No active dataset.</td></tr></tbody></table><div id="restanNotice" class="notice" style="margin-top:14px">Restan: unavailable.</div></div></section>
 
@@ -1891,9 +1910,9 @@ async function processAMANTA(){const files=[...document.getElementById('amantaFi
 function fmtDate(iso){if(!iso)return 'No dataset';const d=new Date(iso+'T00:00:00');return isNaN(d)?iso:d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}
 function lockKey(date){return 'adriana_daily_'+date}
 function legacyCloseDataset(){if(!STAGED)return;const existing=JSON.parse(localStorage.getItem(lockKey(STAGED.date))||'null');const closingId=existing?.closingId||('CLOSE-'+STAGED.date);const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};localStorage.setItem(lockKey(STAGED.date),JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(STAGED.date))dates.push(STAGED.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));ACTIVE=snap;window.ADRIANA_DATA=buildData(snap);renderAll(ACTIVE);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK. '+(snap.storageMode==='localStorage-fallback'?'Tersimpan melalui localStorage fallback pada browser/perangkat ini.':'Tersimpan di IndexedDB.'));}
-function buildData(snap){const sections=snap.sections,prod=sections.PRODUKSIBLOK;let jjg=0;const npks=new Set(),mand=new Set(),blocks={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{jjg+=num(r[ji]);if(r[ni])npks.add(r[ni]);if(r[mi])mand.add(r[mi]);const b=r[bi]||'—';blocks[b]=(blocks[b]||0)+num(r[ji])})}let net=0,trips=0;const tr=sections.TR_TBS_TRANSPORT;if(tr){const wi=tr.header.indexOf('WEIGHTIN'),wo=tr.header.indexOf('WEIGHTOUT');tr.rows.forEach(r=>{const x=num(r[wi])-num(r[wo]);if(x>0){net+=x;trips++}})}const harvesters={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),namei=h.indexOf('NAMA'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{const npk=cleanCell(r[ni]);if(npk==='—')return;const name=cleanCell(r[namei]);const key=npk;harvesters[key]??={npk,name,j:0,blocks:new Set(),mandorans:new Set()};harvesters[key].j+=num(r[ji]);const b=cleanCell(r[bi]),m=cleanCell(r[mi]);if(b!=='—')harvesters[key].blocks.add(b);if(m!=='—')harvesters[key].mandorans.add(m)});}const bjrKgPerJjg=jjg>0&&net>0?net/jjg:null;return {...snap,jjg,producingHK:npks.size,mandorans:[...mand],blocks,netTransportKg:net,trips,bjrKgPerJjg,harvesters:Object.values(harvesters).map(x=>({...x,blocks:[...x.blocks],mandorans:[...x.mandorans],jjgPerHK:x.j}))}}
+function buildData(snap){const sections=snap.sections,prod=sections.PRODUKSIBLOK;let jjg=0;const npks=new Set(),mand=new Set(),blocks={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{jjg+=num(r[ji]);if(r[ni])npks.add(r[ni]);if(r[mi])mand.add(r[mi]);const b=r[bi]||'—';blocks[b]=(blocks[b]||0)+num(r[ji])})}let net=0,trips=0;const tr=sections.TR_TBS_TRANSPORT;if(tr){const wi=tr.header.indexOf('WEIGHTIN'),wo=tr.header.indexOf('WEIGHTOUT');tr.rows.forEach(r=>{const x=num(r[wi])-num(r[wo]);if(x>0){net+=x;trips++}})}const harvesters={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),namei=h.indexOf('NAMA'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{const npk=cleanCell(r[ni]);if(npk==='—')return;const name=cleanCell(r[namei]);const key=npk;harvesters[key]??={npk,name,j:0,blocks:new Set(),mandorans:new Set()};harvesters[key].j+=num(r[ji]);const b=cleanCell(r[bi]),m=cleanCell(r[mi]);if(b!=='—')harvesters[key].blocks.add(b);if(m!=='—')harvesters[key].mandorans.add(m)});}const manualRec=(()=>{try{return JSON.parse(localStorage.getItem('adriana_manual_tonase_'+(snap.afd||document.getElementById('tbAfd')?.value||(ACTIVE_AFD==='ALL'?'OC':ACTIVE_AFD))+'_'+snap.date)||'null')}catch(e){return null}})();if(manualRec&&Number.isFinite(Number(manualRec.tonaseKg))&&Number(manualRec.tonaseKg)>=0){net=Number(manualRec.tonaseKg);trips=0;}const bjrKgPerJjg=jjg>0&&net>0?net/jjg:null;return {...snap,jjg,producingHK:npks.size,mandorans:[...mand],blocks,netTransportKg:net,trips,bjrKgPerJjg,harvesters:Object.values(harvesters).map(x=>({...x,blocks:[...x.blocks],mandorans:[...x.mandorans],jjgPerHK:x.j}))}}
 function renderStagedPreview(s){const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent='—';vals[1].textContent='—';vals[2].textContent='—';}
-function renderAll(snap){const d=buildData(snap);ACTIVE=snap;window.ADRIANA_DATA=d;document.getElementById('activeDate').textContent=fmtDate(snap.date);document.getElementById('activeMeta').textContent=`${snap.site} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent=d.jjg.toLocaleString();vals[1].textContent=d.producingHK.toLocaleString();vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';const bjrNotice=document.getElementById('bjrNotice');if(bjrNotice)bjrNotice.innerHTML=d.bjrKgPerJjg?`<b>BJR:</b> ${d.bjrKgPerJjg.toFixed(2)} kg/JJG · ${d.netTransportKg.toLocaleString()} kg net ÷ ${d.jjg.toLocaleString()} JJG`:'<b>BJR:</b> unavailable because net transport or JJG is unavailable.';const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();renderProduction(d);renderQuality(d);renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d)}
+function renderAll(snap){const d=buildData(snap);ACTIVE=snap;window.ADRIANA_DATA=d;document.getElementById('activeDate').textContent=fmtDate(snap.date);document.getElementById('activeMeta').textContent=`${snap.site} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent=d.jjg.toLocaleString();vals[1].textContent=d.producingHK.toLocaleString();vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';const bjrNotice=document.getElementById('bjrNotice');if(bjrNotice)bjrNotice.innerHTML=d.bjrKgPerJjg?`<b>BJR:</b> ${d.bjrKgPerJjg.toFixed(2)} kg/JJG · ${d.netTransportKg.toLocaleString()} kg net ÷ ${d.jjg.toLocaleString()} JJG`:'<b>BJR:</b> unavailable because net transport or JJG is unavailable.';const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();renderProduction(d);renderQuality(d);renderTransport(d);renderTonaseBjr();renderRotation(d);renderDashboard(d);buildExceptions(d);renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d)}
 function normalizeDensityBlock(v,afd=ACTIVE_AFD){
  const raw=String(v??'').trim().toUpperCase().replace(/\s+/g,'');if(!raw||raw==='—'||raw==='NULL')return null;
  const m=raw.match(/^(?:OC|OE)?0*([0-9]+)(A)?$/);if(!m)return raw;
@@ -2279,6 +2298,76 @@ function formatAmantaDateTimeForExport(dt){
  if(!(dt instanceof Date)||isNaN(dt))return '';
  const p=n=>String(n).padStart(2,'0');
  return `${dt.getFullYear()}-${p(dt.getMonth()+1)}-${p(dt.getDate())} ${p(dt.getHours())}:${p(dt.getMinutes())}:${p(dt.getSeconds())}`;
+}
+
+
+function tbKey(afd,date){return 'adriana_manual_tonase_'+afd+'_'+date}
+function tbRead(afd,date){try{return JSON.parse(localStorage.getItem(tbKey(afd,date))||'null')}catch(e){return null}}
+function tbManualKey(afd,date){return 'adriana_plan_actual_'+afd+'_'+date}
+function tbManualRead(afd,date){try{return JSON.parse(localStorage.getItem(tbManualKey(afd,date))||'null')}catch(e){return null}}
+function tbGetSnap(date,afd){let snap=null;if(ACTIVE&&ACTIVE.date===date)snap=ACTIVE;if(!snap){try{snap=JSON.parse(localStorage.getItem(lockKey(date))||'null')}catch(e){}}if(!snap)return null;const site=String(snap.afd||snap.site||'').toUpperCase();if(afd==='OC'&&site.includes('OE'))return null;if(afd==='OE'&&site.includes('OC'))return null;return snap}
+function tbAmanta(date,afd){const snap=tbGetSnap(date,afd);if(!snap?.sections)return {jjg:null,hk:null};const p=snap.sections.PRODUKSIBLOK;let jjg=0,hasJ=false;if(p){const h=p.header||[],ji=h.findIndex(x=>String(x).trim().toUpperCase()==='JJG');if(ji>=0){hasJ=true;(p.rows||[]).forEach(r=>jjg+=num(r[ji]))}}const abs=snap.sections.ABSENSI;let hk=null;if(abs){const h=abs.header||[],ni=h.findIndex(x=>String(x).trim().toUpperCase()==='NPK');if(ni>=0){const set=new Set();(abs.rows||[]).forEach(r=>{const v=cleanCell(r[ni]);if(v&&v!=='—')set.add(v)});hk=set.size}}if(hk===null&&p){const h=p.header||[],ni=h.findIndex(x=>String(x).trim().toUpperCase()==='NPK');if(ni>=0){const set=new Set();(p.rows||[]).forEach(r=>{const v=cleanCell(r[ni]);if(v&&v!=='—')set.add(v)});hk=set.size}}return {jjg:hasJ?jjg:null,hk}}
+
+function tbNum(id){const el=document.getElementById(id);if(!el||el.value.trim()==='')return null;const n=Number(el.value);return Number.isFinite(n)&&n>=0?n:null}
+function saveTonaseBjr(date){
+ const afd=document.getElementById('tbAfd').value;
+ const vals={planHi:tbNum('tbPlanHi_'+date),actualHi:tbNum('tbActualHi_'+date),tonHi:tbNum('tbTonHi_'+date)};
+ const note=document.getElementById('tbNote_'+date)?.value||'';
+ localStorage.setItem(tbManualKey(afd,date),JSON.stringify({...vals,note,updatedAt:new Date().toISOString()}));
+ renderTonaseBjr();
+}
+function renderTonaseBjr(){
+ const monthEl=document.getElementById('tbMonth'),afdEl=document.getElementById('tbAfd'),body=document.getElementById('tonaseBjrBody');
+ if(!monthEl||!body)return;
+ const month=monthEl.value||(ACTIVE?.date||new Date().toISOString().slice(0,10)).slice(0,7);
+ if(!monthEl.value)monthEl.value=month;
+ const afd=afdEl.value||'OC',[yy,mm]=month.split('-').map(Number),days=new Date(yy,mm,0).getDate();
+ const fmt=v=>v===null||v===undefined?'—':Number(v).toLocaleString('id-ID',{maximumFractionDigits:2});
+ let cumPlan=0,cumActual=0,cumJ=0,cumH=0,cumTon=0,rows=[];
+ for(let day=1;day<=days;day++){
+  const date=month+'-'+String(day).padStart(2,'0'),m=tbManualRead(afd,date)||{},a=tbAmanta(date,afd),old=tbRead(afd,date);
+  const planHi=m.planHi??null,actualHi=m.actualHi??null,tonHi=m.tonHi??old?.tonaseKg??null;
+  if(planHi!==null)cumPlan+=planHi;
+  if(actualHi!==null)cumActual+=actualHi;
+  if(a.jjg!==null)cumJ+=a.jjg;
+  if(a.hk!==null)cumH+=a.hk;
+  if(tonHi!==null)cumTon+=tonHi;
+  const planShi=day>0?cumPlan:null,actualShi=day>0?cumActual:null,jjgShi=cumJ>0?cumJ:null,hkShi=cumH>0?cumH:null,tonShi=day>0?cumTon:null;
+  const achHi=planHi!==null&&planHi>0&&actualHi!==null?actualHi/planHi:null;
+  const achShi=planShi>0?actualShi/planShi:null;
+  const bjrHi=tonHi!==null&&a.jjg>0?tonHi/a.jjg:null,bjrShi=tonShi>0&&jjgShi>0?tonShi/jjgShi:null;
+  const outHi=tonHi!==null&&a.hk>0?tonHi/a.hk:null,outShi=tonShi>0&&hkShi>0?tonShi/hkShi:null;
+  const inp=(id,v)=>`<input id="${id}_${date}" type="number" min="0" step="0.01" value="${v??''}" placeholder="Input HI" style="width:88px;padding:5px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--text)">`;
+  rows.push(`<tr><td>${date.slice(8,10)}/${date.slice(5,7)}</td>
+   <td>${inp('tbPlanHi',planHi)}</td><td>${fmt(planShi)}</td>
+   <td>${inp('tbActualHi',actualHi)}</td><td>${fmt(actualShi)}</td>
+   <td>${fmt(a.jjg)}</td><td>${fmt(jjgShi)}</td>
+   <td>${achHi===null?'—':(achHi*100).toFixed(1)+'%'}</td><td>${achShi===null?'—':(achShi*100).toFixed(1)+'%'}</td>
+   <td>${fmt(a.hk)}</td><td>${fmt(hkShi)}</td>
+   <td>${inp('tbTonHi',tonHi)}</td><td>${fmt(tonShi)}</td>
+   <td>${fmt(bjrHi)}</td><td>${fmt(bjrShi)}</td><td>${fmt(outHi)}</td><td>${fmt(outShi)}</td>
+   <td><button class="btn" type="button" onclick="saveTonaseBjr('${date}')">Simpan</button></td></tr>`);
+ }
+ body.innerHTML=rows.join('');
+ document.getElementById('tbTotalTon').textContent=fmt(cumTon);
+ document.getElementById('tbTotalJjg').textContent=fmt(cumJ);
+ document.getElementById('tbMonthlyBjr').textContent=cumTon>0&&cumJ>0?fmt(cumTon/cumJ):'—';
+ document.getElementById('tbAchShi').textContent=cumPlan>0?(100*cumActual/cumPlan).toFixed(1)+'%':'—';
+ document.getElementById('tbOutputShi').textContent=cumTon>0&&cumH>0?fmt(cumTon/cumH)+' kg/HK':'—';
+}
+function downloadTonaseBjrCSV(){
+ const month=document.getElementById('tbMonth').value,afd=document.getElementById('tbAfd').value;if(!month)return;
+ const [yy,mm]=month.split('-').map(Number),days=new Date(yy,mm,0).getDate();
+ const lines=[['Tanggal','Plan HI','Plan SHI','Actual HI','Actual SHI','JJG HI','JJG SHI','Ach HI','Ach SHI','HK HI','HK SHI','Tonase HI kg','Tonase SHI kg','BJR HI','BJR SHI','Output HI kg/HK','Output SHI kg/HK']];
+ let cumPlan=0,cumActual=0,cumJ=0,cumH=0,cumTon=0;
+ for(let d=1;d<=days;d++){
+  const date=month+'-'+String(d).padStart(2,'0'),m=tbManualRead(afd,date)||{},a=tbAmanta(date,afd),old=tbRead(afd,date);
+  const plan=m.planHi??null,actual=m.actualHi??null,ton=m.tonHi??old?.tonaseKg??null;
+  if(plan!==null)cumPlan+=plan;if(actual!==null)cumActual+=actual;if(a.jjg!==null)cumJ+=a.jjg;if(a.hk!==null)cumH+=a.hk;if(ton!==null)cumTon+=ton;
+  lines.push([date,plan??'',cumPlan,actual??'',cumActual,a.jjg??'',cumJ||'',plan>0&&actual!==null?actual/plan:'',cumPlan>0?cumActual/cumPlan:'',a.hk??'',cumH||'',ton??'',cumTon,ton!==null&&a.jjg>0?ton/a.jjg:'',cumTon>0&&cumJ>0?cumTon/cumJ:'',ton!==null&&a.hk>0?ton/a.hk:'',cumTon>0&&cumH>0?cumTon/cumH:'']);
+ }
+ const csv=lines.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Rekap_Taksasi_Tonase_BJR_'+afd+'_'+month+'.csv';a.click();URL.revokeObjectURL(url);
 }
 function renderTransport(d){const tr=d.sections.TR_TBS_TRANSPORT;if(!tr){document.getElementById('transportBody').innerHTML='<tr><td colspan="7">Transport data unavailable.</td></tr>';return}const h=tr.header,ri=h.indexOf('RITNUMBER'),wi=h.indexOf('WEIGHTIN'),wo=h.indexOf('WEIGHTOUT'),ready=h.indexOf('DTREADY'),go=h.indexOf('DT_GO'),kb=h.indexOf('KABNUMBER');const groups={};tr.rows.forEach((r,i)=>{const kab=kb>=0?cleanCell(r[kb]):'—';(groups[kab]??=[]).push({r,i})});let rows=[];Object.entries(groups).forEach(([kab,items])=>items.forEach(({r,i})=>{const rawIn=cleanCell(r[wi]),rawOut=cleanCell(r[wo]);const a=parseFloat(rawIn.replace(/,/g,'')),b=parseFloat(rawOut.replace(/,/g,''));const net=Number.isFinite(a)&&Number.isFinite(b)?a-b:null;const av=parseAmantaDateTime(r[ready]),bv=parseAmantaDateTime(r[go]);let duration='—',readyTime='—',goTime='—';if(av)readyTime=av.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});if(bv)goTime=bv.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});if(av&&bv&&bv>=av)duration=Math.round((bv-av)/60000)+' min';const rit=cleanCell(r[ri]);rows.push(`<tr><td><b>${html.escape(kab)}</b></td><td><b>Rit ${html.escape(rit==='—'?String(i+1):rit)}</b></td><td class="small">${readyTime} → ${goTime}</td><td>${html.escape(rawIn)}</td><td>${html.escape(rawOut)}</td><td>${net!==null&&net>0?net.toLocaleString():'—'}</td><td><b>${duration}</b></td></tr>`)}));document.getElementById('transportBody').innerHTML=rows.join('')||'<tr><td colspan="7">No transport data.</td></tr>';document.getElementById('restanNotice').innerHTML='<b>Restan:</b> unavailable unless an explicit confirmed field exists in the active AMANTA dataset. <b>BJR:</b> calculated automatically from net TBS weight (kg) ÷ JJG.'}
 function renderDashboard(d){const blocks=Object.entries(d.blocks).sort((a,b)=>b[1]-a[1]);const ranked=attentionRank(d),focus=ranked[0]?.b||null,focusSet=new Set(ranked.slice(0,2).map(x=>x.b));document.querySelector('#dashboard table tbody').innerHTML=blocks.map(([b,j])=>{const review=b===focus?'<span class="tag">INVESTIGATE</span>':(focusSet.has(b)?'Watch':'Monitor');return `<tr><td><b>${html.escape(b)}</b></td><td>${j.toLocaleString()}</td><td>${d.jjg?((j/d.jjg)*100).toFixed(1):0}%</td><td>${review}</td></tr>`}).join('')||'<tr><td colspan="4">No production data.</td></tr>';const sig=[];if(blocks[0]&&d.jjg&&blocks[0][1]/d.jjg>=.35)sig.push(`Dominant block: <b>${html.escape(blocks[0][0])}</b> · ${blocks[0][1].toLocaleString()} JJG · ${(blocks[0][1]/d.jjg*100).toFixed(1)}%`);if(d.byMandoran?.OCPN1&&d.byMandoran?.OCPN2){const a=d.byMandoran.OCPN1.j/d.byMandoran.OCPN1.n.size,b=d.byMandoran.OCPN2.j/d.byMandoran.OCPN2.n.size;if(Math.abs(a-b)/Math.min(a,b)>=.3)sig.push(`Mandoran gap: OCPN1 ${a.toFixed(2)} vs OCPN2 ${b.toFixed(2)} JJG/HK — investigate context.`)}const q=d.sections.SAMPLING_KUALITAS_PANEN;if(q){const h=q.header,pi=h.indexOf('PIRINGANTDKSTDR');const n=q.rows.reduce((a,r)=>a+num(r[pi]),0);if(n)sig.push(`Quality evidence: ${n} non-standard circle(s) recorded in sampling.`)}const sic=d.sections.TR_SIC_MP;if(sic){const h=sic.header,si=h.indexOf('STATUS'),ys=sic.rows.filter(r=>String(r[si]).toUpperCase()==='Y').length,ns=sic.rows.length-ys;sig.push(`SIC recorded: ${ys} Y / ${ns} N — denominator definition still pending.`)}document.getElementById('dashboardSignals').innerHTML=sig.map((x,i)=>`<div class="signal"><div class="num">0${i+1}</div><div><b>${x}</b></div></div>`).join('')||'<div class="notice">No operational signal available.</div>';document.getElementById('dashboardDecision').textContent='Investigate '+(focus||'Review dataset');document.getElementById('dashboardDecisionText').textContent='Validate low production against harvest quality and field evidence.'} 
