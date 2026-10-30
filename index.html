@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ADRIANA v20 — Assistant Daily Reporting & Analytics</title>
+<title>ADRIANA v30 — Assistant Daily Reporting & Analytics</title>
 <style>
 :root{--bg:#f3f6f2;--panel:#fff;--ink:#17211b;--muted:#68746c;--line:#dce4dd;--green:#155c3b;--green2:#e7f1eb;--amber:#a36a12;--red:#a94332}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
@@ -1400,57 +1400,6 @@ body{
   .main{padding:0 10px 16px!important;}
 }
 </style>
-
-<style id="adriana-command-center-ui">
-/* ADRIANA COMMAND CENTER UI — visual layer only. No JS/logic/data/download changes. */
-:root{--cc-green:#0b5a3a;--cc-green2:#168457;--cc-ink:#10251b;--cc-muted:#708077;--cc-bg:#f3f6f4;--cc-line:#dce7e0;--cc-soft:#eef5f0;}
-html,body{background:var(--cc-bg)!important;color:var(--cc-ink)}
-body{overflow-x:hidden!important}
-.app{background:var(--cc-bg)!important}
-/* Desktop navigation: cleaner, quieter and more compact */
-.side{background:linear-gradient(180deg,#073d2b 0%,#07543a 55%,#063a29 100%)!important;box-shadow:8px 0 28px rgba(5,55,38,.12)!important}
-.brandRow{align-items:center!important}.brand{font-weight:900!important;letter-spacing:-.04em!important}.sub{opacity:.72!important}
-.nav{margin-top:14px!important;gap:5px!important}.nav button{border:1px solid transparent!important;color:#d8ebe0!important;font-weight:700!important;font-size:11px!important;transition:.18s ease!important}.nav button:hover{background:rgba(255,255,255,.07)!important;border-color:rgba(255,255,255,.08)!important}.nav button.active{background:linear-gradient(90deg,#21a56a,#14784c)!important;border-color:rgba(255,255,255,.12)!important;box-shadow:0 8px 18px rgba(0,0,0,.16)!important}
-/* Header */
-.astraHead{height:76px!important;margin-bottom:18px!important;padding:8px 24px!important;border-bottom:1px solid #dbe7df!important;background:linear-gradient(100deg,#fff 0%,#fbfdfb 55%,#e7f4eb 100%)!important}
-.astraRight b{color:#15583c!important}.astraRight span{color:#7a8981!important}
-/* Dashboard hero */
-.dashWelcome{padding:18px 20px!important;margin-bottom:14px!important;border:1px solid rgba(22,132,87,.18)!important;border-radius:18px!important;background:linear-gradient(115deg,#0b5a3a 0%,#12805a 63%,#1a9364 100%)!important;color:#fff!important;box-shadow:0 14px 32px rgba(11,90,58,.16)!important;align-items:center!important}
-.dashWelcome .eyebrow{color:#b9dfcb!important}.dashWelcome .title{font-size:25px!important;color:#fff!important}.dashWelcome .meta{color:#cbe4d7!important}.dashWelcome .afdFilter label{color:#cbe4d7!important}.dashWelcome select{background:rgba(255,255,255,.12)!important;color:#fff!important;border-color:rgba(255,255,255,.2)!important}.dashWelcome select option{color:#10251b!important}.dateBox{background:rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.18)!important;box-shadow:none!important;color:#fff!important}.dateBox small{color:#b9dfcb!important}.dateBox strong{color:#fff!important}.dashWelcome .lock{background:#fff!important;color:#15583c!important;border-color:#fff!important}
-/* KPI command tiles */
-.kpiGrid{gap:10px!important;margin-bottom:2px!important}.kpi{min-height:132px!important;padding:16px 18px!important;border:1px solid var(--cc-line)!important;border-radius:16px!important;background:#fff!important;box-shadow:0 8px 22px rgba(18,54,37,.06)!important}.kpiIcon{opacity:.78!important}.kpi .label{font-size:9px!important;letter-spacing:.08em!important;color:#7b8982!important}.kpi .value{font-size:31px!important;letter-spacing:-.04em!important;color:#123d2a!important}.kpi .delta{font-size:9px!important}.kpi .small{font-size:9px!important;color:#87938d!important}.kpi .confidence{font-size:7px!important;padding:4px 6px!important;border-radius:20px!important}
-/* Trend becomes a primary command panel */
-.trendPanel{border:1px solid var(--cc-line)!important;border-radius:18px!important;background:#fff!important;box-shadow:0 9px 28px rgba(18,54,37,.06)!important;overflow:hidden!important}.trendHead{padding:18px 20px 12px!important;border-bottom:1px solid #edf2ef!important}.trendEyebrow{color:#168457!important;font-weight:900!important;letter-spacing:.12em!important}.trendHead h2{font-size:19px!important;color:#10251b!important}.trendHead p{color:#819088!important}.trendControls label{font-size:8px!important;color:#7c8a83!important}.trendGrid{padding:12px!important;gap:10px!important}.trendCard{border:1px solid #e4ebe7!important;border-radius:13px!important;box-shadow:none!important;background:#fbfcfb!important}.trendCardTitle{font-size:9px!important;color:#7a8981!important}.trendValue{font-size:22px!important;color:#146d49!important}
-/* Operational cards */
-.panel{border:1px solid var(--cc-line)!important;box-shadow:0 8px 24px rgba(18,54,37,.05)!important;border-radius:16px!important;background:#fff!important}.panelHead{border-bottom:1px solid #edf2ef!important;padding-bottom:9px!important}.panelHead h2{font-size:13px!important;letter-spacing:-.01em}.panelHead span{font-size:9px!important}.signalsPanel .signal{padding:11px 0!important}.signalsPanel .num{width:28px!important;height:28px!important;font-size:10px!important}
-.decisionHero{background:linear-gradient(120deg,#073f2c,#0b6844 65%,#0b5a3a)!important;box-shadow:0 10px 26px rgba(5,74,48,.16)!important}.decisionHero #dashboardDecision{font-size:25px!important}.decisionHero .decisionLabel{margin-top:20px!important;color:#bfe0cf!important}.decisionHero #dashboardDecisionText{font-size:11px!important}.decisionHero .btn{font-size:10px!important}
-.productionPanel,.harvestDensityPanel,.contributionPanel,.quickPanel{padding:16px!important}.productionPanel table{font-size:10px!important}.productionPanel table th{font-size:8px!important;text-transform:uppercase!important;letter-spacing:.05em!important;color:#7c8a83!important}.productionPanel table td{padding:9px 7px!important}.densityMetric{background:#f7faf8!important;border:1px solid #e5ede8!important;border-radius:10px!important}.quickGrid button{font-size:10px!important}
-/* All data-heavy tables: visual hierarchy, never alter data */
-table thead th{background:#f1f6f2!important;color:#607168!important;border-bottom:1px solid #dce7e0!important}table tbody tr:hover{background:#f7faf8!important}table td,table th{border-color:#e8efeb!important}
-/* Section headers outside dashboard */
-.section>.top,.section>.title{margin-bottom:12px!important}.section .title{font-weight:900!important;letter-spacing:-.03em!important}.section .eyebrow{color:#168457!important}
-/* Production / rotation emphasis */
-#production .panel,#rotation .panel{border-radius:16px!important}.rotationProductionCalendar{border-radius:12px!important;overflow-x:auto!important}.rpMonthNav{background:#f3f7f4!important;border:1px solid #dfe9e3!important;border-radius:11px!important}
-/* Buttons */
-.btn{border-radius:9px!important;font-weight:800!important;letter-spacing:.01em!important}.btn:hover{transform:translateY(-1px)!important}
-/* MOBILE: actual mobile command-center layout, not a shrunken desktop */
-@media(max-width:760px){
-  html,body{width:100%!important;min-width:0!important}
-  .side{position:relative!important;left:auto!important;top:auto!important;width:100%!important;height:auto!important;min-height:0!important;padding:7px 10px 8px!important;border-radius:0 0 14px 14px!important;overflow:hidden!important;z-index:20!important;box-shadow:0 5px 18px rgba(4,55,37,.12)!important}
-  .side:after{display:none!important}.brandRow{display:flex!important;justify-content:flex-start!important;padding:0 4px!important;margin:0!important}.sideLogo{display:block!important;width:30px!important;height:30px!important;margin-right:7px!important}.brand{display:block!important;font-size:18px!important}.sub{display:block!important;font-size:8px!important;margin-left:37px!important;margin-top:-7px!important;margin-bottom:3px!important;opacity:.65!important}
-  .nav{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;gap:5px!important;margin:7px 0 0!important;padding:0 0 2px!important;scrollbar-width:none!important}.nav::-webkit-scrollbar{display:none!important}.nav button{flex:0 0 auto!important;min-height:34px!important;padding:7px 10px!important;font-size:9px!important;border-radius:9px!important;white-space:nowrap!important}.nav button:before{display:none!important}
-  .main{margin-left:0!important;width:100%!important;max-width:none!important;padding:0 10px 18px!important}
-  .astraHead{height:52px!important;margin:0 -10px 10px!important;padding:5px 10px!important}.brandPair{gap:7px!important}.adrianaMainLogo{width:88px!important;height:38px!important}.astra50Logo{width:58px!important;height:30px!important}.brandDivider{height:22px!important}.astraRight,.astraLestariLogo{display:none!important}
-  .dashWelcome{margin:0 0 10px!important;padding:14px!important;border-radius:15px!important;display:block!important}.dashWelcome .title{font-size:20px!important}.dashWelcome .meta{font-size:8px!important;margin-top:3px!important}.afdFilter{margin-top:8px!important}.dashControls{display:grid!important;grid-template-columns:1fr!important;gap:7px!important;margin-top:9px!important}.dateBox{min-width:0!important;width:100%!important;padding:8px 10px!important}.dashWelcome .lock{justify-self:start!important}
-  .kpiGrid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.kpi{min-width:0!important;min-height:112px!important;padding:12px!important;border-radius:13px!important}.kpiIcon{position:relative!important;left:auto!important;top:auto!important;float:left!important;margin:0 8px 5px 0!important}.kpiIcon img{width:38px!important;height:38px!important}.kpi .label{margin-left:0!important;padding-top:2px!important;font-size:8px!important}.kpi .value{margin:2px 0 0!important;font-size:23px!important}.kpi .delta{margin:2px 0 0!important;font-size:8px!important}.kpi .small{margin:3px 0 0!important;font-size:8px!important;line-height:1.25!important}.kpi .confidence{top:8px!important;right:8px!important}.spark{display:none!important}
-  .dashTopGrid,.dashLower{display:block!important;margin-top:9px!important}.trendPanel{margin-bottom:9px!important}.trendHead{padding:13px!important}.trendHead h2{font-size:16px!important}.trendHead p{font-size:8px!important}.trendControls{display:flex!important;overflow-x:auto!important;gap:5px!important;padding-bottom:2px!important}.trendControls label{flex:0 0 auto!important}.trendControls select,.trendControls .btn{font-size:8px!important;padding:7px 8px!important}.trendGrid{display:grid!important;grid-template-columns:1fr 1fr!important;padding:8px!important;gap:7px!important}.trendCard{min-width:0!important;padding:9px!important}.trendValue{font-size:17px!important}.trendCanvasWrap{height:92px!important}
-  .signalsPanel,.decisionHero,.productionPanel,.harvestDensityPanel,.contributionPanel,.quickPanel{margin-top:9px!important;min-height:0!important}.signalsPanel{padding:13px!important}.decisionHero{padding:15px!important}.decisionHero #dashboardDecision{font-size:22px!important}.dashLower .dashRight{display:block!important}
-  .productionPanel{overflow-x:auto!important}.productionPanel table{min-width:700px!important}.donutWrap{flex-direction:row!important;justify-content:flex-start!important;overflow:hidden!important}.donut{width:105px!important;height:105px!important}.donut:before{width:73px!important;height:73px!important}.legend{font-size:9px!important}.quickGrid{grid-template-columns:1fr 1fr!important}
-  .section{padding-top:4px!important}.section>.top{margin-bottom:9px!important}.section .title{font-size:21px!important}.section .meta{font-size:9px!important}.section>.top{display:block!important}
-  #production>div:first-child,#transport>div:first-child{align-items:flex-start!important}.section table{font-size:9px!important}.section .panel{overflow-x:auto!important}.section .panel>table{min-width:650px!important}
-}
-@media(max-width:390px){.kpiGrid{grid-template-columns:1fr 1fr!important}.kpi{min-height:105px!important}.kpi .value{font-size:20px!important}.trendGrid{grid-template-columns:1fr!important}.trendCanvasWrap{height:80px!important}.nav button{font-size:8px!important;padding:7px 9px!important}.astra50Logo{display:none!important}}
-</style>
 </head>
 <body>
 <div class="app">
@@ -1471,6 +1420,7 @@ table thead th{background:#f1f6f2!important;color:#607168!important;border-botto
     <button data-target="ai">AI Analysis</button>
     <button data-target="pdca">PDCA / Decision Log</button>
     <button data-target="history">History & Effectiveness</button>
+    <button data-target="trackingImpact">GITA × Tracking Impact</button>
   </div>
 </aside>
 <main class="main">
@@ -1868,7 +1818,56 @@ table thead th{background:#f1f6f2!important;color:#607168!important;border-botto
 </div>
 </section>
 
-<div class="footer">ADRIANA v24 · AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
+<div class="footer">ADRIANA v30 · AMANTA as source of truth · Unconfirmed semantics are displayed as unavailable.</div>
+<section id="trackingImpact" class="section">
+  <div class="top"><div><div class="eyebrow">FIELD INTELLIGENCE · GITA × ADRIANA</div><div class="title">Tracking Impact Analysis</div><div class="meta">Uji hubungan kualitas/cakupan tracking GITA dengan produktivitas panen ADRIANA. Data produksi AMANTA tidak diubah.</div></div></div>
+  <div class="ti-launcher" aria-label="Navigasi modul GITA Tracking Impact">
+    <button type="button" data-ti-target="tiImportPanel"><span>01</span><b>Import GITA</b></button>
+    <button type="button" data-ti-target="tiHarvesterPanel"><span>02</span><b>Analisis</b></button>
+    <button type="button" data-ti-target="tiCoveragePanel"><span>03</span><b>Coverage Blok</b></button>
+    <button type="button" data-ti-target="tiHistoryPanel"><span>04</span><b>Historical GITA</b></button>
+    <button type="button" data-ti-target="tiDecisionPanel"><span>05</span><b>Decision Brief</b></button>
+    <button type="button" data-ti-target="tiCorrelationPanel"><span>06</span><b>Tracking Impact</b></button>
+    <button type="button" data-ti-target="tiBlockQualityPanel"><span>07</span><b>Kualitas & Root Cause</b></button>
+    <button type="button" data-ti-target="tiNotesPanel"><span>08</span><b>Metodologi</b></button>
+  </div>
+  <div class="panel ti-panel" id="tiImportPanel" style="margin-bottom:14px">
+    <h2 style="margin-top:0">1. Import laporan GITA</h2>
+    <div class="small" style="margin-bottom:12px">Pilih HTML laporan GITA yang sudah dihasilkan. Rincian pemanen dibaca dari tabel laporan. Riwayat tersimpan lokal di browser ini; untuk akses pimpinan lintas perangkat diperlukan database bersama.</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
+      <label style="display:flex;flex-direction:column;gap:6px">File laporan GITA<input id="tiGitaFile" type="file" accept=".html,.htm,text/html" class="input" /></label>
+      <label style="display:flex;flex-direction:column;gap:6px">Tanggal tracking<input id="tiDate" type="date" /></label>
+      <button id="tiImportBtn" type="button" class="btn">Import GITA</button>
+      <button id="tiReloadBtn" type="button" class="btn downloadBtn">Muat Data Tersimpan</button>
+      <label style="display:flex;flex-direction:column;gap:6px">Pilih riwayat GITA<select id="tiHistorySelect" class="input"><option value="">Riwayat belum dimuat</option></select></label>
+    </div>
+    <div id="tiImportMsg" class="small" style="margin-top:10px">Belum ada laporan GITA yang diimport.</div>
+  </div>
+  <div class="panel ti-panel" id="tiHarvesterPanel" style="margin-bottom:14px">
+    <h2 style="margin-top:0">2. Hasil analisis</h2>
+    <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:14px">
+    <div class="panel"><div class="small">PEMANEN GITA</div><div class="value" id="tiKpiPeople">—</div></div>
+    <div class="panel"><div class="small">MATCH DENGAN ADRIANA</div><div class="value" id="tiKpiMatched">—</div></div>
+    <div class="panel"><div class="small">CORR. COVERAGE × JJG</div><div class="value" id="tiKpiCoverage">—</div></div>
+    <div class="panel"><div class="small">CORR. TITIK × JJG</div><div class="value" id="tiKpiPoints">—</div></div>
+  </div>
+    <div id="tiAnalysisNote" class="small">Import laporan GITA dan pastikan dataset ADRIANA/AMANTA yang aktif sesuai tanggal tracking.</div>
+    <div style="overflow-x:auto;margin-top:10px"><table><thead><tr><th>Pemanen</th><th>Coverage (ha)</th><th>Total titik</th><th>Durasi</th><th>JJG ADRIANA</th><th>BM</th><th>BM%</th><th>BB</th><th>BB%</th><th>JJG/Ha</th><th>Blok GITA</th><th>Status match</th></tr></thead><tbody id="tiRows"><tr><td colspan="12" class="small">Belum ada data.</td></tr></tbody></table></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button id="tiExportBtn" class="btn downloadBtn" type="button">Export Analisis CSV</button><button id="tiClearBtn" class="btn downloadBtn" type="button">Hapus Data Tracking Tersimpan</button></div>
+  </div>
+  <div class="panel ti-panel" id="tiCorrelationPanel" style="margin-bottom:14px">
+    <h2 style="margin-top:0">3. Correlation & Harvest Quality Impact</h2>
+    <div class="small">Setiap titik mewakili satu pemanen yang berhasil dicocokkan pada tanggal yang sama. Grafik menampilkan hubungan statistik, bukan bukti sebab-akibat.</div>
+    <div id="tiCorrelationSummary" class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0"></div>
+    <div id="tiCorrelationCharts" class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px"></div>
+    <div class="small" style="margin-top:10px">BM = buah mentah · BB = buah busuk · TP (tangkai panjang) tidak dianalisis. JJG/Ha dihitung dari JJG ÷ Coverage Ha pemanen. Persentase BM/BB menggunakan JJG sebagai denominator. Coverage harus merupakan Ha aktual yang dikerjakan, bukan ha-kunjungan berulang.</div>
+  </div>
+  <div class="panel ti-panel" id="tiCoveragePanel" style="margin-bottom:14px"><h2 style="margin-top:0">4. Coverage per blok — GITA × ADRIANA</h2><div id="tiBlockNote" class="small">Luas master ADRIANA dan coverage aktual GITA akan dibandingkan jika kode blok cocok.</div><div style="overflow-x:auto;margin-top:10px"><table><thead><tr><th>Blok GITA</th><th>Coverage H+0 (ha)</th><th>Coverage akumulasi 2 laporan (ha-kunjungan)</th><th>JJG tanggal H+0</th><th>Akumulasi JJG tanggal laporan terkait</th><th>Hari panen dengan data JJG</th><th>Luas master (ha)</th><th>Coverage akumulasi / master</th><th>Status</th></tr></thead><tbody id="tiBlockRows"><tr><td colspan="5" class="small">Belum ada data blok.</td></tr></tbody></table></div></div>
+  <div class="panel ti-panel" id="tiBlockQualityPanel" style="margin-bottom:14px"><h2 style="margin-top:0">4A. JJG/Blok × Kualitas Panen</h2><div class="small">Analisis blok berdasarkan snapshot AMANTA/ADRIANA pada tanggal yang sama dengan GITA. BM% = BM/JJG × 100 dan BB% = BB/JJG × 100. TP tidak dianalisis.</div><div id="tiBlockQualityCharts" class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:12px"></div><div id="tiBlockQualityNote" class="notice" style="margin-top:10px">Menunggu kecocokan tanggal dan data kualitas per blok.</div></div>
+  <div class="panel ti-panel" id="tiHistoryPanel" style="margin-bottom:14px"><h2 style="margin-top:0">5. Riwayat GITA & evaluasi rotasi</h2><div class="small">Membandingkan blok yang muncul pada laporan GITA lintas hari. Blok berulang adalah kandidat kunjungan ulang; konfirmasi penyebab tidak tuntas dengan histori rotasi dan data produksi ADRIANA.</div><div id="tiHistorySummary" class="small" style="margin-top:8px">Muat riwayat GITA untuk melihat pola antarhari.</div><div class="small" style="margin-top:6px;padding:8px;background:#fff7e6;border-radius:8px">Riwayat saat ini tersimpan lokal di browser ini. Agar pimpinan dapat melihat riwayat yang sama dari perangkat lain, perlu sinkronisasi ke database bersama (mis. Supabase/Firebase) dengan autentikasi dan hak akses.</div><div style="overflow-x:auto;margin-top:8px"><table><thead><tr><th>Blok</th><th>Tanggal GITA</th><th>Coverage hari ini</th><th>Coverage sebelumnya</th><th>Akumulasi coverage tercatat*</th><th>JJG sebelumnya</th><th>JJG hari ini</th><th>Interpretasi</th></tr></thead><tbody id="tiRepeatRows"><tr><td colspan="7" class="small">Belum ada riwayat lintas hari.</td></tr></tbody></table></div></div>
+  <div class="panel ti-panel" id="tiDecisionPanel" style="margin-bottom:14px"><h2 style="margin-top:0">6. NEXUS Daily Harvest Intelligence — H+0 Decision Brief</h2><div class="small" style="margin-bottom:10px">Bahan meeting sore dan apel pagi berikutnya. Menggabungkan tracking GITA dengan JJG ADRIANA pada tanggal dan afdeling yang sama. Hasil adalah sinyal investigasi, bukan keputusan otomatis.</div><div id="tiAIInsight" class="small">Import laporan GITA dan cocokkan dengan dataset produksi ADRIANA pada tanggal yang sama.</div></div>
+  <div class="panel ti-panel" id="tiNotesPanel"><h2 style="margin-top:0">Catatan interpretasi</h2><ul class="small"><li>Korelasi positif berarti nilai tracking yang lebih tinggi cenderung berjalan bersama JJG yang lebih tinggi pada data yang cocok; ini bukan bukti sebab-akibat.</li><li>Matching awal menggunakan normalisasi nama pemanen. Perbedaan ejaan/nama atau data tanggal/afdeling dapat menyebabkan data tidak cocok.</li><li>Analisis yang adil perlu mempertimbangkan luas ancak, AKP/kerapatan buah, kondisi blok, rotasi, dan HK. Korelasi dihitung hanya dari pasangan pemanen yang berhasil dicocokkan.</li><li>Data GITA disimpan di IndexedDB terpisah. Modul ini tidak menimpa AMANTA, snapshot terkunci, atau logika produksi ADRIANA.</li></ul></div>
+</section>
 </main></div>
 <script>
 const ADRIANA_BUILD='v24_ROTATION_PRODUCTION_ADD';
@@ -1891,7 +1890,7 @@ function mergeSections(a,b){const out=JSON.parse(JSON.stringify(a));const report
 async function processAMANTA(){const files=[...document.getElementById('amantaFiles').files];if(!files.length)return;const parsed=[];for(const f of files.slice(0,2))parsed.push({name:f.name,sections:parseCSV(await f.text()),size:f.size});const metas=parsed.map(x=>detectMeta(x.sections));const dates=[...new Set(metas.map(x=>x.date).filter(Boolean))];const unresolved=metas.map((m,i)=>m.date?null:`File ${i+1}: tanggal tidak terdeteksi`).filter(Boolean);const inconsistent=metas.some(m=>m.dates.length>1);const sites=[...new Set(parsed.map(x=>secGet(x.sections,'PRODUKSIBLOK','SITECODE').find(Boolean)).filter(Boolean))];if(unresolved.length||dates.length!==1||inconsistent){const detail=metas.map((m,i)=>`File ${i+1}: ${m.dates.length?m.dates.join(', '):'UNAVAILABLE'}`).join(' · ');document.getElementById('reconBox').innerHTML='<b>BLOCKED:</b> tanggal antar file tidak sama/tidak terdeteksi. '+html.escape(detail);return}let merged=parsed[0].sections,report=[];if(parsed[1]){const m=mergeSections(merged,parsed[1].sections);merged=m.sections;report=m.report}else{report=Object.entries(merged).map(([k,v])=>({section:k,file1:v.rows.length,file2:0,duplicates:0,final:v.rows.length}))}STAGED={date:dates[0],site:sites[0]||'—',version:'3.2.8.9',files:parsed.map(x=>x.name),sections:merged,recon:report,processedAt:new Date().toISOString()};document.getElementById('uploadMsg').innerHTML='<b>Parsed:</b> '+parsed.length+' file(s) · '+html.escape(parsed.map(x=>x.name).join(' + '));const dup=report.reduce((a,x)=>a+x.duplicates,0),raw=parsed.reduce((a,x)=>a+Object.values(x.sections).reduce((n,s)=>n+s.rows.length,0),0),fin=Object.values(merged).reduce((n,s)=>n+s.rows.length,0);document.getElementById('reconBox').innerHTML=`<b>READY TO CLOSE</b><br>Tanggal: <b>${fmtDate(STAGED.date)}</b> · Site: ${html.escape(STAGED.site)} · ${parsed.length} file<br>Raw rows: ${raw.toLocaleString()} · Duplicate rows removed: ${dup.toLocaleString()} · Final reconciled rows: ${fin.toLocaleString()}<br><span class="small">Identical rows are deduplicated; records are not blindly summed across files.</span>`;document.getElementById('lockBtn').disabled=false;renderStagedPreview(STAGED)}
 function fmtDate(iso){if(!iso)return 'No dataset';const d=new Date(iso+'T00:00:00');return isNaN(d)?iso:d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}
 function lockKey(date){return 'adriana_daily_'+date}
-function legacyCloseDataset(){if(!STAGED)return;const existing=JSON.parse(localStorage.getItem(lockKey(STAGED.date))||'null');const closingId=existing?.closingId||('CLOSE-'+STAGED.date);const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};localStorage.setItem(lockKey(STAGED.date),JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(STAGED.date))dates.push(STAGED.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));ACTIVE=snap;window.ADRIANA_DATA=buildData(snap);renderAll(ACTIVE);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');}
+function legacyCloseDataset(){if(!STAGED)return;const existing=JSON.parse(localStorage.getItem(lockKey(STAGED.date))||'null');const closingId=existing?.closingId||('CLOSE-'+STAGED.date);const snap={...STAGED,closingId,status:'LOCKED',lockedAt:new Date().toISOString(),versionNumber:existing?.versionNumber||1};localStorage.setItem(lockKey(STAGED.date),JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(STAGED.date))dates.push(STAGED.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));ACTIVE=snap;window.ADRIANA_DATA=buildData(snap);renderAll(ACTIVE);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK. '+(snap.storageMode==='localStorage-fallback'?'Tersimpan melalui localStorage fallback pada browser/perangkat ini.':'Tersimpan di IndexedDB.'));}
 function buildData(snap){const sections=snap.sections,prod=sections.PRODUKSIBLOK;let jjg=0;const npks=new Set(),mand=new Set(),blocks={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{jjg+=num(r[ji]);if(r[ni])npks.add(r[ni]);if(r[mi])mand.add(r[mi]);const b=r[bi]||'—';blocks[b]=(blocks[b]||0)+num(r[ji])})}let net=0,trips=0;const tr=sections.TR_TBS_TRANSPORT;if(tr){const wi=tr.header.indexOf('WEIGHTIN'),wo=tr.header.indexOf('WEIGHTOUT');tr.rows.forEach(r=>{const x=num(r[wi])-num(r[wo]);if(x>0){net+=x;trips++}})}const harvesters={};if(prod){const h=prod.header,ji=h.indexOf('JJG'),ni=h.indexOf('NPK'),namei=h.indexOf('NAMA'),mi=h.indexOf('KEMANDORAN'),bi=h.indexOf('BLOK');prod.rows.forEach(r=>{const npk=cleanCell(r[ni]);if(npk==='—')return;const name=cleanCell(r[namei]);const key=npk;harvesters[key]??={npk,name,j:0,blocks:new Set(),mandorans:new Set()};harvesters[key].j+=num(r[ji]);const b=cleanCell(r[bi]),m=cleanCell(r[mi]);if(b!=='—')harvesters[key].blocks.add(b);if(m!=='—')harvesters[key].mandorans.add(m)});}const bjrKgPerJjg=jjg>0&&net>0?net/jjg:null;return {...snap,jjg,producingHK:npks.size,mandorans:[...mand],blocks,netTransportKg:net,trips,bjrKgPerJjg,harvesters:Object.values(harvesters).map(x=>({...x,blocks:[...x.blocks],mandorans:[...x.mandorans],jjgPerHK:x.j}))}}
 function renderStagedPreview(s){const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent='—';vals[1].textContent='—';vals[2].textContent='—';}
 function renderAll(snap){const d=buildData(snap);ACTIVE=snap;window.ADRIANA_DATA=d;document.getElementById('activeDate').textContent=fmtDate(snap.date);document.getElementById('activeMeta').textContent=`${snap.site} · AMANTA v${snap.version} · ${snap.files.length} file(s) · ${snap.closingId}`;document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';const vals=document.querySelectorAll('#dashboard .card .value');vals[0].textContent=d.jjg.toLocaleString();vals[1].textContent=d.producingHK.toLocaleString();vals[2].textContent=d.netTransportKg?(d.netTransportKg/1000).toFixed(2)+' T':'—';vals[3].textContent=d.bjrKgPerJjg?d.bjrKgPerJjg.toFixed(2)+' kg/JJG':'—';const bjrNotice=document.getElementById('bjrNotice');if(bjrNotice)bjrNotice.innerHTML=d.bjrKgPerJjg?`<b>BJR:</b> ${d.bjrKgPerJjg.toFixed(2)} kg/JJG · ${d.netTransportKg.toLocaleString()} kg net ÷ ${d.jjg.toLocaleString()} JJG`:'<b>BJR:</b> unavailable because net transport or JJG is unavailable.';const donut=document.getElementById('donutTotal');if(donut)donut.textContent=d.jjg.toLocaleString();renderProduction(d);renderQuality(d);renderTransport(d);renderRotation(d);renderDashboard(d);buildExceptions(d);renderAI(d);renderPDCA(d);renderHistory();renderEvaluationState(d)}
@@ -2377,7 +2376,7 @@ function closeDataset(){
  let idx=[];try{idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]')}catch(e){}idx=idx.filter(x=>!(x.date===snap.date&&x.afd===snap.afd));idx.push({date:snap.date,afd:snap.afd});idx.sort((a,b)=>String(b.date).localeCompare(String(a.date)));localStorage.setItem('adriana_afd_index',JSON.stringify(idx));
  // Keep V22 legacy storage for OC so the original history remains readable.
  if(snap.afd==='OC'){localStorage.setItem('adriana_daily_'+snap.date,JSON.stringify(snap));let dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');if(!dates.includes(snap.date))dates.push(snap.date);dates.sort().reverse();localStorage.setItem('adriana_daily_index',JSON.stringify(dates));}
- ACTIVE=snap;STAGED=null;window.ADRIANA_DATA=buildData(snap);renderAll(snap);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');
+ ACTIVE=snap;STAGED=null;window.ADRIANA_DATA=buildData(snap);renderAll(snap);document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;renderHistory();alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK. '+(snap.storageMode==='localStorage-fallback'?'Tersimpan melalui localStorage fallback pada browser/perangkat ini.':'Tersimpan di IndexedDB.'));
 }
 function renderAfdSelectorHybrid(){const el=document.getElementById('afdFilter');if(!el)return;el.value=ACTIVE_AFD;el.onchange=()=>{ACTIVE_AFD=el.value;localStorage.setItem('adriana_active_afd',ACTIVE_AFD);const snaps=getAfdSnapshotsHybrid(ACTIVE_AFD);if(snaps.length){renderAll(snaps[snaps.length-1]);}else{document.getElementById('activeDate').textContent='No dataset';document.getElementById('activeMeta').textContent=(AFD_LABEL[ACTIVE_AFD]||'Semua Afdeling')+' · Belum ada dataset';document.getElementById('lockState').textContent='● NO DATASET';document.getElementById('dashboardSignals').innerHTML='<div class="notice">Belum ada dataset untuk afdeling ini.</div>';document.getElementById('dashboardDecision').textContent='—';document.getElementById('dashboardDecisionText').textContent='Upload AMANTA untuk afdeling yang dipilih.';renderHarvestDensitySummary({blocks:{}});renderHistory();renderDecisionHistory();}}}
 function renderHistory(){
@@ -2934,15 +2933,47 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
 (function(){
   const IDB_NAME='adriana_v26_lock_store';
   const IDB_STORE='snapshots';
+  const LOCK_FALLBACK_KEY='adriana_locked_snapshots_fallback_v1';
   let dbPromise=null;
   const openDB=()=>dbPromise||(dbPromise=new Promise((resolve,reject)=>{
-    if(!window.indexedDB)return reject(new Error('IndexedDB unavailable'));
-    const req=indexedDB.open(IDB_NAME,1);
+    if(!window.indexedDB)return reject(new Error('IndexedDB tidak tersedia pada browser/content URI ini.'));
+    let req;
+    try{req=window.indexedDB.open(IDB_NAME,1)}catch(e){reject(e);return}
     req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(IDB_STORE))db.createObjectStore(IDB_STORE,{keyPath:'id'});};
-    req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error||new Error('IndexedDB open failed'));
+    req.onsuccess=()=>{const db=req.result;db.onversionchange=()=>db.close();resolve(db)};
+    req.onerror=()=>{dbPromise=null;reject(req.error||new Error('IndexedDB gagal dibuka'))};
+    req.onblocked=()=>{dbPromise=null;reject(new Error('IndexedDB diblokir tab lain. Tutup tab ADRIANA lain lalu coba lagi.'))};
   }));
-  const idbPut=async(snap)=>{const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(IDB_STORE,'readwrite');tx.objectStore(IDB_STORE).put({...snap,id:`${snap.afd||'OC'}_${snap.date}`});tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error||new Error('IndexedDB write failed'));});};
-  const idbAll=async()=>{try{const db=await openDB();return await new Promise((resolve,reject)=>{const tx=db.transaction(IDB_STORE,'readonly'),r=tx.objectStore(IDB_STORE).getAll();r.onsuccess=()=>resolve(r.result||[]);r.onerror=()=>reject(r.error);});}catch(e){console.warn('ADRIANA IDB:',e);return[];}};
+  const readLockFallback=()=>{try{const v=JSON.parse(localStorage.getItem(LOCK_FALLBACK_KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return []}};
+  const writeLockFallback=(snap)=>{
+    const rows=readLockFallback(),id=`${snap.afd||'OC'}_${snap.date}`,i=rows.findIndex(x=>x.id===id);
+    const item={...snap,id,storageMode:'localStorage-fallback'};
+    if(i>=0)rows[i]=item;else rows.push(item);
+    try{localStorage.setItem(LOCK_FALLBACK_KEY,JSON.stringify(rows));return item}
+    catch(e){throw new Error('IndexedDB tidak dapat dibuka dan backup localStorage gagal ('+(e?.name||'storage/quota error')+'). Dataset masih berada di sesi aktif; jangan refresh/menutup halaman. Ekspor/backup data lalu buka ADRIANA melalui HTTPS untuk mencoba kembali.')}
+  };
+  const idbPut=async(snap)=>{
+    const item={...snap,id:`${snap.afd||'OC'}_${snap.date}`};
+    try{
+      const db=await openDB();
+      return await new Promise((resolve,reject)=>{
+        let tx;try{tx=db.transaction(IDB_STORE,'readwrite');tx.objectStore(IDB_STORE).put(item)}catch(e){db.close();reject(e);return}
+        tx.oncomplete=()=>{db.close();resolve(true)};
+        tx.onerror=()=>{db.close();reject(tx.error||new Error('IndexedDB write failed'))};
+        tx.onabort=()=>{db.close();reject(tx.error||new Error('IndexedDB transaction aborted'))};
+      });
+    }catch(idbError){writeLockFallback(item);console.warn('ADRIANA menggunakan localStorage fallback:',idbError);return true}
+  };
+  const idbAll=async()=>{
+    let rows=[];try{
+      const db=await openDB();
+      rows=await new Promise((resolve,reject)=>{
+        let tx;try{tx=db.transaction(IDB_STORE,'readonly');const r=tx.objectStore(IDB_STORE).getAll();r.onsuccess=()=>resolve(r.result||[]);r.onerror=()=>reject(r.error||new Error('IndexedDB read failed'));tx.oncomplete=()=>db.close();tx.onerror=()=>{db.close();reject(tx.error)};
+        }catch(e){db.close();reject(e)}
+      });
+    }catch(e){console.warn('ADRIANA IDB read fallback:',e)}
+    const map=new Map();[...rows,...readLockFallback()].forEach(x=>{if(x?.date)map.set(x.id||`${x.afd||'OC'}_${x.date}`,x)});return [...map.values()];
+  };
   const parseLS=(k,def)=>{try{const x=JSON.parse(localStorage.getItem(k)||JSON.stringify(def));return x;}catch(e){return def;}};
   const legacy=()=>{
     const out=[]; const idx=parseLS('adriana_afd_index',[]);
@@ -2973,7 +3004,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
   // Never migrate/duplicate old full snapshots into another localStorage key.
   migrateLegacyHistoryHybrid=function(){};
   getAfdSnapshotsHybrid=function(afd){
-    const all=[...legacy(),...(window.ADRIANA_LOCK_IDB_CACHE||[])],m=new Map();
+    const all=[...legacy(),...(window.ADRIANA_LOCK_IDB_CACHE||[]),...readLockFallback()],m=new Map();
     all.forEach(s=>{if(!s||!s.date)return;const a=s.afd||'OC';if(!afd||afd==='ALL'||a===afd)m.set(`${a}_${s.date}`,s);});
     return [...m.values()].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   };
@@ -2999,7 +3030,7 @@ document.addEventListener('DOMContentLoaded',()=>{migrateLegacyHistoryHybrid();r
       document.getElementById('lockState').textContent='● DATA LOCKED · VALIDATED';
       document.getElementById('uploadMsg').innerHTML+='<br><b>LOCKED:</b> '+fmtDate(snap.date)+' · '+snap.closingId;
       await renderHistory();
-      alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK.');
+      alert('Dataset '+fmtDate(snap.date)+' berhasil di-CLOSE & LOCK. '+(snap.storageMode==='localStorage-fallback'?'Tersimpan melalui localStorage fallback pada browser/perangkat ini.':'Tersimpan di IndexedDB.'));
     }catch(e){console.error(e);alert('Gagal menyimpan CLOSE & LOCK: '+(e?.message||e));}
   };
   renderHistory=async function(){
@@ -3428,86 +3459,359 @@ html,body{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:1
   setTimeout(()=>clearInterval(hookReady),10000);
 })();
 </script>
+<script>
+(()=>{
+ const DB='adriana_tracking_impact_db',STORE='gita_reports';let currentReport=null,currentRows=[],currentBlocks=[];
+ const $=id=>document.getElementById(id);
+ const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const num=v=>{const m=String(v??'').replace(/,/g,'.').match(/-?\d+(?:\.\d+)?/);const x=m?Number(m[0]):0;return Number.isFinite(x)?x:0};
+ const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+ const blockKey=s=>{
+  const x=norm(s);
+  if(!x)return '';
+  // Normalize equivalent block labels across GITA and AMANTA/ADRIANA, e.g.
+  // SYMIC030, SYMOC030, OC30, and 030 -> 30. AFD is matched separately.
+  const m=x.match(/(\d+)(A?)$/);
+  if(m)return String(Number(m[1]))+m[2];
+  return x.replace(/^SYM1/,'');
+};
+ const FALLBACK_KEY='adriana_gita_reports_fallback_v1';
+ function readFallback(){try{const x=JSON.parse(localStorage.getItem(FALLBACK_KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return []}}
+ function writeFallback(rows){try{localStorage.setItem(FALLBACK_KEY,JSON.stringify(rows));return true}catch(e){throw new Error('IndexedDB gagal dan penyimpanan lokal alternatif juga gagal ('+(e?.name||e?.message||'storage error')+'). Ekspor/backup data browser dan coba buka melalui HTTPS GitHub Pages.')}}
+ function openDB(){return new Promise((res,rej)=>{if(!window.indexedDB){rej(new Error('IndexedDB tidak tersedia pada konteks file ini.'));return}let q;try{q=indexedDB.open(DB,1)}catch(e){rej(e);return}q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains(STORE))q.result.createObjectStore(STORE,{keyPath:'id'})};q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error||new Error('Gagal membuka IndexedDB'));q.onblocked=()=>rej(new Error('Database GITA sedang diblokir tab lain. Tutup tab ADRIANA lain lalu coba lagi.'))})}
+ async function putReport(v){try{const db=await openDB();return await new Promise((res,rej)=>{let tx;try{tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(v)}catch(e){db.close();rej(e);return}tx.oncomplete=()=>{db.close();res()};tx.onerror=()=>{db.close();rej(tx.error||new Error('Gagal menyimpan laporan GITA'))};tx.onabort=()=>{db.close();rej(tx.error||new Error('Penyimpanan GITA dibatalkan'))}})}catch(idbError){const rows=readFallback();const i=rows.findIndex(x=>x.id===v.id);if(i>=0)rows[i]=v;else rows.push(v);writeFallback(rows);v.storageMode='localStorage-fallback';}}
+ async function getReports(){try{const db=await openDB();const rows=await new Promise((res,rej)=>{let q;try{q=db.transaction(STORE,'readonly').objectStore(STORE).getAll()}catch(e){db.close();rej(e);return}q.onsuccess=()=>{db.close();res(q.result||[])};q.onerror=()=>{db.close();rej(q.error||new Error('Gagal membaca laporan GITA'))}});const fallback=readFallback();const map=new Map();[...rows,...fallback].forEach(r=>map.set(r.id,r));return [...map.values()]}catch(e){return readFallback()}}
+ async function deleteReports(){let idbError=null;try{const db=await openDB();await new Promise((res,rej)=>{let tx;try{tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).clear()}catch(e){db.close();rej(e);return}tx.oncomplete=()=>{db.close();res()};tx.onerror=()=>{db.close();rej(tx.error||new Error('Gagal menghapus laporan GITA'))};tx.onabort=()=>{db.close();rej(tx.error||new Error('Penghapusan dibatalkan'))}})}catch(e){idbError=e}try{localStorage.removeItem(FALLBACK_KEY)}catch(e){if(idbError)throw e}}
+ function reportBlocks(r){
+  /* Only count a block as a GITA tracking visit when the report's block-level table
+     contains a positive, numeric coverage value. A block name mentioned in a harvester
+     detail alone is not proof of a visit or harvest (prevents false repeats like block 24). */
+  const out=new Map();
+  (r.blocks||[]).forEach(b=>{
+    const raw=b.coverageHa;
+    if(raw===null||raw===undefined||String(raw).trim()==='')return;
+    const coverage=num(raw);
+    if(!Number.isFinite(coverage)||coverage<=0)return;
+    const key=blockKey(b.name);if(!key)return;
+    const prior=out.get(key);
+    if(!prior||coverage>prior.coverageHa)out.set(key,{name:b.name,coverageHa:coverage});
+  });
+  return out;
+}
+ function rotationBlockJjgByDate(afd){
+  const out=new Map(), snaps=[], seen=new Set();
+  // Read all AMANTA locked snapshots directly from the IndexedDB cache; do not require
+  // the operator to open each historical date in the UI.
+  try{(window.ADRIANA_LOCK_IDB_CACHE||[]).forEach(s=>{if(s&&s.date){const k=String(s.afd||'OC')+'|'+String(s.date);if(!seen.has(k)){seen.add(k);snaps.push(s)}}})}catch(e){}
+  // Legacy localStorage snapshots remain supported for older ADRIANA datasets.
+  try{
+    const idx=JSON.parse(localStorage.getItem('adriana_afd_index')||'[]');
+    if(Array.isArray(idx))idx.forEach(x=>{try{const k='adriana_afd_'+x.date+'_'+x.afd;const s=JSON.parse(localStorage.getItem(k)||'null');if(s&&s.date){const z=String(s.afd||x.afd||'OC')+'|'+String(s.date);if(!seen.has(z)){seen.add(z);snaps.push(s)}}}catch(e){}});
+    const dates=JSON.parse(localStorage.getItem('adriana_daily_index')||'[]');
+    if(Array.isArray(dates))dates.forEach(d=>{try{const s=JSON.parse(localStorage.getItem('adriana_daily_'+d)||'null');if(s&&s.date){const z=String(s.afd||'OC')+'|'+String(s.date);if(!seen.has(z)){seen.add(z);snaps.push(s)}}}catch(e){}});
+  }catch(e){}
+  // Use existing snapshot selector only as a final compatibility source.
+  if(!snaps.length){try{if(typeof rotationVisibleSnapshots==='function')snaps.push(...(rotationVisibleSnapshots(afd||'ALL','9999-12-31')||[]))}catch(e){}}
+  for(const snap of snaps){
+    const snapAfd=String(snap.afd||'OC');
+    if(afd&&afd!=='ALL'&&snapAfd!==String(afd))continue;
+    const p=snap.sections?.PRODUKSIBLOK;if(!p)continue;
+    const h=p.header||[],bi=h.indexOf('BLOK'),ji=h.indexOf('JJG'),hi=h.indexOf('HARVDATE');if(bi<0||ji<0)continue;
+    for(const row of p.rows||[]){
+      const raw=String(row[bi]||'').trim();
+      const block=typeof normalizeRotationBlock==='function'?normalizeRotationBlock(raw,snapAfd):raw;
+      const date=(hi>=0&&typeof normalizeAmantaDate==='function'?normalizeAmantaDate(row[hi]):null)||snap.date;
+      if(!block||!date)continue;
+      const key=String(date)+'|'+blockKey(block);out.set(key,(out.get(key)||0)+num(row[ji]));
+    }
+  }
+  return out;
+}
+ async function renderHistory(){
+  try{if(window.ADRIANA_LOCK_IDB_READY)await window.ADRIANA_LOCK_IDB_READY;}catch(e){}
+  const all=(await getReports()).sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.importedAt).localeCompare(String(b.importedAt)));
+  const sel=$('tiHistorySelect'),currentVal=currentReport?.id||'';
+  sel.innerHTML='<option value="">Pilih tanggal laporan…</option>'+all.slice().reverse().map(r=>`<option value="${safe(r.id)}">${safe(r.date)} · ${safe(r.afd||'AFD?')} · ${safe(r.title||'GITA')}</option>`).join('');
+  if(currentVal)sel.value=currentVal;
+  const tbody=$('tiRepeatRows');
+  if(!all.length){$('tiHistorySummary').textContent='Belum ada laporan GITA tersimpan.';tbody.innerHTML='<tr><td colspan="7" class="small">Belum ada riwayat.</td></tr>';return}
+  const byBlock=new Map(), jjgByDate=rotationBlockJjgByDate(currentReport?.afd||'ALL');
+  let comparisons=0;
+  for(const rep of all){
+    const afd=String(rep.afd||'');
+    const blocks=reportBlocks(rep);
+    for(const [k,v] of blocks){
+      if(!byBlock.has(afd+'|'+k))byBlock.set(afd+'|'+k,[]);
+      byBlock.get(afd+'|'+k).push({report:rep,key:k,name:v.name,coverageHa:v.coverageHa});
+    }
+  }
+  const repeats=[];
+  for(const entries of byBlock.values()){
+    entries.sort((a,b)=>String(a.report.date).localeCompare(String(b.report.date)));
+    if(entries.length<2)continue;
+    let cumulative=0,knownCoverageCount=0;
+    entries.forEach((e,i)=>{
+      if(e.coverageHa!=null&&Number.isFinite(Number(e.coverageHa))){cumulative+=Number(e.coverageHa);knownCoverageCount++;}
+      if(i===0)return;
+      const prev=entries[i-1],sameOrGapDays=Math.round((new Date(e.report.date+'T00:00:00')-new Date(prev.report.date+'T00:00:00'))/86400000);
+      const jjgPrev=jjgByDate.get(prev.report.date+'|'+e.key),jjgCur=jjgByDate.get(e.report.date+'|'+e.key);
+      comparisons++;
+      repeats.push({name:e.name,date:e.report.date,coverage:e.coverageHa,prev:prev.coverageHa,prevDate:prev.report.date,cumulative,visitCount:i+1,delta:e.coverageHa!=null&&prev.coverageHa!=null?e.coverageHa-prev.coverageHa:null,jjgPrev,jjgCur,harvestBoth:jjgPrev>0&&jjgCur>0,gapDays:sameOrGapDays});
+    });
+  }
+  const uniqueDays=new Set(all.map(r=>r.date)).size;
+  const totalBlocks=[...byBlock.values()].filter(x=>x.length>1).length;
+  $('tiHistorySummary').innerHTML=`Riwayat lokal: <b>${all.length} laporan</b> · <b>${uniqueDays} tanggal</b> · <b>${totalBlocks} blok</b> muncul di lebih dari satu laporan. Coverage akumulasi di tabel adalah jumlah coverage yang dilaporkan setiap tanggal (ha-kunjungan), <b>bukan luas unik</b>; area yang tumpang tindih tidak bisa dikurangi tanpa data spasial per tanggal.`;
+  tbody.innerHTML=repeats.length?repeats.slice().reverse().slice(0,60).map(r=>`<tr><td>${safe(r.name)}</td><td>${safe(r.prevDate)} → ${safe(r.date)}</td><td>${r.coverage==null?'—':r.coverage.toFixed(2)+' ha'}</td><td>${r.prev==null?'—':r.prev.toFixed(2)+' ha'}</td><td>${r.cumulative.toFixed(2)} ha-kunjungan (${r.visitCount} laporan)</td><td>${r.jjgPrev==null?'—':r.jjgPrev.toLocaleString('id-ID')}</td><td>${r.jjgCur==null?'—':r.jjgCur.toLocaleString('id-ID')}</td><td>${r.harvestBoth?'JJG tercatat pada kedua tanggal; kandidat panen ulang/tidak tuntas—verifikasi status rotasi.':r.gapDays>1?'Blok muncul lagi setelah '+r.gapDays+' hari; cek apakah area baru atau kunjungan ulang.':'Blok muncul di laporan berurutan; verifikasi status penyelesaian dan rotasi.'}</td></tr>`).join(''):'<tr><td colspan="8" class="small">Belum ada blok yang muncul di lebih dari satu laporan. Pastikan kedua tanggal sudah diimpor untuk afdeling yang sama.</td></tr>';
+ }
+ function parseGita(html){const doc=new DOMParser().parseFromString(html,'text/html');const table=doc.querySelector('#personTable');if(!table)throw new Error('Tabel #personTable tidak ditemukan. Pastikan file adalah laporan HTML GITA lengkap.');const rows=[];table.querySelectorAll('tbody tr').forEach(tr=>{const cells=[...tr.querySelectorAll('td')];if(cells.length!==8||cells.some(c=>c.hasAttribute('colspan')))return;const vals=cells.map(c=>c.innerText.trim());const name=vals[0].replace(/\s+/g,' ').trim();if(!name||/^MANDOR\s*:/i.test(name)||/^TOTAL/i.test(name))return;const detail=tr.nextElementSibling?.innerText||'';const blockMatches=[...detail.matchAll(/\b(?:SYM1)?[A-Z]{2,}\d{3}[A-Z]?\b/g)].map(m=>m[0]);const blocks=[...new Set(blockMatches)].join(', ')||vals[7];rows.push({name,totalPoints:num(vals[1]),pointsInBlock:num(vals[2]),accuracyM:num(vals[3]),coverageHa:num(vals[4]),duration:vals[5],checkout:vals[6],blocks,nameKey:norm(name)})});if(!rows.length)throw new Error('Tabel ditemukan tetapi rincian pemanen tidak berhasil dibaca.');
+ const blockTable=doc.querySelector('#blokTable'),blocks=[];if(blockTable)blockTable.querySelectorAll('tbody tr').forEach(tr=>{const c=[...tr.querySelectorAll('td')];if(c.length<5)return;const name=(c[0].innerText||'').trim();if(!name)return;const vals=c.map(x=>x.innerText.trim());blocks.push({name,key:blockKey(name),coverageHa:num(vals[1]),masterHa:num(vals[2]),hestiHa:num(vals[3]),completionPct:num(vals[4])})});
+ const title=doc.title||'Laporan GITA';const dateMatch=(title+' '+(doc.body?.innerText||'').slice(0,600)).match(/(\d{1,2})\s+(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember)\s+(\d{4})/i);let reportDate='';if(dateMatch){const mm={januari:'01',februari:'02',maret:'03',april:'04',mei:'05',juni:'06',juli:'07',agustus:'08',september:'09',oktober:'10',november:'11',desember:'12'};reportDate=`${dateMatch[3]}-${mm[dateMatch[2].toLowerCase()]}-${String(dateMatch[1]).padStart(2,'0')}`}
+ return {rows,blocks,title,reportDate,reportText:(doc.body?.innerText||'').slice(0,5000),aiReport:(doc.querySelector('#aiInsightContent')?.innerText||doc.querySelector('#aiInsightBox')?.innerText||'').trim()}}
+ function activeProduction(requestedDate,requestedAfd){
+  let snap=window.ADRIANA_DATA||null;
+  if(requestedDate){
+    let afd=String(requestedAfd||snap?.afd||((typeof ACTIVE_AFD!=='undefined'&&ACTIVE_AFD!=='ALL')?ACTIVE_AFD:'OC')||'OC');
+    let historical=null;
+    try{
+      if(typeof getAfdSnapshotsHybrid==='function'){
+        const list=getAfdSnapshotsHybrid(afd)||[];
+        historical=list.find(x=>String(x.date)===String(requestedDate)&&String(x.afd||'OC')===afd)||null;
+      }
+    }catch(e){}
+    if(!historical){
+      try{
+        const cache=window.ADRIANA_LOCK_IDB_CACHE||[];
+        historical=cache.find(x=>String(x.date)===String(requestedDate)&&String(x.afd||'OC')===afd)||null;
+      }catch(e){}
+    }
+    // Never silently pair a historical GITA report with the currently active
+    // production snapshot from another date.
+    snap=historical;
+  }
+  const sections=snap?.sections;if(!sections?.PRODUKSIBLOK)return {snap,people:[],blocks:[]};const t=sections.PRODUKSIBLOK,h=t.header||[],idx={name:h.indexOf('NAMA'),npk:h.indexOf('NPK'),jjg:h.indexOf('JJG'),bb:h.indexOf('BB'),bm:h.indexOf('BM'),block:h.indexOf('BLOK')},map={},blockMap={};(t.rows||[]).forEach(r=>{const name=String(r[idx.name]||'').trim(),npk=String(r[idx.npk]||'').trim(),key=norm(name),b=idx.block>=0?String(r[idx.block]||'').trim():'';if(key){map[key]??={name,npk,jjg:0,bb:0,bm:0,blocks:new Set()};map[key].jjg+=num(r[idx.jjg]);map[key].bb+=idx.bb>=0?num(r[idx.bb]):0;map[key].bm+=idx.bm>=0?num(r[idx.bm]):0;if(b)map[key].blocks.add(b)}if(b){const bk=blockKey(b);blockMap[bk]??={name:b,jjg:0,bm:0,bb:0};blockMap[bk].jjg+=num(r[idx.jjg]);blockMap[bk].bm+=idx.bm>=0?num(r[idx.bm]):0;blockMap[bk].bb+=idx.bb>=0?num(r[idx.bb]):0}});let master={};const afd=String(snap?.afd||'').toUpperCase();try{master=afd==='OE'?HESTI_MASTER_OE:HESTI_MASTER}catch(e){}const masterHaFor=(key)=>{const m=String(key||'').match(/^(\\d+)(A?)$/);if(!m)return 0;const n=m[1],a=m[2],prefix=afd==='OE'?'OE':'OC';const candidate=a?prefix+n.padStart(2,'0')+a:prefix+n.padStart(3,'0');return num(master[candidate]?.luasTanam)};return {snap,people:Object.values(map).map(x=>({...x,blocks:[...x.blocks]})),blocks:Object.entries(blockMap).map(([key,v])=>({...v,key,masterHa:masterHaFor(key)}))}}
+ function corr(xs,ys){if(xs.length<3)return null;const mx=xs.reduce((a,b)=>a+b,0)/xs.length,my=ys.reduce((a,b)=>a+b,0)/ys.length;let a=0,b=0,c=0;for(let i=0;i<xs.length;i++){a+=(xs[i]-mx)*(ys[i]-my);b+=(xs[i]-mx)**2;c+=(ys[i]-my)**2}return b&&c?a/Math.sqrt(b*c):null}
+ function fmtCorr(v){return v==null?'—':(v>0?'+':'')+v.toFixed(2)}
+ function tiChart(title,xLabel,yLabel,rows,xKey,yKey){
+   const valid=rows.filter(r=>Number.isFinite(r[xKey])&&Number.isFinite(r[yKey]));
+   if(valid.length<3)return `<div class="panel"><b>${safe(title)}</b><div class="small" style="margin-top:8px">Data valid kurang dari 3 pemanen.</div></div>`;
+   const W=440,H=270,L=54,R=18,T=24,B=52,pw=W-L-R,ph=H-T-B;
+   let xmin=Math.min(...valid.map(r=>r[xKey])),xmax=Math.max(...valid.map(r=>r[xKey])),ymin=Math.min(...valid.map(r=>r[yKey])),ymax=Math.max(...valid.map(r=>r[yKey]));
+   if(xmin===xmax){xmin-=1;xmax+=1}if(ymin===ymax){ymin-=1;ymax+=1}
+   const px=v=>L+(v-xmin)/(xmax-xmin)*pw,py=v=>T+ph-(v-ymin)/(ymax-ymin)*ph;
+   const ticks=Array.from({length:5},(_,i)=>i/4);
+   const grid=ticks.map(t=>{const y=T+ph-t*ph,x=L+t*pw;return `<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="#e5e7eb"/><line x1="${x}" y1="${T}" x2="${x}" y2="${T+ph}" stroke="#f1f5f9"/><text x="${L-8}" y="${y+4}" text-anchor="end" font-size="10" fill="#64748b">${(ymin+t*(ymax-ymin)).toFixed(1)}</text><text x="${x}" y="${T+ph+17}" text-anchor="middle" font-size="10" fill="#64748b">${(xmin+t*(xmax-xmin)).toFixed(1)}</text>`}).join('');
+   const mx=valid.reduce((a,r)=>a+r[xKey],0)/valid.length,my=valid.reduce((a,r)=>a+r[yKey],0)/valid.length;
+   let cov=0,vx=0;valid.forEach(r=>{cov+=(r[xKey]-mx)*(r[yKey]-my);vx+=(r[xKey]-mx)**2});const slope=vx?cov/vx:0,inter=my-slope*mx;
+   const line=`<line x1="${px(xmin)}" y1="${py(inter+slope*xmin)}" x2="${px(xmax)}" y2="${py(inter+slope*xmax)}" stroke="#0f766e" stroke-width="2.5"/>`;
+   const dots=valid.map(r=>`<circle cx="${px(r[xKey])}" cy="${py(r[yKey])}" r="4.2" fill="#2563eb" fill-opacity=".78"><title>${safe(r.name||'Pemanen')}: ${xLabel} ${r[xKey].toFixed(2)}, ${yLabel} ${r[yKey].toFixed(2)}</title></circle>`).join('');
+   const rv=corr(valid.map(r=>r[xKey]),valid.map(r=>r[yKey]));
+   return `<div class="panel" style="min-width:0"><div style="font-weight:700">${safe(title)}</div><div class="small">r = <b>${fmtCorr(rv)}</b> · n = ${valid.length}</div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${safe(title)}" style="width:100%;height:auto;display:block;margin-top:6px">${grid}${line}${dots}<line x1="${L}" y1="${T+ph}" x2="${W-R}" y2="${T+ph}" stroke="#64748b"/><line x1="${L}" y1="${T}" x2="${L}" y2="${T+ph}" stroke="#64748b"/><text x="${L+pw/2}" y="${H-8}" text-anchor="middle" font-size="11" fill="#334155">${safe(xLabel)}</text><text transform="translate(13 ${T+ph/2}) rotate(-90)" text-anchor="middle" font-size="11" fill="#334155">${safe(yLabel)}</text></svg><div class="small">Garis = tren linear sederhana; titik = pemanen.</div></div>`;
+ }
+ function renderTiCorrelations(rows,enabled){
+   const summary=$('tiCorrelationSummary'),charts=$('tiCorrelationCharts');if(!summary||!charts)return;
+   const m=rows.filter(r=>r.matched&&Number.isFinite(r.jjg));
+   if(!enabled||m.length<3){summary.innerHTML='';charts.innerHTML='<div class="small">Grafik menunggu minimal 3 pasangan data pemanen yang cocok pada tanggal yang sama.</div>';return}
+   const specs=[['Coverage × JJG','coverageHa','jjg','Coverage (Ha)','JJG'],['Coverage × JJG/Ha','coverageHa','jjgHa','Coverage (Ha)','JJG/Ha'],['GPS Points × JJG','totalPoints','jjg','GPS Points','JJG'],['JJG/Ha × BM%','jjgHa','bmPct','JJG/Ha','BM (%)'],['JJG/Ha × BB%','jjgHa','bbPct','JJG/Ha','BB (%)'],['Coverage × BM%','coverageHa','bmPct','Coverage (Ha)','BM (%)'],['Coverage × BB%','coverageHa','bbPct','Coverage (Ha)','BB (%)']];
+   const cards=[['Coverage × JJG',corr(m.map(r=>r.coverageHa),m.map(r=>r.jjg))],['GPS Points × JJG',corr(m.map(r=>r.totalPoints),m.map(r=>r.jjg))],['JJG/Ha × BM%',corr(m.map(r=>r.jjgHa),m.map(r=>r.bmPct))],['JJG/Ha × BB%',corr(m.map(r=>r.jjgHa),m.map(r=>r.bbPct))]];
+   summary.innerHTML=cards.map(([k,v])=>`<div class="panel"><div class="small">${safe(k)}</div><div class="value">${fmtCorr(v)}</div><div class="small">Pearson r · n=${m.length}</div></div>`).join('');
+   charts.innerHTML=specs.map(([t,x,y,xl,yl])=>tiChart(t,xl,yl,m,x,y)).join('');
+ }
+ async function render(){try{if(window.ADRIANA_LOCK_IDB_READY)await window.ADRIANA_LOCK_IDB_READY;}catch(e){}const prod=activeProduction(currentReport?.date,currentReport?.afd),sameDate=!!currentReport&&!!prod.snap&&String(currentReport.date)===String(prod.snap.date),byName=new Map(prod.people.map(p=>[norm(p.name),p]));currentRows=(currentReport?.rows||[]).map(g=>{const p=byName.get(g.nameKey);const matched=!!p&&sameDate;return {...g,jjg:matched?p.jjg:null,bm:matched?p.bm:null,bb:matched?p.bb:null,bmPct:matched&&p.jjg>0?p.bm/p.jjg*100:null,bbPct:matched&&p.jjg>0?p.bb/p.jjg*100:null,jjgHa:matched&&g.coverageHa>0?p.jjg/g.coverageHa:null,amantaName:p?.name||'',matched,amantaBlocks:p?.blocks||[],matchReason:!p?'PEMANEN TIDAK DITEMUKAN':!sameDate?'TANGGAL BERBEDA':'MATCH'}});const matched=currentRows.filter(r=>r.matched);$('tiKpiPeople').textContent=currentRows.length||'—';$('tiKpiMatched').textContent=currentRows.length?`${matched.length}/${currentRows.length}`:'—';$('tiKpiCoverage').textContent=sameDate?fmtCorr(corr(matched.map(r=>r.coverageHa),matched.map(r=>r.jjg))):'—';$('tiKpiPoints').textContent=sameDate?fmtCorr(corr(matched.map(r=>r.totalPoints),matched.map(r=>r.jjg))):'—';$('tiRows').innerHTML=currentRows.length?currentRows.map(r=>`<tr><td>${safe(r.name)}</td><td>${r.coverageHa.toFixed(2)}</td><td>${r.totalPoints.toLocaleString('id-ID')}</td><td>${safe(r.duration)}</td><td>${r.matched?r.jjg.toLocaleString('id-ID'):'—'}</td><td>${r.matched?r.bm.toLocaleString('id-ID'):'—'}</td><td>${r.matched?r.bmPct.toFixed(2)+'%':'—'}</td><td>${r.matched?r.bb.toLocaleString('id-ID'):'—'}</td><td>${r.matched?r.bbPct.toFixed(2)+'%':'—'}</td><td>${r.matched&&r.jjgHa!=null?r.jjgHa.toFixed(2):'—'}</td><td>${safe(r.blocks||'—')}</td><td>${r.matched?'<b style="color:#15803d">MATCH</b>':`<span style="color:#b45309">${safe(r.matchReason)}</span>`}</td></tr>`).join(''):'<tr><td colspan="12" class="small">Belum ada data.</td></tr>';renderTiCorrelations(currentRows,sameDate);
+ const blockMaster=new Map(prod.blocks.map(b=>[blockKey(b.key||b.name),b]));
+ const histReports=await getReports();
+ const reportDateObj=currentReport?.date?new Date(currentReport.date+'T00:00:00'):null;
+ const eligibleReports=histReports.filter(r=>String(r.afd||'')===String(currentReport?.afd||'')&&r.date&&reportDateObj&&new Date(r.date+'T00:00:00')<=reportDateObj);
+ const selectedDate=String(currentReport?.date||'');
+ const priorDates=[...new Set(eligibleReports.map(r=>String(r.date)).filter(d=>d<selectedDate))].sort((a,b)=>b.localeCompare(a));
+ const priorDate=priorDates[0]||'';
+ // H+0 always shows every positively tracked block in the selected GITA report.
+ // If the same block also appears in the immediately previous distinct GITA report,
+ // add the two reported coverages; do not hide single-day H+0 blocks.
+ const latestByBlock=new Map();
+ eligibleReports.filter(r=>String(r.date)===selectedDate).forEach(r=>reportBlocks(r).forEach((v,k)=>{
+   const key=blockKey(k||v.name);if(!key||!(Number(v.coverageHa)>0))return;
+   const old=latestByBlock.get(key);
+   // Avoid double-counting duplicate imports of the same report date.
+   if(!old||Number(v.coverageHa)>old.coverageHa)latestByBlock.set(key,{name:v.name,key,coverageHa:Number(v.coverageHa),date:selectedDate});
+ }));
+ const priorByBlock=new Map();
+ if(priorDate)eligibleReports.filter(r=>String(r.date)===priorDate).forEach(r=>reportBlocks(r).forEach((v,k)=>{
+   const key=blockKey(k||v.name);if(!key||!(Number(v.coverageHa)>0))return;
+   const old=priorByBlock.get(key);
+   if(!old||Number(v.coverageHa)>old.coverageHa)priorByBlock.set(key,{name:v.name,key,coverageHa:Number(v.coverageHa),date:priorDate});
+ }));
+ const jjgByDateBlock=rotationBlockJjgByDate(currentReport?.afd||'ALL');
+ currentBlocks=[...latestByBlock.values()].map(h=>{
+   const key=blockKey(h.key||h.name),prev=priorByBlock.get(key),b=blockMaster.get(key);
+   const reportMaster=(currentReport?.blocks||[]).find(g=>blockKey(g.key||g.name)===key);
+   const masterHa=Number(b?.masterHa)||Number(reportMaster?.masterHa)||0;
+   const repeated=!!prev;
+   const histCoverage=h.coverageHa+(prev?.coverageHa||0);
+   const trackingDates=repeated?[priorDate,selectedDate]:[selectedDate];
+   const jjgByDay=trackingDates.map(d=>({date:d,jjg:jjgByDateBlock.get(d+'|'+key)})).filter(x=>Number.isFinite(x.jjg));
+   const jjgToday=jjgByDateBlock.get(selectedDate+'|'+key);
+   const jjgAccum=jjgByDay.reduce((sum,x)=>sum+x.jjg,0);
+   const pct=masterHa>0?histCoverage/masterHa*100:null;
+   return {name:h.name,key,coverageHa:h.coverageHa,masterHa,pct,coverageForPct:histCoverage,histCoverage,histDays:trackingDates.length,repeated,matched:!!b||masterHa>0,coverageByDate:{...(prev?{[priorDate]:prev.coverageHa}:{}),[selectedDate]:h.coverageHa},trackingDates,jjgToday:Number.isFinite(jjgToday)?jjgToday:null,jjg:jjgByDay.length?jjgAccum:null,jjgDays:jjgByDay.length,jjgDates:jjgByDay.map(x=>x.date)};
+ }).sort((a,b)=>a.key.localeCompare(b.key,undefined,{numeric:true}));
+ const qualityByBlock=new Map((prod.blocks||[]).map(x=>[blockKey(x.key||x.name),x]));
+ currentBlocks=currentBlocks.map(b=>{const q=qualityByBlock.get(b.key),jjg=Number(q?.jjg)||0,bm=Number(q?.bm)||0,bb=Number(q?.bb)||0;return {...b,bm,bb,bmPct:jjg>0?bm/jjg*100:null,bbPct:jjg>0?bb/jjg*100:null,jjgQuality:jjg};});
+ const qualityRows=currentBlocks.filter(b=>sameDate&&b.jjgQuality>0&&b.bmPct!=null&&b.bbPct!=null);
+ $('tiBlockQualityCharts').innerHTML=sameDate
+   ?tiChart('JJG/Blok vs BM% — Buah Mentah','JJG per blok','BM%',qualityRows,'jjgQuality','bmPct')+tiChart('JJG/Blok vs BB% — Buah Busuk','JJG per blok','BB%',qualityRows,'jjgQuality','bbPct')
+   :'<div class="notice">Grafik dinonaktifkan karena tanggal GITA dan snapshot ADRIANA belum cocok. Pilih dataset dengan tanggal yang sama.</div>';
+ $('tiBlockQualityNote').textContent=!sameDate?'Korelasi kualitas hanya dihitung jika tanggal GITA dan snapshot produksi sama.':qualityRows.length<3?'Data blok valid kurang dari 3. Grafik titik dan korelasi memerlukan minimal 3 blok dengan JJG dan data BM/BB.':'n = '+qualityRows.length+' blok. Nilai r menunjukkan asosiasi, bukan sebab-akibat. BM/BB dihitung dari total kategori per blok dibagi JJG blok.';
+ $('tiBlockNote').textContent=priorDate
+   ?`Menampilkan seluruh blok yang memiliki coverage positif pada laporan H+0 ${selectedDate}. Jika blok juga tercatat pada laporan GITA sebelumnya (${priorDate}), coverage dan JJG dijumlahkan untuk dua tanggal tersebut. Blok yang hanya muncul H+0 tetap ditampilkan tanpa pengulangan. JJG diambil otomatis dari snapshot AMANTA/ADRIANA berdasarkan tanggal panen dan kode blok; hari tanpa data yang cocok tidak dianggap nol.`
+   :`Menampilkan seluruh blok dengan coverage positif pada laporan GITA ${selectedDate}. Belum ada tanggal GITA sebelumnya untuk akumulasi dua laporan. JJG ditarik otomatis dari snapshot AMANTA/ADRIANA berdasarkan tanggal panen dan kode blok.`;
+ $('tiBlockRows').innerHTML=currentBlocks.length?currentBlocks.map(b=>`<tr><td>${safe(b.name)}</td><td>${b.coverageHa.toFixed(2)}</td><td>${b.histCoverage.toFixed(2)} ha-kunjungan ${b.repeated?`<small>(${safe(priorDate)} + ${safe(selectedDate)})</small>`:`<small>(H+0 saja)</small>`}</td><td>${b.jjgToday==null?'—':b.jjgToday.toLocaleString('id-ID')}</td><td>${b.jjg==null?'—':b.jjg.toLocaleString('id-ID')}</td><td>${b.jjgDays} hari</td><td>${b.masterHa?b.masterHa.toFixed(2):'—'}</td><td>${b.pct==null?'—':b.pct.toFixed(1)+'%'} <small>${b.repeated?'(akumulasi)':'(H+0)'}</small></td><td>${b.matched?'<b style="color:#15803d">LUAS TERSEDIA</b>':'<span style="color:#b45309">CEK MASTER BLOK</span>'}</td></tr>`).join(''):'<tr><td colspan="9" class="small">Belum ada blok dengan coverage positif pada laporan GITA terpilih.</td></tr>';
+ const date=currentReport?.date||'—',activeDate=prod.snap?.date||'—',afd=prod.snap?.afdLabel||prod.snap?.afd||'—';let note=currentReport?`Laporan: ${safe(currentReport.title)} · Tanggal GITA: ${safe(date)} · Dataset ADRIANA aktif: ${safe(activeDate)} / ${safe(afd)}. `:'Import laporan GITA terlebih dahulu. ';if(!prod.snap)note+='Snapshot AMANTA/ADRIANA untuk tanggal GITA terpilih belum ditemukan pada histori yang tersimpan. Pastikan tanggal tersebut sudah di-CLOSE & LOCK di ADRIANA.';else if(!sameDate)note+='MATCH JJG DINONAKTIFKAN: tanggal GITA dan dataset ADRIANA berbeda. Pilih snapshot harian yang sama sebelum menghitung korelasi.';else if(matched.length<3)note+='Dibutuhkan minimal 3 pasangan pemanen yang valid untuk menghitung korelasi.';else note+=`Analisis dihitung dari ${matched.length} pasangan pemanen pada tanggal yang sama.`;$('tiAnalysisNote').innerHTML=note;$('tiBlockNote').textContent += ` Luas master diambil dari ADRIANA atau laporan GITA bila tersedia; persentase membandingkan akumulasi coverage dua tanggal terhadap luas master dan perlu dibaca sebagai ha-kunjungan/master, bukan luas unik.`;
+ const c=corr(matched.map(r=>r.coverageHa),matched.map(r=>r.jjg)),cp=corr(matched.map(r=>r.totalPoints),matched.map(r=>r.jjg));
+ const panel=(title,body)=>`<div style="border:1px solid #dce7df;border-radius:10px;padding:12px;margin:10px 0"><b>${safe(title)}</b><div style="margin-top:6px">${body}</div></div>`;
+ const escList=arr=>arr.length?`<ul style="margin:6px 0;padding-left:18px">${arr.map(x=>`<li style="margin:4px 0">${safe(x)}</li>`).join('')}</ul>`:'<p>Belum ada temuan yang dapat dibuat dari pasangan data valid.</p>';
+ let aiHtml='';
+ if(!currentReport){aiHtml=panel('Status analisis','Import laporan GITA terlebih dahulu.');}
+ else if(!prod.snap){aiHtml=panel('Status analisis','Dataset produksi ADRIANA belum aktif. Aktifkan snapshot AMANTA yang sesuai sebelum membuat kesimpulan.');}
+ else if(!sameDate){aiHtml=panel('Status analisis','<b style="color:#b45309">BELUM DAPAT DISIMPULKAN — PERIODE BERBEDA.</b> Laporan GITA dan dataset ADRIANA tidak memiliki tanggal yang sama. Pilih snapshot produksi untuk tanggal GITA; JJG dan korelasi tidak boleh dipasangkan lintas tanggal.');}
+ else if(matched.length<3){aiHtml=panel('Status analisis',`<b style="color:#b45309">DATA BELUM MEMADAI.</b> Baru ${matched.length} pemanen yang cocok. Diperlukan setidaknya 3 pasangan untuk statistik awal; interpretasi yang stabil memerlukan lebih banyak hari observasi.`);}
+ else {
+   const median=a=>{const v=a.filter(Number.isFinite).slice().sort((x,y)=>x-y);if(!v.length)return 0;const m=Math.floor(v.length/2);return v.length%2?v[m]:(v[m-1]+v[m])/2};
+   const medCov=median(matched.map(r=>r.coverageHa)),medJjg=median(matched.map(r=>r.jjg));
+   const buckets={goodGood:[],lowHigh:[],goodLow:[],lowLow:[]};
+   matched.forEach(r=>{const highC=r.coverageHa>=medCov,highJ=r.jjg>=medJjg;const key=highC?(highJ?'goodGood':'goodLow'):(highJ?'lowHigh':'lowLow');buckets[key].push(r)});
+   const describe=v=>v==null?'belum dapat dihitung':Math.abs(v)<.2?'sangat lemah':Math.abs(v)<.4?'lemah':Math.abs(v)<.7?'sedang':'kuat';
+   const sign=v=>v==null?'belum dapat dihitung':v>=.2?'positif':v<=-.2?'negatif':'sangat lemah/tidak tampak jelas';
+   const blockCoverage=currentBlocks.filter(b=>b.pct!=null),lowBlocks=blockCoverage.filter(b=>b.pct<50),highBlocks=blockCoverage.filter(b=>b.pct>=80);
+   const cCase=buckets.lowHigh.map(r=>`${r.name}: coverage ${r.coverageHa.toFixed(2)} ha, JJG ${r.jjg} — produktivitas relatif tinggi meski coverage di bawah median; verifikasi kelengkapan GPS dan konteks ancak.`);
+   const dCase=buckets.goodLow.map(r=>`${r.name}: coverage ${r.coverageHa.toFixed(2)} ha, JJG ${r.jjg} — coverage relatif tinggi tetapi JJG di bawah median; evaluasi kondisi buah, luas ancak, rotasi, dan hambatan kerja.`);
+   const gCase=buckets.goodGood.map(r=>`${r.name}: coverage ${r.coverageHa.toFixed(2)} ha, JJG ${r.jjg} — coverage dan JJG sama-sama di atas/sama dengan median; pola selaras, bukan bukti sebab-akibat.`);
+   const lCase=buckets.lowLow.map(r=>`${r.name}: coverage ${r.coverageHa.toFixed(2)} ha, JJG ${r.jjg} — keduanya di bawah median; cek apakah coverage rendah mencerminkan tracking tidak lengkap atau kendala operasional.`);
+   const summary=`Dataset valid: ${matched.length} dari ${currentRows.length} pemanen pada ${date}. Median coverage ${medCov.toFixed(2)} ha; median JJG ${medJjg.toLocaleString('id-ID')}. Korelasi coverage × JJG ${fmtCorr(c)} (${describe(c)}); jumlah titik × JJG ${fmtCorr(cp)} (${describe(cp)}).`;
+   const coverageSummary=blockCoverage.length?`${blockCoverage.length} blok memiliki persentase coverage/master yang dapat dihitung. ${lowBlocks.length} blok berada di bawah 50% dan ${highBlocks.length} blok mencapai minimal 80%. Ambang ini hanya penanda awal dan harus disesuaikan dengan target coverage operasional.`:'Persentase coverage per blok belum dapat dinilai karena luas master belum tersedia/cocok.';
+   const conclusion=(c!=null&&Math.abs(c)>=.4)?`Terdapat sinyal ${sign(c)} dengan kekuatan ${describe(c)} antara coverage dan JJG pada sampel hari ini. Satu hari data tidak cukup untuk menyimpulkan dampak tracking terhadap produktivitas.`:`Pada sampel hari ini, hubungan coverage dan JJG ${sign(c)}. Ini belum membuktikan tidak adanya hubungan; evaluasi lintas hari diperlukan dan faktor operasional perlu dikontrol.`;
+   const gitaAI=currentReport.aiReport?currentReport.aiReport.split(/\n+/).map(x=>x.trim()).filter(Boolean):[];
+   aiHtml+=panel('H+0 — Kesimpulan untuk meeting',safe(conclusion));
+   const peopleLowHigh=buckets.lowHigh.slice().sort((a,b)=>b.jjg-a.jjg);
+   const peopleHighLow=buckets.goodLow.slice().sort((a,b)=>a.jjg-b.jjg);
+   const jjgByDateBlock=rotationBlockJjgByDate(currentReport?.afd||'ALL');
+   const validBlockPairs=blockCoverage.map(b=>{const key=b.key||blockKey(b.name),dates=b.trackingDates?.length?b.trackingDates:[currentReport?.date].filter(Boolean);const jjgByDay=dates.map(d=>({date:d,jjg:jjgByDateBlock.get(d+'|'+key)})).filter(x=>Number.isFinite(x.jjg));const jjgAccum=jjgByDay.reduce((sum,x)=>sum+x.jjg,0);const jjgToday=jjgByDateBlock.get(String(currentReport?.date)+'|'+key);return {...b,jjg:jjgByDay.length?jjgAccum:null,jjgToday:Number.isFinite(jjgToday)?jjgToday:null,jjgDays:jjgByDay.length,jjgDates:jjgByDay.map(x=>x.date)}}).filter(b=>b.jjg!=null);
+   const medBlockJjg=median(validBlockPairs.map(b=>b.jjg));
+   const blockLowHigh=validBlockPairs.filter(b=>b.pct<50&&b.jjg>=medBlockJjg).sort((a,b)=>b.jjg-a.jjg);
+   const blockHighLow=validBlockPairs.filter(b=>b.pct>=80&&b.jjg<medBlockJjg).sort((a,b)=>a.jjg-b.jjg);
+   const blockRows=validBlockPairs.slice().sort((a,b)=>a.pct-b.pct).map(b=>`<tr><td>${safe(b.name)}</td><td>${b.pct.toFixed(1)}%</td><td>${b.jjgToday==null?'—':b.jjgToday.toLocaleString('id-ID')}</td><td><b>${Number(b.jjg).toLocaleString('id-ID')}</b></td><td>${b.jjgDays} hari</td><td>${b.pct<50&&b.jjg>=medBlockJjg?'<b style="color:#b45309">COVERAGE RENDAH · JJG KUMULATIF RELATIF TINGGI</b>':b.pct>=80&&b.jjg<medBlockJjg?'<b style="color:#b91c1c">COVERAGE TINGGI · JJG KUMULATIF RELATIF RENDAH</b>':b.pct>=80&&b.jjg>=medBlockJjg?'<b style="color:#15803d">KEDUANYA RELATIF TINGGI</b>':'Perlu ditinjau'}</td></tr>`).join('');
+   aiHtml+=panel('Blok produktif dengan tracking rendah',`<b>${blockLowHigh.length}</b> blok memiliki coverage di bawah 50% master tetapi JJG blok setidaknya mencapai median JJG antarblok (${medBlockJjg.toLocaleString('id-ID')}). Ini kandidat untuk memeriksa kelengkapan tracking, bukan bukti otomatis bahwa tracking bermasalah.`+escList(blockLowHigh.slice(0,8).map(b=>`${b.name}: coverage ${b.pct.toFixed(1)}%, JJG ${b.jjg.toLocaleString('id-ID')}; verifikasi GPS, ancak, rotasi dan luas yang benar-benar dipanen.`)));
+   aiHtml+=panel('Pemanen — tracking relatif rendah vs JJG relatif tinggi',`<b>${peopleLowHigh.length}</b> pemanen berada pada kelompok coverage di bawah median dan JJG setidaknya median pemanen (${medJjg.toLocaleString('id-ID')} JJG).`+escList(peopleLowHigh.slice(0,8).map(r=>`${r.name}: coverage ${r.coverageHa.toFixed(2)} ha, ${r.totalPoints.toLocaleString('id-ID')} titik, JJG ${r.jjg.toLocaleString('id-ID')}; validasi kelengkapan tracking dan penugasan blok.`)));
+   aiHtml+=panel('Anomali kebalikan — tracking relatif tinggi vs JJG relatif rendah',`<b>${peopleHighLow.length}</b> pemanen perlu ditinjau karena coverage relatif tinggi tetapi JJG di bawah median. `+escList(peopleHighLow.slice(0,8).map(r=>`${r.name}: coverage ${r.coverageHa.toFixed(2)} ha, JJG ${r.jjg.toLocaleString('id-ID')}; evaluasi basis, luas ancak, AKP, rotasi dan hambatan kerja.`)));
+   if(blockRows) aiHtml+=panel('Matriks blok H+0 — coverage × JJG otomatis',`<div style="overflow-x:auto"><table><thead><tr><th>Blok</th><th>Coverage/master kumulatif</th><th>JJG tanggal terpilih</th><th>Akumulasi JJG</th><th>Hari panen tercatat</th><th>Interpretasi awal</th></tr></thead><tbody>${blockRows}</tbody></table></div><div class="small" style="margin-top:6px">Matriks ini menampilkan seluruh blok aktif pada laporan GITA terpilih. Jika suatu blok juga muncul pada laporan GITA sebelumnya, coverage dan JJG dari kedua tanggal dijumlahkan; blok yang hanya muncul H+0 tetap ditampilkan. JJG ditarik otomatis dari snapshot AMANTA/ADRIANA berdasarkan tanggal panen dan kode blok. Hari tanpa data produksi yang cocok tidak dianggap nol. Angka JJG total belum dinormalisasi terhadap HK, luas panen, atau jumlah pemanen.</div>`);
+   aiHtml+=panel('Kasus prioritas',`<b>${lowBlocks.length}</b> blok coverage di bawah 50% master · <b>${highBlocks.length}</b> blok coverage ≥80% master · <b>${buckets.lowHigh.length}</b> pemanen coverage relatif rendah/JJG tinggi · <b>${buckets.goodLow.length}</b> pemanen coverage relatif tinggi/JJG rendah.`+escList([...lowBlocks.slice(0,3).map(b=>`${b.name}: ${b.pct.toFixed(1)}% coverage/master; validasi area target.`),...peopleHighLow.slice(0,3).map(r=>`${r.name}: coverage ${r.coverageHa.toFixed(2)} ha, JJG ${r.jjg}; evaluasi AKP, luas ancak dan rotasi.`),...peopleLowHigh.slice(0,3).map(r=>`${r.name}: coverage ${r.coverageHa.toFixed(2)} ha, JJG ${r.jjg}; cek kelengkapan GPS.`)]));
+   aiHtml+=panel('Hubungan tracking × produktivitas',`Coverage × JJG: <b>${fmtCorr(c)}</b> (${describe(c)}); titik × JJG: <b>${fmtCorr(cp)}</b> (${describe(cp)}). Sampel: ${matched.length} pemanen pada ${safe(date)}. ${safe(coverageSummary)}`);
+   const qBM=matched.filter(r=>Number.isFinite(r.bmPct)).slice().sort((a,b)=>b.bmPct-a.bmPct),qBB=matched.filter(r=>Number.isFinite(r.bbPct)).slice().sort((a,b)=>b.bbPct-a.bbPct);
+   aiHtml+=panel('Harvest Quality Root Cause — BM & BB',`BM dan BB dianalisis terpisah. Pemanen dengan persentase tertinggi perlu diverifikasi, bukan langsung dinyatakan melakukan kesalahan.`+escList([...qBM.slice(0,5).map(r=>`${r.name}: BM ${r.bm} (${r.bmPct.toFixed(2)}% dari JJG ${r.jjg}); cek seleksi kematangan.`),...qBB.slice(0,5).map(r=>`${r.name}: BB ${r.bb} (${r.bbPct.toFixed(2)}% dari JJG ${r.jjg}); cek rotasi dan ketuntasan ancak.`)]));
+   aiHtml+=panel('Tindak lanjut untuk apel pagi',escList(['Validasi blok dengan coverage rendah tetapi JJG relatif tinggi sebelum memberi penilaian terhadap pemanen.','Periksa blok/pemanen dengan tracking tinggi tetapi JJG relatif rendah; cek basis, luas ancak, AKP, rotasi dan kendala lapangan.','Tetapkan penanggung jawab dan batas waktu verifikasi pada hasil meeting sore.','Gunakan beberapa hari data yang tanggal, afdeling, blok, dan identitas pemanennya cocok sebelum menyimpulkan hubungan.']));
+ }
+ $('tiAIInsight').innerHTML=aiHtml;}
 
-<style id="adriana-ui-polish-v1">
-/* ADRIANA UI POLISH — visual/responsive only. No calculation, data, or download logic changes. */
-:root{
-  --ad-ui-bg:#f4f7fb;
-  --ad-ui-surface:#ffffff;
-  --ad-ui-text:#172033;
-  --ad-ui-muted:#667085;
-  --ad-ui-border:#e5e9f0;
-  --ad-ui-accent:#167a52;
-  --ad-ui-accent-soft:#e9f7f0;
-  --ad-ui-shadow:0 8px 24px rgba(16,24,40,.06);
-}
-html{scroll-behavior:smooth}
-body{background:var(--ad-ui-bg)!important;color:var(--ad-ui-text)}
-body,.main,.content{max-width:100%;}
-.main{padding-bottom:32px!important}
-.panel,.card,.kpi,.section,.box,.tableWrap,.chartCard{
-  border-color:var(--ad-ui-border)!important;
-}
-.panel,.card,.section,.box,.chartCard{
-  box-shadow:var(--ad-ui-shadow)!important;
-  border-radius:16px!important;
-}
-.panelHead{min-height:52px!important;padding:13px 16px!important;gap:10px!important}
-.panelHead h2{font-size:15px!important;font-weight:750!important;letter-spacing:-.01em}
-.kpiGrid{gap:12px!important}
-.kpi{min-height:108px!important;padding:16px!important;border-radius:16px!important;background:var(--ad-ui-surface)!important}
-.kpi .value,.kpiValue{font-size:clamp(23px,3vw,32px)!important;font-weight:800!important;letter-spacing:-.025em}
-.kpi .label,.kpiLabel{font-size:11px!important;color:var(--ad-ui-muted)!important;text-transform:uppercase;letter-spacing:.06em}
-.btn,button,select,input{border-radius:10px!important}
-.btn,button{transition:transform .15s ease,box-shadow .15s ease,background .15s ease!important}
-.btn:hover,button:hover{transform:translateY(-1px)}
-.top{gap:10px!important;align-items:center!important}
-.tableWrap{overflow:auto!important;-webkit-overflow-scrolling:touch;border-radius:14px}
-table{min-width:max-content}
-thead th{position:sticky;top:0;z-index:2}
-/* Production / rotation emphasis */
-#production .panelHead,#rotation .panelHead{background:linear-gradient(180deg,#fff,#fbfcfd)}
-#rotation .rotationProductionCalendar{overflow-x:auto!important;-webkit-overflow-scrolling:touch;border-radius:14px}
-#rotation .rpCalTable{min-width:760px}
-#rotation .rpMonthNav{position:sticky;left:0;z-index:3}
-/* Keep charts readable instead of shrinking them on narrow screens. */
-canvas{max-width:100%!important}
-.chart-container,.chartWrap,.chartCard{min-width:0}
-/* Mobile: compact, readable, horizontal tables instead of squeezed columns. */
-@media(max-width:900px){
-  .main{padding-left:12px!important;padding-right:12px!important}
-  .kpiGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-  .panel,.card,.section,.box,.chartCard{border-radius:14px!important}
-  .panelHead{padding:12px 13px!important}
-  .panelHead h2{font-size:14px!important}
-  .top{flex-wrap:wrap!important}
+ $('tiGitaFile').addEventListener('change',()=>{const f=$('tiGitaFile').files?.[0];if(!f)return;const m=f.name.match(/(\d{1,2})\s+(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember)\s+(\d{4})/i);if(m){const months={januari:'01',februari:'02',maret:'03',april:'04',mei:'05',juni:'06',juli:'07',agustus:'08',september:'09',oktober:'10',november:'11',desember:'12'};$('tiDate').value=`${m[3]}-${months[m[2].toLowerCase()]}-${String(m[1]).padStart(2,'0')}`}});
+ $('tiImportBtn').addEventListener('click',async()=>{const f=$('tiGitaFile').files?.[0],date=$('tiDate').value;if(!f){$('tiImportMsg').textContent='Pilih file HTML GITA terlebih dahulu.';return}if(!date){$('tiImportMsg').textContent='Isi tanggal tracking terlebih dahulu.';return}try{$('tiImportMsg').textContent='Membaca laporan GITA…';const parsed=parseGita(await f.text());currentReport={id:date+'|'+(window.ADRIANA_DATA?.afd||'NA'),date,afd:window.ADRIANA_DATA?.afd||'',title:f.name,importedAt:new Date().toISOString(),rows:parsed.rows,blocks:parsed.blocks,reportDate:parsed.reportDate,aiReport:parsed.aiReport||''};await putReport(currentReport);render();await renderHistory();$('tiImportMsg').textContent=`Import berhasil: ${parsed.rows.length} pemanen dan ${parsed.blocks.length} blok. Data tersimpan terpisah di penyimpanan browser${currentReport.storageMode==='localStorage-fallback'?' (fallback localStorage karena IndexedDB gagal)':' (IndexedDB atau fallback jika diperlukan)'}.${parsed.reportDate&&parsed.reportDate!==date?' PERINGATAN: tanggal pada isi/nama laporan tidak sama dengan tanggal input.':''}`}catch(e){$('tiImportMsg').textContent='Gagal import: '+e.message}});
+ $('tiReloadBtn').addEventListener('click',async()=>{try{const all=await getReports();if(!all.length){$('tiImportMsg').textContent='Belum ada data GITA tersimpan.';return}all.sort((a,b)=>String(b.importedAt).localeCompare(String(a.importedAt)));currentReport=all[0];$('tiDate').value=currentReport.date||'';render();await renderHistory();$('tiImportMsg').textContent=`Memuat laporan tersimpan: ${currentReport.title} · ${currentReport.rows.length} pemanen · ${(currentReport.blocks||[]).length} blok.`}catch(e){$('tiImportMsg').textContent='Gagal membaca IndexedDB: '+e.message}});
+ $('tiHistorySelect').addEventListener('change',async()=>{const id=$('tiHistorySelect').value;if(!id)return;const all=await getReports();currentReport=all.find(r=>r.id===id)||null;if(currentReport){$('tiDate').value=currentReport.date||'';await render();await renderHistory();$('tiImportMsg').textContent=`Riwayat dipilih: ${currentReport.title} · ${currentReport.date}`}});
+ $('tiClearBtn').addEventListener('click',async()=>{if(!confirm('Hapus semua data laporan GITA yang tersimpan pada modul ini di browser ini? Data AMANTA/ADRIANA tidak terpengaruh.'))return;await deleteReports();currentReport=null;currentRows=[];currentBlocks=[];render();await renderHistory();$('tiImportMsg').textContent='Data tracking tersimpan telah dihapus.'});
+ $('tiExportBtn').addEventListener('click',()=>{if(!currentRows.length){alert('Belum ada hasil analisis untuk diekspor.');return}const head=['Tanggal GITA','Tanggal ADRIANA','Nama GITA','Coverage Ha','Total Titik','Titik Dalam Blok','Durasi','Jam Pulang','Blok Dikunjungi','Nama ADRIANA','JJG ADRIANA','BM','BM %','BB','BB %','JJG per Ha','Status Match'];const esc=v=>{v=String(v??'');return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};const lines=[head,...currentRows.map(r=>[currentReport.date,window.ADRIANA_DATA?.date||'',r.name,r.coverageHa,r.totalPoints,r.pointsInBlock,r.duration,r.checkout,r.blocks,r.amantaName,r.jjg??'',r.bm??'',r.bmPct??'',r.bb??'',r.bbPct??'',r.jjgHa??'',r.matched?'MATCH':r.matchReason])].map(row=>row.map(esc).join(','));const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ADRIANA_Tracking_Impact_'+(currentReport?.date||'report')+'.csv';a.click();URL.revokeObjectURL(url)});
+ document.addEventListener('DOMContentLoaded',()=>{const d=new Date();$('tiDate').value=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');renderHistory().catch(()=>{});document.querySelectorAll('.nav button[data-target="trackingImpact"]').forEach(b=>b.addEventListener('click',()=>{render();renderHistory().catch(()=>{})}));});
+})();
+</script>
+
+<style id="adriana-gita-compact-v29">
+/* Compact executive layout — scoped exclusively to GITA × Tracking Impact */
+#trackingImpact{max-width:1360px}
+#trackingImpact>.top{margin-bottom:10px}
+#trackingImpact>.top .title{font-size:clamp(20px,2.2vw,27px);margin:3px 0}
+#trackingImpact>.top .meta{max-width:850px;line-height:1.45}
+#trackingImpact .ti-launcher{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0 12px}
+#trackingImpact .ti-launcher button{min-height:58px;display:flex;align-items:center;justify-content:center;gap:8px;flex-direction:column;border:1px solid var(--neo-line,#dce7e0);border-radius:13px;background:linear-gradient(145deg,#fff,#f5faf7);color:#174b34;padding:8px 6px;cursor:pointer;box-shadow:0 4px 12px rgba(15,55,38,.045);transition:transform .15s,border-color .15s,background .15s}
+#trackingImpact .ti-launcher button:hover{transform:translateY(-2px);border-color:#83b99a;background:#edf7f1}
+#trackingImpact .ti-launcher button span{font-size:8px;color:#7b8b81;letter-spacing:.1em}
+#trackingImpact .ti-launcher button b{font-size:10px;line-height:1.2;text-align:center}
+#trackingImpact>.panel,#trackingImpact .ti-panel{padding:clamp(11px,1.4vw,17px);margin-bottom:10px!important;border-radius:15px}
+#trackingImpact .ti-panel h2{font-size:13px;margin:0 0 8px!important}
+#trackingImpact .small{font-size:9px;line-height:1.45}
+#trackingImpact .value{font-size:22px;margin:4px 0}
+#trackingImpact>.grid{gap:8px!important;margin-bottom:10px!important}
+#trackingImpact>.grid>.panel{padding:11px 13px;border-radius:13px;min-width:0}
+#trackingImpact>.grid>.panel .small{font-size:8px;letter-spacing:.04em}
+#trackingImpact>.grid>.panel .value{font-size:21px}
+#trackingImpact #tiImportPanel>div:nth-of-type(2){gap:8px!important;align-items:end}
+#trackingImpact #tiImportPanel label{font-size:9px;min-width:0;flex:1 1 145px}
+#trackingImpact #tiImportPanel input,#trackingImpact #tiImportPanel select{max-width:100%;font-size:10px;padding:7px;border:1px solid var(--neo-line);border-radius:8px}
+#trackingImpact .btn{font-size:9px;padding:8px 10px;margin-top:4px}
+#trackingImpact table{font-size:8px;min-width:760px}
+#trackingImpact th{font-size:7px;padding:7px 6px}
+#trackingImpact td{padding:7px 6px}
+#trackingImpact .ti-panel>div[style*="overflow-x:auto"]{max-width:100%;border-radius:10px}
+#trackingImpact #tiCorrelationSummary,
+#trackingImpact #tiCorrelationCharts,
+#trackingImpact #tiBlockQualityCharts{gap:8px!important}
+#trackingImpact #tiCorrelationCharts>*,#trackingImpact #tiBlockQualityCharts>*{min-width:0!important}
+#trackingImpact #tiCorrelationPanel .small,
+#trackingImpact #tiBlockQualityPanel .small{line-height:1.4}
+#trackingImpact #tiBlockQualityNote{font-size:8px;padding:8px}
+#trackingImpact #tiAIInsight{line-height:1.55}
+#trackingImpact #tiNotesPanel ul{padding-left:17px;margin:6px 0}
+#trackingImpact #tiNotesPanel li{margin:4px 0}
+#trackingImpact .ti-panel{scroll-margin-top:16px}
+@media(min-width:900px){
+ #trackingImpact .ti-launcher{grid-template-columns:repeat(8,minmax(0,1fr))}
+ #trackingImpact #tiCorrelationCharts{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ #trackingImpact #tiBlockQualityCharts{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:600px){
-  body{font-size:13px!important}
-  .main{padding-left:10px!important;padding-right:10px!important}
-  .kpiGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
-  .kpi{min-height:94px!important;padding:12px!important;border-radius:13px!important}
-  .kpi .value,.kpiValue{font-size:22px!important}
-  .kpi .label,.kpiLabel{font-size:9px!important}
-  .panelHead{min-height:46px!important;padding:10px 12px!important}
-  .panelHead h2{font-size:13px!important}
-  .btn,button{min-height:38px!important;font-size:12px!important}
-  select,input{min-height:38px!important;max-width:100%}
-  .tableWrap{margin-left:-1px;margin-right:-1px}
-  table{font-size:11px!important}
-  th,td{padding:7px 9px!important;white-space:nowrap}
-  #rotation .rpCalTable{min-width:700px!important}
-  #rotation .rotationProductionCalendar{padding-bottom:3px}
+ #trackingImpact .ti-launcher{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+ #trackingImpact .ti-launcher button{min-height:55px;padding:6px 3px;border-radius:10px}
+ #trackingImpact .ti-launcher button b{font-size:8px}
+ #trackingImpact>.grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #trackingImpact #tiCorrelationSummary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #trackingImpact #tiCorrelationCharts,
+ #trackingImpact #tiBlockQualityCharts{grid-template-columns:1fr!important}
+ #trackingImpact #tiImportPanel>div:nth-of-type(2){display:grid!important;grid-template-columns:1fr 1fr}
+ #trackingImpact #tiImportPanel label:first-child{grid-column:1/-1}
+ #trackingImpact #tiImportPanel label:last-of-type{grid-column:1/-1}
+ #trackingImpact .ti-panel{padding:11px!important}
 }
-@media(max-width:390px){
-  .kpiGrid{grid-template-columns:1fr 1fr!important;gap:7px!important}
-  .kpi{min-height:88px!important;padding:10px!important}
-  .kpi .value,.kpiValue{font-size:20px!important}
-}
-/* Prevent accidental global transform/scale effects from making the dashboard look tiny. */
-#app,.app,.main,.content,.dashboard{transform:none!important;zoom:1!important}
 </style>
 
+<script id="adriana-gita-compact-v29-js">
+document.addEventListener('DOMContentLoaded',()=>{
+ const root=document.getElementById('trackingImpact');
+ if(!root)return;
+ const buttons=[...root.querySelectorAll('.ti-launcher button[data-ti-target]')];
+ const panels=buttons.map(b=>document.getElementById(b.dataset.tiTarget)).filter(Boolean);
+ function activate(id){
+  panels.forEach(panel=>{panel.hidden=panel.id!==id;});
+  buttons.forEach(btn=>{
+   const on=btn.dataset.tiTarget===id;
+   btn.classList.toggle('active',on);
+   btn.setAttribute('aria-pressed',on?'true':'false');
+  });
+  const chosen=document.getElementById(id);
+  if(chosen)chosen.scrollIntoView({behavior:'smooth',block:'start'});
+ }
+ buttons.forEach(btn=>btn.addEventListener('click',()=>activate(btn.dataset.tiTarget)));
+ // Default view: import only. The other modules appear only after their icon is selected.
+ activate('tiImportPanel');
+});
+</script>
+
+<style id="adriana-gita-exclusive-view-v30">
+#trackingImpact .ti-panel[hidden]{display:none!important}
+#trackingImpact .ti-launcher button.active{background:linear-gradient(145deg,#e3f3e9,#fff);border-color:#238455;box-shadow:inset 0 0 0 1px #238455,0 5px 14px rgba(15,85,52,.10)}
+#trackingImpact .ti-launcher button.active b{color:#075239}
+#trackingImpact .ti-launcher button.active span{color:#16804f;font-weight:900}
+#trackingImpact .ti-panel{margin-top:10px!important}
+#trackingImpact #tiHarvesterPanel>.grid{margin:8px 0 12px!important}
+#trackingImpact #tiHarvesterPanel>.grid>.panel{box-shadow:none;background:#f8fbf9}
+@media(max-width:600px){#trackingImpact .ti-launcher{position:sticky;top:0;z-index:20;background:rgba(247,250,248,.96);padding:5px 0;backdrop-filter:blur(8px)}}
+</style>
 </body></html>
 
 <style id="adriana-mobile-top-engine-corrected">
@@ -4216,45 +4520,3 @@ canvas{max-width:100%!important}
   window.ADRIANA_DOWNLOAD_PDF=downloadSectionPdf;
 })();
 </script>
-
-<style id="adriana-ui-command-center-v3">
-/* V3 COMMAND CENTER — visual-only layer. Existing data/logic/download functions untouched. */
-:root{
-  --cc-green:#0b5a3c;
-  --cc-green2:#13835a;
-  --cc-ink:#14231c;
-  --cc-muted:#708078;
-  --cc-bg:#eef3ef;
-  --cc-line:#d9e3dc;
-  --cc-card:#fff;
-}
-body{background:var(--cc-bg)!important;color:var(--cc-ink)!important}
-/* Desktop: turn dashboard into a real command center */
-.main{max-width:none!important;padding:0 30px 34px!important}
-.astraHead{height:68px!important;margin:0 -30px 18px!important;padding:6px 22px!important;background:#fff!important;border-bottom:1px solid var(--cc-line)!important}
-.astraLogo{width:62px!important;height:52px!important}.astraName{font-size:17px!important}.astraTag{font-size:9px!important}.astraRight{font-size:10px!important}
-.dashWelcome{background:linear-gradient(115deg,#073e2b 0%,#0b6845 68%,#149365 100%)!important;color:#fff!important;border-radius:20px!important;padding:20px 22px!important;margin:0 0 14px!important;min-height:122px!important;box-shadow:0 14px 32px rgba(6,72,46,.16)!important;position:relative!important;overflow:hidden!important}
-.dashWelcome:after{content:"";position:absolute;right:-80px;top:-120px;width:330px;height:330px;border:55px solid rgba(255,255,255,.06);border-radius:50%;pointer-events:none}
-.dashWelcome .eyebrow,.dashWelcome .meta{color:rgba(255,255,255,.68)!important}.dashWelcome .title{font-size:25px!important;margin:4px 0 7px!important;color:#fff!important}.welcomeName{color:#fff!important}.dashControls{position:relative;z-index:2}.dateBox{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.18)!important;color:#fff!important;box-shadow:none!important}.dateBox small{color:rgba(255,255,255,.62)!important}.dateBox strong{color:#fff!important}.dashWelcome .lock{background:#fff!important;color:#0b5a3c!important}
-.afdFilter{position:relative;z-index:2}.afdFilter label{color:rgba(255,255,255,.65)!important}.afdFilter select{background:rgba(255,255,255,.12)!important;color:#fff!important;border-color:rgba(255,255,255,.22)!important}
-.kpiGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;margin-bottom:14px!important}.kpi{min-height:122px!important;padding:17px 18px!important;border:1px solid var(--cc-line)!important;border-radius:16px!important;background:#fff!important;box-shadow:0 8px 22px rgba(20,45,32,.055)!important}.kpiIcon{display:none!important}.kpi .label,.kpi .value,.kpi .small,.kpi .delta{margin-left:0!important}.kpi .label{font-size:10px!important;letter-spacing:.09em!important}.kpi .value{font-size:31px!important;color:#102c20!important;margin-top:8px!important}.kpi .delta{font-size:10px!important}.kpi .confidence{top:14px!important;right:14px!important;background:#edf7f1;padding:4px 6px;border-radius:6px}
-/* Make production trend the primary visual */
-.dashTopGrid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px!important;margin-top:0!important}.trendPanel{grid-column:1/-1!important;background:#fff!important;border:1px solid var(--cc-line)!important;border-radius:18px!important;padding:18px!important;box-shadow:0 8px 24px rgba(20,45,32,.055)!important}.trendHead{display:flex!important;justify-content:space-between!important;align-items:flex-start!important;gap:18px!important;border-bottom:1px solid #e7ede9!important;padding-bottom:14px!important;margin-bottom:12px!important}.trendEyebrow{font-size:9px!important;letter-spacing:.12em!important;color:#16805a!important;font-weight:900!important}.trendHead h2{font-size:18px!important;margin:3px 0!important}.trendHead p{font-size:10px!important;color:var(--cc-muted)!important;margin:0!important}.trendControls{display:flex!important;flex-wrap:wrap!important;justify-content:flex-end!important;gap:6px!important}.trendControls label{font-size:9px!important;color:var(--cc-muted)!important}.trendControls select,.trendControls .btn{height:34px!important;font-size:10px!important}.trendGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}.trendCard{border:1px solid #e3eae5!important;border-radius:12px!important;padding:11px!important;background:#fbfdfc!important}.trendCardTitle{font-size:9px!important;color:#68776f!important}.trendValue{font-size:20px!important;font-weight:900!important;color:#116446!important;margin:3px 0!important}.signalsPanel,.decisionHero{min-height:205px!important}.signalsPanel{grid-column:1!important}.decisionHero{grid-column:2!important}
-/* Lower dashboard: cleaner hierarchy */
-.dashLower{display:grid!important;grid-template-columns:minmax(0,1.65fr) minmax(260px,.9fr) minmax(220px,.7fr)!important;gap:12px!important;margin-top:12px!important}.dashLower .panel{border-radius:16px!important}.productionPanel{grid-column:1!important}.harvestDensityPanel{grid-column:2!important}.dashRight{grid-column:3!important}.dashLower table{font-size:10px!important}.dashLower th{font-size:8px!important;padding:8px 7px!important}.dashLower td{padding:9px 7px!important}
-/* Side navigation: compact app rail */
-.side{width:210px!important;padding:16px 10px!important}.main{margin-left:210px!important;width:calc(100% - 210px)!important}.nav button{font-size:11px!important;padding:10px 11px!important;border-radius:10px!important}
-/* Mobile becomes a deliberately different composition */
-@media(max-width:700px){
-  html,body{overflow-x:hidden!important}
-  .side{position:sticky!important;top:0!important;left:auto!important;width:100%!important;height:52px!important;min-height:52px!important;padding:4px 6px!important;border-radius:0!important;z-index:9999!important;box-shadow:0 5px 18px rgba(6,52,35,.18)!important}
-  .side>.brandRow,.side>.sub{display:none!important}.nav{height:44px!important;gap:5px!important}.nav button{min-width:76px!important;height:42px!important;min-height:42px!important;padding:5px 7px!important;font-size:8px!important;border-radius:9px!important}
-  .app{display:block!important}.main{margin-left:0!important;width:100%!important;padding:0 9px 20px!important}.astraHead{height:50px!important;min-height:50px!important;margin:0 -9px 9px!important;padding:4px 10px!important}.astraHead .adrianaMainLogo{width:108px!important;height:42px!important}.astraHead .astra50Logo{width:64px!important;height:38px!important}.astraHead .astraLestariLogo{width:52px!important;height:38px!important}.astraHead .brandDivider{height:28px!important}.astraRight{display:none!important}
-  .dashWelcome{border-radius:15px!important;padding:14px!important;min-height:112px!important;margin-bottom:9px!important}.dashWelcome .title{font-size:18px!important}.dashWelcome .meta{font-size:8px!important;max-width:62%!important}.dashControls{position:absolute!important;right:12px!important;bottom:12px!important;display:flex!important;flex-direction:column!important;gap:5px!important;align-items:flex-end!important}.dateBox{min-width:128px!important;padding:6px 8px!important;border-radius:9px!important}.dateBox>span{font-size:14px!important}.dateBox small{font-size:7px!important}.dateBox strong{font-size:10px!important}.dashWelcome .lock{font-size:8px!important;padding:6px 8px!important}.afdFilter{margin-top:7px!important}.afdFilter label{font-size:7px!important}.afdFilter select{height:28px!important;min-height:28px!important;font-size:9px!important;padding:3px 8px!important}
-  .kpiGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin-bottom:9px!important}.kpi{min-height:96px!important;padding:11px 12px!important;border-radius:13px!important}.kpi .label{font-size:8px!important}.kpi .value{font-size:23px!important;margin-top:6px!important}.kpi .small{font-size:8px!important}.kpi .delta{font-size:8px!important}.kpi .confidence{font-size:7px!important;top:9px!important;right:9px!important;padding:3px 4px!important}.spark{display:none!important}
-  .dashTopGrid{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}.trendPanel{grid-column:1!important;border-radius:14px!important;padding:12px!important}.trendHead{display:block!important;padding-bottom:9px!important}.trendHead h2{font-size:14px!important}.trendHead p{font-size:8px!important}.trendControls{justify-content:flex-start!important;margin-top:8px!important;overflow-x:auto!important;flex-wrap:nowrap!important}.trendControls label{flex:0 0 auto!important}.trendControls select,.trendControls .btn{height:30px!important;min-height:30px!important;font-size:8px!important}.trendGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}.trendCard{padding:8px!important;border-radius:10px!important}.trendCardTitle{font-size:7px!important}.trendValue{font-size:16px!important}.trendCanvasWrap{height:72px!important}.signalsPanel,.decisionHero{grid-column:1!important;min-height:0!important}.signalsPanel{order:2!important}.decisionHero{order:3!important}.signalsPanel .panelHead h2,.decisionHero .decisionHead h2{font-size:12px!important}.signalsPanel .signal{padding:9px 0!important}.signalsPanel .signal p,.signalsPanel .signal b{font-size:9px!important}
-  .dashLower{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-top:8px!important}.productionPanel,.harvestDensityPanel,.dashRight{grid-column:1!important}.dashLower .panel{border-radius:13px!important}.dashLower .panelHead{min-height:38px!important;padding:8px 10px!important}.dashLower .panelHead h2{font-size:11px!important}.dashLower table{font-size:9px!important}.dashLower th{font-size:7px!important;padding:7px 6px!important}.dashLower td{padding:8px 6px!important}.dashRight{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.dashRight .panel{min-width:0!important}
-  .peopleKpis{grid-template-columns:repeat(2,1fr)!important}.panel{border-radius:13px!important}.panelHead{min-height:40px!important;padding:9px 10px!important}.panelHead h2{font-size:11px!important}.panelHead span{font-size:8px!important}
-}
-@media(max-width:390px){.nav button{min-width:70px!important}.dashWelcome .title{font-size:17px!important}.trendGrid{grid-template-columns:1fr!important}.dashRight{grid-template-columns:1fr!important}}
-</style>
